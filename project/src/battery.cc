@@ -23,8 +23,10 @@ namespace csci3081
   }
 
   void Battery::DecrementCurrentCharge(float decrAmount) {
-    currentCharge = currentCharge - decrAmount;
-    if (currentCharge == 0) {
+    if (currentCharge>0) {
+	currentCharge = currentCharge - decrAmount;
+    }
+	if (currentCharge == 0) {
       isEmpty = true;
     }
   }
