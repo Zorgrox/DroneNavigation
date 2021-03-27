@@ -5,19 +5,22 @@
 namespace csci3081
 {
 
-  Vector3D::Vector3D(std::vector<float> position, std::vector<float> velocity)
+  Vector3D::Vector3D(std::vector<float> vector3d)
   {
-    velocity_ = velocity;
-    position_ = position;
-    direction_ = GetUnitVector();
+    vector_ = vector3d;
   }
 
-  const std::vector<float> Vector3D::GetUnitVector()
+  const std::vector<float> GetVector()
+  {
+    return vector_;
+  }
+
+  const std::vector<float> Vector3D::Normalize()
   {
     std::vector<float> direction;
     float divisor = CalculateMagnitude();
 
-    for (auto element : GetVelocity())
+    for (auto element : vector_)
     {
       float norm_element = element / divisor;
       direction.push_back(norm_element);
@@ -29,37 +32,13 @@ namespace csci3081
   float Vector3D::CalculateMagnitude()
   {
     float sum = 0.0;
-    for (auto element : velocity_)
+    for (auto element : vector_)
     {
       float squared = element * element;
       sum = sum + squared;
     }
     float divisor = sqrt(sum);
     return divisor;
-  }
-
-  const std::vector<float>& Vector3D::GetVelocity()
-  {
-    return velocity_;
-  }
-
-  const std::vector<float>& Vector3D::GetPosition()
-  {
-    return position_;
-  }
-
-  const std::vector<float>& Vector3D::GetDirection()
-  {
-    return direction_;
-  }
-
-  void Vector3D::SetVelocity(std::vector<float> newVelocity) {
-    velocity_ = newVelocity;
-    direction_ = GetUnitVector();
-  }
-
-  void Vector3D::SetPosition(std::vector<float> newPosition) {
-    position_ = newPosition;
   }
 
   std::vector<float> Vector3D::AddTwoVectors(std::vector<float> &oneVector, std::vector<float> &secondVector) {
