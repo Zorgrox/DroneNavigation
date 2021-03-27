@@ -30,6 +30,8 @@ namespace csci3081
    * @brief Constructor: set up a Battery with a specified maxCharge
    */
     Battery(float maxCharge);
+	
+	Battery(float maxCharge, float currentCharg);
 
     /**
    *  This function should return the max charge of the Battery
