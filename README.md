@@ -1,6 +1,6 @@
 ## Group members
 * yang5063
-* joh13503 sdfsfsdf
+* joh13503
 * conne457
 
 ## Pre-requisites
