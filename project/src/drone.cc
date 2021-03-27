@@ -26,7 +26,7 @@ namespace csci3081 {
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
     isCarryingPackage = false;
-    battery = new Battery(10.0);
+    battery = new Battery(10000);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     details_ = obj;
     // curPackage = new Package();
@@ -129,7 +129,7 @@ namespace csci3081 {
     std::vector<float> nextPosition = positionAndDirection->AddTwoVectors(curPosition, updateDirection);
     UpdateDronePosition(nextPosition);
     // Decrement the drone's battery
-    UpdateBatteryCharge(-0.1);
+    UpdateBatteryCharge(-dt);
     // TODO: for later iteration, give a warning if the drone's battery is close to being depleted
   }
 
