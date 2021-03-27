@@ -26,7 +26,7 @@ namespace csci3081 {
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
     isCarryingPackage = false;
-    battery = new Battery(10.0);
+    battery = new Battery(10000);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     details_ = obj;
     // curPackage = new Package();
@@ -102,13 +102,18 @@ namespace csci3081 {
     battery->DecrementCurrentCharge(decrAmount);
   }
 
-  void Drone::UpdateDronePosition(std::vector<float> &newPosition) {
+  void Drone::UpdateDronePosition(std::vector<float> &newPosition, float dt) {
     std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
-    positionAndDirection->SetPosition(newPosition);
+    
+	if (battery->GetIsEmpty()==false) {
+	positionAndDirection->SetPosition(newPosition);
     if (isCarryingPackage) {
       // then also update the package's position
       curPackage->SetPosition(newPosition);
     }
+	UpdateBatteryCharge(-dt);
+	}
+	
   }
 
   void Drone::UpdateDroneVelocity(std::vector<float> &newVelocity) {
@@ -127,9 +132,9 @@ namespace csci3081 {
     float speedAndDt = speed * dt;
     std::vector<float> updateDirection = positionAndDirection->MultiplyVectorWithFloat(direction, speedAndDt);
     std::vector<float> nextPosition = positionAndDirection->AddTwoVectors(curPosition, updateDirection);
-    UpdateDronePosition(nextPosition);
+    UpdateDronePosition(nextPosition, dt);
     // Decrement the drone's battery
-    UpdateBatteryCharge(-0.1);
+    
     // TODO: for later iteration, give a warning if the drone's battery is close to being depleted
   }
 
