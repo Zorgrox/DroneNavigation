@@ -49,18 +49,18 @@ namespace csci3081
     /**
    *  This function should be used to add two standard vectors with each other
    */
-    static std::vector<float> AddTwoVectors(std::vector<float>& oneVector, std::vector<float>& secondVector);
+    static Vector3D AddTwoVectors(Vector3D &oneVector, Vector3D &secondVector);
     /**
    *  This function should be used to subtract two standard vectors from each other
    */
-    static std::vector<float> SubtractTwoVectors(std::vector<float> &oneVector, std::vector<float> &secondVector);
+    static Vector3D SubtractTwoVectors(Vector3D &oneVector, Vector3D &secondVector);
     /**
    *  This function should be used to multiple a vector with a float
    */
-    static std::vector<float> MultiplyVectorWithFloat(std::vector<float> &oneVector, float coeff);
+    static Vector3D MultiplyVectorWithFloat(Vector3D &oneVector, float coeff);
 
   private:
-    std::vector<float> vector;
+    std::vector<float> vector_;
   };
 
 } // namespace csci3081
