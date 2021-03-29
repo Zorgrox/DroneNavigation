@@ -101,7 +101,8 @@ namespace csci3081
   private:
     int id;
     std::string name;
-    Vector3D *positionAndDirection;
+    Vector3D* position;
+    Vector3D* direction;
     float radius;
     int version = 0;
     bool dynamic = true;

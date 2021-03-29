@@ -16,9 +16,12 @@ namespace csci3081
     id = packageId;
     std::cout << "This is package ID: " << packageId << std::endl;
     name = JsonHelper::GetString(obj, "name");
-    std::vector<float> position = JsonHelper::GetStdFloatVector(obj, "position");
-    std::vector<float> direction = JsonHelper::GetStdFloatVector(obj, "direction");
-    positionAndDirection = new Vector3D(position, direction);
+    std::vector<float> positionVec = JsonHelper::GetStdFloatVector(obj, "position");
+    std::vector<float> directionVec = JsonHelper::GetStdFloatVector(obj, "direction");
+    position = new Vector3D(positionVec);
+    direction = new Vector3D(directionVec);
+    direction->Normalize();
+    std::cout << "Here's the direction of package:" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << std::endl;
     radius = (float)JsonHelper::GetDouble(obj, "radius");
     weight = 0.0;
 
@@ -39,23 +42,23 @@ namespace csci3081
 
   const std::vector<float> &Package::GetPosition() const
   {
-    // std::cout << "I'm in package getposition" << std::endl;
-    return positionAndDirection->GetPosition();
+    return position->GetVector();
   }
 
   void Package::SetPosition(std::vector<float> &newPosition)
   {
-    positionAndDirection->SetPosition(newPosition);
+    position->SetVector(newPosition);
   }
 
   const std::vector<float> &Package::GetDirection() const
   {
-    return positionAndDirection->GetDirection();
+    return direction->GetVector();
   }
 
   void Package::SetVelocity(std::vector<float> &newVelocity)
   {
-    positionAndDirection->SetVelocity(newVelocity);
+    direction->SetVector(newVelocity);
+    direction->Normalize();
   }
 
   float Package::GetRadius() const
@@ -75,6 +78,9 @@ namespace csci3081
 
   void Package::SetCustomer(Customer &newCustomer) {
     customer = &newCustomer;
+    if (customer == NULL) {
+      std::cout << "customer in package setcustomer is null" << std::endl;
+    }
     destination = customer->GetPosition();
   }
 

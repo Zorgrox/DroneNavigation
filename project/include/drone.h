@@ -161,7 +161,8 @@ namespace csci3081 {
     private:
       int id;
       std::string name;
-      Vector3D *positionAndDirection;
+      Vector3D* position;
+      Vector3D* direction;
       Package *curPackage;
       Battery *battery;
       float radius;
