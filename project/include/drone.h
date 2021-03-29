@@ -158,6 +158,16 @@ namespace csci3081 {
     */
     void CalculateAndUpdateDroneDirection(std::vector<float>& nextPosition);
 
+    /**
+    *  This function should return whether the drone is currently in an idle state or not. It is only idle if it has run out of battery, or if the drone is not picking up or dropping off a package
+    */
+    bool GetIsIdle();
+
+    /**
+    *  This function should return whether the drone just started moving between the current timestep and the previous timestep
+    */
+    bool GetJustStartedMoving();
+
     private:
       int id;
       std::string name;
@@ -171,6 +181,9 @@ namespace csci3081 {
       bool onTheWayToDropOffPackage;
       bool isCarryingPackage;
       float speed;
+      bool isIdle;
+      bool wasIdle;
+      bool justStartedMoving;
     };
 
 } // namespace csci3081

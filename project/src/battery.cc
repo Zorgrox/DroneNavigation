@@ -5,10 +5,10 @@
 namespace csci3081
 {
   Battery::Battery(float maxCharge) {
-	if (maxCharge > 0) {  
+	if (maxCharge > 0) {
     maxBatteryCharge = maxCharge;
     currentCharge = maxCharge; }
-	else 
+	else
 	{
 	maxBatteryCharge = 10000;  // Default value
     currentCharge = maxCharge;
@@ -19,16 +19,16 @@ namespace csci3081
       isEmpty = true;
     }
   }
-  
+
   Battery::Battery(float maxCharge, float currentCharg) {
-	if (maxCharge > 0) {  
+	if (maxCharge > 0) {
     maxBatteryCharge = maxCharge;
 	}
-	else 
+	else
 	{
 	maxBatteryCharge = 10000;  // Default value
 	}
-	
+
     if (currentCharg > 0) {
 	  currentCharge=currentCharg;
       isEmpty = false;
@@ -37,8 +37,8 @@ namespace csci3081
       isEmpty = true;
     }
   }
-  
-  
+
+
 
   float Battery::GetMaxCharge() const {
     return maxBatteryCharge;

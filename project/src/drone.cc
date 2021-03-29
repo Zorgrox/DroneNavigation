@@ -28,6 +28,9 @@ namespace csci3081 {
     isCarryingPackage = false;
     battery = new Battery(10000);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
+    isIdle = false;
+    wasIdle = true;
+    justStartedMoving = true;
     details_ = obj;
     // curPackage = new Package();
     std::cout << "Creating drone in default constructor" << std::endl;
@@ -104,16 +107,17 @@ namespace csci3081 {
 
   void Drone::UpdateDronePosition(std::vector<float> &newPosition, float dt) {
     std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
-    
-	if (battery->GetIsEmpty()==false) {
-	positionAndDirection->SetPosition(newPosition);
-    if (isCarryingPackage) {
-      // then also update the package's position
-      curPackage->SetPosition(newPosition);
+
+    if (battery->GetIsEmpty()==false) {
+      positionAndDirection->SetPosition(newPosition);
+      if (isCarryingPackage) {
+        // then also update the package's position
+        curPackage->SetPosition(newPosition);
+      }
+      // Decrement the drone's battery
+      UpdateBatteryCharge(-dt);
     }
-	UpdateBatteryCharge(-dt);
-	}
-	
+
   }
 
   void Drone::UpdateDroneVelocity(std::vector<float> &newVelocity) {
@@ -126,15 +130,40 @@ namespace csci3081 {
 
   void Drone::Update(float dt)
   {
-    std::vector<float> direction = positionAndDirection->GetDirection();
-    std::vector<float> curPosition = positionAndDirection->GetPosition();
+    if (battery->GetIsEmpty())
+    {
+      wasIdle = isIdle;
+      isIdle = true;
+    }
+    else if (!onTheWayToDropOffPackage & !onTheWayToPickUpPackage)
+    {
+      // should be idle because it has no package to pick up or drop off
+      wasIdle = isIdle;
+      isIdle = true;
+    }
+    else
+    {
+      wasIdle = isIdle;
+      isIdle = false;
+    }
 
-    float speedAndDt = speed * dt;
-    std::vector<float> updateDirection = positionAndDirection->MultiplyVectorWithFloat(direction, speedAndDt);
-    std::vector<float> nextPosition = positionAndDirection->AddTwoVectors(curPosition, updateDirection);
-    UpdateDronePosition(nextPosition, dt);
-    // Decrement the drone's battery
-    
+    if (wasIdle == true & isIdle == false) {
+      justStartedMoving = true;
+    } else {
+      justStartedMoving = false;
+    }
+
+    if (!battery->GetIsEmpty()) {
+      // we only move if the battery is not empty. Otherwise, do nothing in the Update function.
+      std::vector<float> direction = positionAndDirection->GetDirection();
+      std::vector<float> curPosition = positionAndDirection->GetPosition();
+
+      float speedAndDt = speed * dt;
+      std::vector<float> updateDirection = positionAndDirection->MultiplyVectorWithFloat(direction, speedAndDt);
+      std::vector<float> nextPosition = positionAndDirection->AddTwoVectors(curPosition, updateDirection);
+      UpdateDronePosition(nextPosition, dt);
+    }
+
     // TODO: for later iteration, give a warning if the drone's battery is close to being depleted
   }
 
@@ -248,4 +277,11 @@ namespace csci3081 {
     UpdateDroneVelocity(newVelocity);
   }
 
+  bool Drone::GetIsIdle() {
+    return isIdle;
+  }
+
+  bool Drone::GetJustStartedMoving() {
+    return justStartedMoving;
+  }
 }

@@ -218,6 +218,36 @@ void DeliverySimulation::Update(float dt) {
     // print out the drone's positions at each time step
     std::vector<float> theCurPos = actual_drone->GetPosition();
     Print(theCurPos);
+
+    if (actual_drone->GetIsIdle()) {
+      // Notify the observers that the drone is in an idle state
+      picojson::object obj = JsonHelper::CreateJsonObject();
+      JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+      JsonHelper::AddStringToJsonObject(obj, "value", "idle");
+      picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+      for (IEntityObserver *obs : observers_)
+      {
+        const IEntity *temp_drone = actual_drone;
+        obs->OnEvent(val, *temp_drone);
+      }
+    }
+    if (actual_drone->GetJustStartedMoving())
+    {
+      // Notify the observers that the drone is in a moving state
+      // TODO: if they actually mean whenever the path changes, that's easy. Just remove the extra booleans and put it in the DeliverySimulation::Update function.
+      picojson::object obj = JsonHelper::CreateJsonObject();
+      JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+      JsonHelper::AddStringToJsonObject(obj, "value", "moving");
+      JsonHelper::AddStdVectorVectorFloatToJsonObject(obj, "path", curRoute);
+      picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+      for (IEntityObserver *obs : observers_)
+      {
+        const IEntity *temp_drone = actual_drone;
+        obs->OnEvent(val, *temp_drone);
+      }
+    }
   }
 }
 
