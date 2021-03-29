@@ -105,7 +105,7 @@ namespace csci3081 {
   }
 
   void Drone::UpdateDronePosition(std::vector<float> &newPosition) {
-    std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
+    // std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
     position->SetVector(newPosition);
     if (isCarryingPackage) {
       // then also update the package's position
@@ -128,12 +128,7 @@ namespace csci3081 {
     std::vector<float> curPosition = GetPosition();
 
     float speedAndDt = speed * dt;
-    std::cout << "This is speed in Drone::Update: " << speed << std::endl;
-    std::cout << "This is directionVec in Drone::Update: " << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << std::endl;
-    std::cout << "This is speedAndDt in Drone::Update: " << speedAndDt << std::endl;
     std::vector<float> updateDirection = direction->MultiplyVectorWithFloat(directionVec, speedAndDt);
-    std::cout << "This is curPosition in Drone::Update: " << curPosition.at(0) << ", " << curPosition.at(1) << ", " << curPosition.at(2) << std::endl;
-    std::cout << "This is updateDirection in Drone::Update: " << updateDirection.at(0) << ", " << updateDirection.at(1) << ", " << updateDirection.at(2) << std::endl;
     std::vector<float> nextPosition = position->AddTwoVectors(curPosition, updateDirection);
     UpdateDronePosition(nextPosition);
     // Decrement the drone's battery
@@ -247,9 +242,7 @@ namespace csci3081 {
 
   void Drone::CalculateAndUpdateDroneDirection(std::vector<float> &nextPosition) {
     std::vector<float> currentPosition = position->GetVector();
-    std::cout << "Got the currentPosition in Drone::CalculateAndUpdateDroneDirection" << std::endl;
     std::vector<float> newVelocity = position->SubtractTwoVectors(nextPosition, currentPosition);
-    std::cout << "Got the newVelocity in Drone::CalculateAndUpdateDroneDirection" << std::endl;
     UpdateDroneVelocity(newVelocity);
   }
 
