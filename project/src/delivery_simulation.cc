@@ -65,12 +65,19 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
       break;
     }
   }
+  std::cout << "Done with dynamic cast in scheduleDelivery" << std::endl;
   // if (!actual_drone->GetOnTheWayToPickUpPackage() && !actual_drone->GetOnTheWayToDropOffPackage())
   // {
   // Set the package for the drone
   Package* actual_package = dynamic_cast<Package*>(package);
+  std::cout << "Done with dynamic cast of package in scheduleDelivery" << std::endl;
+  std::cout << "This is actual_package: " << actual_package << std::endl;
+  std::cout << "This is package: " << package << std::endl;
+  std::cout << "This is actual_customer: " << actual_customer << std::endl;
   actual_package->SetCustomer(*actual_customer);
+  std::cout << "Done with setting the package's stuff" << std::endl;
   actual_drone->SetCurPackage(*actual_package);
+  std::cout << "Done with setting the drone's stuff" << std::endl;
   // get the path and set it to the delivery simulation's curRoute
   std::vector<float> drones_position = actual_drone->GetPosition();
   std::vector<float> packages_position = actual_package->GetPosition();
@@ -92,6 +99,7 @@ void DeliverySimulation::RemoveObserver(IEntityObserver* observer) {}
 const std::vector<IEntity*>& DeliverySimulation::GetEntities() const { return entities_; }
 
 void DeliverySimulation::Update(float dt) {
+  std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
   if (GetEntities().size() > 0 ) {
     Drone *actual_drone = NULL;
     for (IEntity *ent : entities_)
@@ -131,8 +139,9 @@ void DeliverySimulation::Update(float dt) {
           actual_drone->CalculateAndUpdateDroneDirection(nextPos);
         } else {
           // We don't need to increment the path index yet
+          std::cout << "Don't need to increment path index yet" << std::endl;
           std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-          std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+          std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update (don't increment path index yet picking up the package): {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
           actual_drone->CalculateAndUpdateDroneDirection(nextPos);
         }
       }

@@ -15,6 +15,7 @@ namespace csci3081
     std::vector<float> directionVec = JsonHelper::GetStdFloatVector(obj, "direction");
     position = new Vector3D(positionVec);
     direction = new Vector3D(directionVec);
+    direction->Normalize();
     radius = (float) JsonHelper::GetDouble(obj, "radius");
 
     details_ = obj;
@@ -32,7 +33,14 @@ namespace csci3081
 
   const std::vector<float> &Customer::GetPosition() const
   {
-    return position->GetVector();
+    if (position)
+    {
+      return position->GetVector();
+    }
+    else
+    {
+      std::cout << "position in Customer is NULL" << std::endl;
+    }
   }
 
   const std::vector<float> &Customer::GetDirection() const

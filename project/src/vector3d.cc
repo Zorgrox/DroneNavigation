@@ -5,12 +5,12 @@
 namespace csci3081
 {
 
-  Vector3D::Vector3D(std::vector<float> vector3d)
+  Vector3D::Vector3D(std::vector<float>& vector3d)
   {
     vector_ = vector3d;
   }
 
-  const std::vector<float> Vector3D::GetVector()
+  const std::vector<float>& Vector3D::GetVector()
   {
     return vector_;
   }
@@ -19,18 +19,21 @@ namespace csci3081
     vector_ = newVector;
   }
 
-  const std::vector<float> Vector3D::Normalize()
+  void Vector3D::Normalize()
   {
-    std::vector<float> direction;
+    // std::vector<float> direction;
     float divisor = CalculateMagnitude();
 
-    for (auto element : vector_)
+    int i = 0;
+    for (float element : vector_)
     {
-      float norm_element = element / divisor;
-      direction.push_back(norm_element);
+      vector_.at(i) = element / divisor;
+      i = i + 1;
+      // float norm_element = element / divisor;
+      // direction.push_back(norm_element);
     }
 
-    return direction;
+    // return direction;
   }
 
   float Vector3D::CalculateMagnitude()

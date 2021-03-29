@@ -20,6 +20,8 @@ namespace csci3081
     std::vector<float> directionVec = JsonHelper::GetStdFloatVector(obj, "direction");
     position = new Vector3D(positionVec);
     direction = new Vector3D(directionVec);
+    direction->Normalize();
+    std::cout << "Here's the direction of package:" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << std::endl;
     radius = (float)JsonHelper::GetDouble(obj, "radius");
     weight = 0.0;
 
@@ -56,6 +58,7 @@ namespace csci3081
   void Package::SetVelocity(std::vector<float> &newVelocity)
   {
     direction->SetVector(newVelocity);
+    direction->Normalize();
   }
 
   float Package::GetRadius() const
@@ -75,6 +78,9 @@ namespace csci3081
 
   void Package::SetCustomer(Customer &newCustomer) {
     customer = &newCustomer;
+    if (customer == NULL) {
+      std::cout << "customer in package setcustomer is null" << std::endl;
+    }
     destination = customer->GetPosition();
   }
 

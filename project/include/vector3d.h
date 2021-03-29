@@ -29,12 +29,12 @@ namespace csci3081
     /**
    * @brief Constructor: set up a Vector3D with a specified velocity and position
    */
-    Vector3D(std::vector<float> vector3d);
+    Vector3D(std::vector<float>& vector3d);
 
     /**
    *  This function returns the vector
    */
-    const std::vector<float> GetVector();
+    const std::vector<float>& GetVector();
 
     /**
    *  This function sets the vector to a new vector
@@ -44,7 +44,7 @@ namespace csci3081
     /**
    *  This function returns the normalized version of the vector
    */
-    const std::vector<float> Normalize();
+    void Normalize();
 
   /**
    *  This function calculates the magnitude of the velocity (which is equivalent to the speed)
@@ -54,15 +54,15 @@ namespace csci3081
     /**
    *  This function should be used to add two standard vectors with each other
    */
-    static std::vector<float> AddTwoVectors(std::vector<float> &oneVector, std::vector<float> &secondVector);
+    std::vector<float> AddTwoVectors(std::vector<float> &oneVector, std::vector<float> &secondVector);
     /**
    *  This function should be used to subtract two standard vectors from each other
    */
-    static std::vector<float> SubtractTwoVectors(std::vector<float> &oneVector, std::vector<float> &secondVector);
+    std::vector<float> SubtractTwoVectors(std::vector<float> &oneVector, std::vector<float> &secondVector);
     /**
    *  This function should be used to multiple a vector with a float
    */
-    static std::vector<float> MultiplyVectorWithFloat(std::vector<float> &oneVector, float coeff);
+    std::vector<float> MultiplyVectorWithFloat(std::vector<float> &oneVector, float coeff);
 
   private:
     std::vector<float> vector_;

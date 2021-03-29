@@ -23,6 +23,7 @@ namespace csci3081 {
     std::vector<float> directionVec = JsonHelper::GetStdFloatVector(obj, "direction");
     position = new Vector3D(positionVec);
     direction = new Vector3D(directionVec);
+    direction->Normalize();
     radius = (float) JsonHelper::GetDouble(obj, "radius");
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
@@ -114,6 +115,7 @@ namespace csci3081 {
 
   void Drone::UpdateDroneVelocity(std::vector<float> &newVelocity) {
     direction->SetVector(newVelocity);
+    direction->Normalize();
     if (isCarryingPackage) {
       // then also update the package's velocity
       curPackage->SetVelocity(newVelocity);
@@ -126,8 +128,13 @@ namespace csci3081 {
     std::vector<float> curPosition = GetPosition();
 
     float speedAndDt = speed * dt;
-    std::vector<float> updateDirection = Vector3D::MultiplyVectorWithFloat(directionVec, speedAndDt);
-    std::vector<float> nextPosition = Vector3D::AddTwoVectors(curPosition, updateDirection);
+    std::cout << "This is speed in Drone::Update: " << speed << std::endl;
+    std::cout << "This is directionVec in Drone::Update: " << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << std::endl;
+    std::cout << "This is speedAndDt in Drone::Update: " << speedAndDt << std::endl;
+    std::vector<float> updateDirection = direction->MultiplyVectorWithFloat(directionVec, speedAndDt);
+    std::cout << "This is curPosition in Drone::Update: " << curPosition.at(0) << ", " << curPosition.at(1) << ", " << curPosition.at(2) << std::endl;
+    std::cout << "This is updateDirection in Drone::Update: " << updateDirection.at(0) << ", " << updateDirection.at(1) << ", " << updateDirection.at(2) << std::endl;
+    std::vector<float> nextPosition = position->AddTwoVectors(curPosition, updateDirection);
     UpdateDronePosition(nextPosition);
     // Decrement the drone's battery
     UpdateBatteryCharge(-0.1);
@@ -239,8 +246,10 @@ namespace csci3081 {
   }
 
   void Drone::CalculateAndUpdateDroneDirection(std::vector<float> &nextPosition) {
-    std::vector<float> currentPosition = GetPosition();
-    std::vector<float> newVelocity = Vector3D::SubtractTwoVectors(nextPosition, currentPosition);
+    std::vector<float> currentPosition = position->GetVector();
+    std::cout << "Got the currentPosition in Drone::CalculateAndUpdateDroneDirection" << std::endl;
+    std::vector<float> newVelocity = position->SubtractTwoVectors(nextPosition, currentPosition);
+    std::cout << "Got the newVelocity in Drone::CalculateAndUpdateDroneDirection" << std::endl;
     UpdateDroneVelocity(newVelocity);
   }
 
