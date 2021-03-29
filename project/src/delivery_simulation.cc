@@ -82,12 +82,39 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   actual_drone->SetOnTheWayToPickUpPackage(true);
   actual_drone->SetOnTheWayToDropOffPackage(false);
   std::cout << "Done with schedule delivery" << std::endl;
+
+  // Notify the observers that the package has been scheduled
+  picojson::object obj = JsonHelper::CreateJsonObject();
+  JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+  JsonHelper::AddStringToJsonObject(obj, "value", "scheduled");
+  picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+  for (IEntityObserver* obs : observers_) {
+    obs->OnEvent(val, *package);
+  }
   // }
 }
 
-void DeliverySimulation::AddObserver(IEntityObserver* observer) {}
+void DeliverySimulation::AddObserver(IEntityObserver* observer) {
+  observers_.push_back(observer);
+}
 
-void DeliverySimulation::RemoveObserver(IEntityObserver* observer) {}
+void DeliverySimulation::RemoveObserver(IEntityObserver* observer) {
+  // int idx_to_erase = -1;
+  // int idx = 0;
+  // for (IEntityObserver* obs : observers_)
+  // {
+  //   if (obs == observer) {
+  //     idx_to_erase = idx;
+  //   }
+  //   idx = idx + 1;
+  // }
+
+  // if (idx_to_erase != -1) {
+  //   observers_.erase(idx_to_erase);
+  // }
+  observers_.erase(std::remove(observers_.begin(), observers_.end(), observer), observers_.end());
+}
 
 const std::vector<IEntity*>& DeliverySimulation::GetEntities() const { return entities_; }
 
@@ -120,6 +147,18 @@ void DeliverySimulation::Update(float dt) {
         actual_drone->SetOnTheWayToDropOffPackage(true);
         std::cout << "Switching over to dropping package off" << std::endl;
 
+        // Notify the observers that the package has been picked up
+        picojson::object obj = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj, "value", "en route");
+        picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+        for (IEntityObserver *obs : observers_)
+        {
+          const IEntity* temp_pkg = actual_drone->GetCurPackage();
+          obs->OnEvent(val, *temp_pkg);
+        }
+
       } else {
         if (actual_drone->CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
         {
@@ -147,6 +186,19 @@ void DeliverySimulation::Update(float dt) {
         // Move the package out of the simulation to remove it
         curRouteNextIndex = 1;
         actual_drone->DropOffPackage();
+
+        // Notify the observers that the package has been dropped off
+        picojson::object obj = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj, "value", "delivered");
+        picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+        for (IEntityObserver *obs : observers_)
+        {
+          const IEntity* temp_pkg = actual_drone->GetCurPackage();
+          obs->OnEvent(val, *temp_pkg);
+        }
+
       }
       else {
         if (actual_drone->CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))

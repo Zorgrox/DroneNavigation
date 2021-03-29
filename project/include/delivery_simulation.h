@@ -86,10 +86,10 @@ class DeliverySimulation : public IDeliverySystem {
   */
   void ScheduleDelivery(IEntity* package, IEntity* dest);
 
-  /** Observer functions will not be used in iteration1 */
+  /** Adds the observer to the delivery simulation */
   void AddObserver(IEntityObserver* observer);
 
-  /** Observer functions will not be used in iteration1 */
+  /** Remove the observer to the delivery simulation */
   void RemoveObserver(IEntityObserver* observer);
 
   /**
@@ -140,6 +140,7 @@ class DeliverySimulation : public IDeliverySystem {
   std::vector<std::vector<float>> curRoute;
   int curRouteNextIndex;
   int curRouteLength;
+  std::vector<IEntityObserver*> observers_;
 };
 
 }  // namespace csci3081
