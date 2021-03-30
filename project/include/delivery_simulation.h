@@ -140,11 +140,8 @@ class DeliverySimulation : public IDeliverySystem {
   std::vector<Package*> packages_;
   CompositeFactory* compositeFactory_;
   const IGraph* systemGraph;
-  std::vector<std::vector<float>> curRoute;
-  int curRouteNextIndex;
-  int curRouteLength;
 
-  int entitiesIndex;
+  int dronesIndex;
 };
 
 }  // namespace csci3081

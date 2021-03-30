@@ -116,7 +116,7 @@ namespace csci3081 {
   /**
     *  This function should update the drone's positions
     */
-    void UpdateDronePosition(std::vector<float> & newPosition, float dt);
+    void UpdateDronePosition(float dt);
 
   /**
     *  This function should update the drone's velocity
@@ -126,7 +126,7 @@ namespace csci3081 {
     /**
     *  This function is called in the Delivery Simulation's update function. It updates the drone's velocity and position based on the graph's path.
     */
-    void Update(float dt);
+    void Update(const IGraph* graph, float dt);
 
     /**
     *  This function should check whether the package is ready to be picked up, within the radius
@@ -168,6 +168,26 @@ namespace csci3081 {
     */
     int GetNumAssignedPackages();
 
+    /**
+    *  This function updates the curRoute of this drone
+    */
+    void SetNewCurRoute(std::vector<std::vector<float>>& newCurRoute);
+
+    /**
+    *  This function gets the length of the curRoute that the drone is following
+    */
+    int GetCurRouteLength();
+
+    /**
+    *  This function gets the index of the next stop within the curRoute
+    */
+    int GetCurRouteNextIndex();
+
+    /**
+    *  This function increments the index of the next stop within the curRoute
+    */
+    void IncrementCurRouteNextIndex();
+
   private:
     int id;
     std::string name;
@@ -184,6 +204,10 @@ namespace csci3081 {
     bool onTheWayToDropOffPackage;
     bool isCarryingPackage;
     float speed;
+
+    std::vector<std::vector<float>> curRoute;
+    int curRouteNextIndex;
+    int curRouteLength;
     };
 
 } // namespace csci3081
