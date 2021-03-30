@@ -37,10 +37,13 @@ namespace csci3081 {
    *  This function should return the id of the drone
    */
     int GetId() const;
-	
-	
-	void SetId(int ID);
-  /**
+
+    /**
+   *  This function should set the id of the drone
+   */
+    void SetId(int ID);
+
+    /**
    *  This function return the name of the drone
    */
     const std::string &GetName();

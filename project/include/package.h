@@ -37,8 +37,11 @@ namespace csci3081
    *  This function should return the id of the package
    */
     int GetId() const;
-	
-	void SetId(int ID);
+
+    /**
+   *  This function should set the id of the package
+   */
+    void SetId(int ID);
 
     /**
    *  This function return the name of the package
