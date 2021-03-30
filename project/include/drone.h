@@ -38,7 +38,7 @@ namespace csci3081 {
    */
     int GetId() const;
 	
-	//void SetID(int ID); 
+	
 	void SetId(int ID);
   /**
    *  This function return the name of the drone
