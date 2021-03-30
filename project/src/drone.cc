@@ -30,6 +30,7 @@ namespace csci3081 {
     isCarryingPackage = false;
     battery = new Battery(10000);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
+    assignedPackageIndex = 0;
     details_ = obj;
     // curPackage = new Package();
     std::cout << "Creating drone in default constructor" << std::endl;
@@ -72,8 +73,17 @@ namespace csci3081 {
     return curPackage;
   }
 
-  void Drone::SetCurPackage(Package& newPackage) {
-    curPackage = &newPackage;
+  void Drone::UpdateCurPackage() {
+    if (assignedPackageIndex < GetNumAssignedPackages()) {
+        curPackage = assignedPackages.at(assignedPackageIndex);
+        assignedPackageIndex = assignedPackageIndex + 1;
+    }
+    // curPackage = &newPackage;
+  }
+
+  void Drone::AddAssignedPackage(Package& newPackage)
+  {
+    assignedPackages.push_back(&newPackage);
   }
 
   const bool Drone::GetIsCarryingPackage() const {
@@ -255,4 +265,7 @@ namespace csci3081 {
     UpdateDroneVelocity(newVelocity);
   }
 
+  int Drone::GetNumAssignedPackages() {
+    return assignedPackages.size();
+  }
 }

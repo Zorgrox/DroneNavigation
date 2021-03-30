@@ -11,6 +11,9 @@
 #include <vector>
 #include <string>
 #include "composite_factory.h"
+#include "customer.h"
+#include "package.h"
+#include "drone.h"
 
 namespace csci3081 {
 
@@ -131,15 +134,17 @@ class DeliverySimulation : public IDeliverySystem {
   void RunScript(const picojson::array& script, IEntitySystem* system) const;
 
  private:
-  // You don't strictly need to use the following variable, but it is probably
-  // the most straightforward way of storing the entities in the system.
-  // Feel free to use it as is or change it.
   std::vector<IEntity*> entities_;
+  std::vector<Drone*> drones_;
+  std::vector<Customer*> customers_;
+  std::vector<Package*> packages_;
   CompositeFactory* compositeFactory_;
   const IGraph* systemGraph;
   std::vector<std::vector<float>> curRoute;
   int curRouteNextIndex;
   int curRouteLength;
+
+  int entitiesIndex;
 };
 
 }  // namespace csci3081

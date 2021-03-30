@@ -33,6 +33,20 @@ void DeliverySimulation::AddFactory(IEntityFactory* factory) {}
 
 void DeliverySimulation::AddEntity(IEntity* entity) {
   entities_.push_back(entity);
+  Drone* maybe_drone = dynamic_cast<Drone *>(entity);
+  if (maybe_drone) {
+    drones_.push_back(maybe_drone);
+  }
+  // TODO: also add any robots to a robots vector
+
+  Customer* maybe_customer = dynamic_cast<Customer *>(entity);
+  if (maybe_customer) {
+    customers_.push_back(maybe_customer);
+  }
+  Package* maybe_package = dynamic_cast<Package *>(entity);
+  if (maybe_package) {
+    packages_.push_back(maybe_package);
+  }
 }
 
 void DeliverySimulation::SetGraph(const IGraph* graph) {
@@ -47,43 +61,33 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   navigating to the package, picking it up, and then moving to the customer and
   dropping the package.
   */
-  // first, find the drone. We currently assume that there is only one of them.
   std::cout << "Scheduling the delivery" << std::endl;
-  Drone* actual_drone = NULL;
-  Customer* actual_customer = NULL;
-  for (IEntity* ent : entities_) {
-    actual_drone = dynamic_cast<Drone *>(ent);
-    if(actual_drone) {
-      break;
-    }
-  }
-  for (IEntity *ent : entities_)
-  {
-    actual_customer = dynamic_cast<Customer *>(ent);
-    if (actual_customer)
-    {
-      break;
-    }
-  }
-  std::cout << "Done with dynamic cast in scheduleDelivery" << std::endl;
-  // if (!actual_drone->GetOnTheWayToPickUpPackage() && !actual_drone->GetOnTheWayToDropOffPackage())
-  // {
-  // Set the package for the drone
+
   Package* actual_package = dynamic_cast<Package*>(package);
+  Customer* actual_customer = dynamic_cast<Customer*>(dest);
   actual_package->SetCustomer(*actual_customer);
-  actual_drone->SetCurPackage(*actual_package);
-  // get the path and set it to the delivery simulation's curRoute
-  std::vector<float> drones_position = actual_drone->GetPosition();
-  std::vector<float> packages_position = actual_package->GetPosition();
-  curRoute = systemGraph->GetPath(drones_position, packages_position);
-  std::cout << "I'm done with GetPath" << std::endl;
-  PrintPath(curRoute);
-  curRouteNextIndex = 1;
-  curRouteLength = curRoute.size();
-  actual_drone->SetOnTheWayToPickUpPackage(true);
-  actual_drone->SetOnTheWayToDropOffPackage(false);
-  std::cout << "Done with schedule delivery" << std::endl;
-  // }
+
+  Drone* actual_drone = drones_.at(entitiesIndex);
+  if(actual_drone) {
+    actual_drone->AddAssignedPackage(*actual_package);
+    // TODO change this
+    if (actual_drone->GetNumAssignedPackages() == 1) {
+      actual_drone->UpdateCurPackage();
+    }
+    // get the path and set it to the delivery simulation's curRoute
+    std::vector<float> drones_position = actual_drone->GetPosition();
+    std::vector<float> packages_position = actual_package->GetPosition();
+    curRoute = systemGraph->GetPath(drones_position, packages_position);
+    std::cout << "I'm done with GetPath" << std::endl;
+    PrintPath(curRoute);
+    curRouteNextIndex = 1;
+    curRouteLength = curRoute.size();
+    actual_drone->SetOnTheWayToPickUpPackage(true);
+    actual_drone->SetOnTheWayToDropOffPackage(false);
+    std::cout << "Done with schedule delivery" << std::endl;
+  }
+  // TODO: if it's a robot, do the same thing
+  entitiesIndex = entitiesIndex + 1;
 }
 
 void DeliverySimulation::AddObserver(IEntityObserver* observer) {}

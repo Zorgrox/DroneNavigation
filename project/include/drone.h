@@ -74,9 +74,9 @@ namespace csci3081 {
     const Package* GetCurPackage();
 
     /**
-   *  This function should set the current package of the drone to a different package
+   *  This function should set the current package of the drone to a different package. Should only be called when we want to set the current package of the drone to another package.
    */
-    void SetCurPackage(Package &newPackage);
+    void UpdateCurPackage();
 
     /**
    *  This function should return whether the drone is currently carrying a package
@@ -158,20 +158,32 @@ namespace csci3081 {
     */
     void CalculateAndUpdateDroneDirection(std::vector<float>& nextPosition);
 
-    private:
-      int id;
-      std::string name;
-      Vector3D* position;
-      Vector3D* direction;
-      Package *curPackage;
-      Battery *battery;
-      float radius;
-      int version = 0;
-      bool dynamic = true;
-      bool onTheWayToPickUpPackage;
-      bool onTheWayToDropOffPackage;
-      bool isCarryingPackage;
-      float speed;
+    /**
+    *  This function should add another Package pointer to the vector of assigned packages
+    */
+    void AddAssignedPackage(Package& newPackage);
+
+    /**
+    *  This function returns the number of packages in the assignedPackages vector
+    */
+    int GetNumAssignedPackages();
+
+  private:
+    int id;
+    std::string name;
+    Vector3D *position;
+    Vector3D *direction;
+    Package *curPackage;
+    std::vector<Package *> assignedPackages;
+    int assignedPackageIndex;
+    Battery *battery;
+    float radius;
+    int version = 0;
+    bool dynamic = true;
+    bool onTheWayToPickUpPackage;
+    bool onTheWayToDropOffPackage;
+    bool isCarryingPackage;
+    float speed;
     };
 
 } // namespace csci3081
