@@ -1,15 +1,13 @@
 #include "customer.h"
 #include "json_helper.h"
 #include "vector3d.h"
-
 #include <iostream>
 
 namespace csci3081
 {
   Customer::Customer(const picojson::object &obj)
   {
-    id = customerId;
-    std::cout << "This is customer ID: " << customerId << std::endl;
+    //std::cout << "This is customer ID: " << customerId << std::endl;
     name = JsonHelper::GetString(obj, "name");
     std::vector<float> positionVec = JsonHelper::GetStdFloatVector(obj, "position");
     std::vector<float> directionVec = JsonHelper::GetStdFloatVector(obj, "direction");
@@ -24,6 +22,9 @@ namespace csci3081
   int Customer::GetId() const
   {
     return id;
+  }
+  void Customer::SetId(int ID) {
+	  id = ID;
   }
 
   const std::string &Customer::GetName()
