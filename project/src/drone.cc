@@ -123,7 +123,7 @@ namespace csci3081 {
     std::vector<float> updateDirection = direction->MultiplyVectorWithFloat(directionVec, speedAndDt);
     std::vector<float> newPosition = position->AddTwoVectors(curPosition, updateDirection);
 
-    std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
+    // std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
 
     if (battery->GetIsEmpty()==false) {
         position->SetVector(newPosition);
@@ -148,6 +148,9 @@ namespace csci3081 {
 
   void Drone::Update(const IGraph* graph, float dt)
   {
+
+    std::cout << "These print statements are for Drone name " << name << std::endl;
+    std::cout << "===================================" << std::endl;
 
     if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
     {
@@ -258,10 +261,13 @@ namespace csci3081 {
     std::vector<float> currentPosition = GetPosition();
     std::vector<float> packageDestination = curPackage->GetDestination();
     std::vector<float> packagePosition = curPackage->GetPosition();
+    std::vector<float> customerPosition = curPackage->GetDestination();
     int i = 0;
     int numWithinRadius = 0;
     std::cout << "This is Drone's current position in CheckReadyToDropOff: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
     std::cout << "This is Package's current position in CheckReadyToDropOff: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
+    std::cout << "This is Customer's current position in CheckReadyToDropOff: {" << customerPosition.at(0) << ", " << customerPosition.at(1) << ", " << customerPosition.at(2) << "}" << std::endl;
+
     for (float pos : currentPosition)
     {
       float packageDes = packageDestination.at(i);

@@ -103,8 +103,8 @@ void DeliverySimulation::Update(float dt) {
     for (Drone* actual_drone : drones_) {
       actual_drone->Update(systemGraph, dt);
       // print out the drone's positions at each time step
-      std::vector<float> theCurPos = actual_drone->GetPosition();
-      Print(theCurPos);
+      // std::vector<float> theCurPos = actual_drone->GetPosition();
+      // Print(theCurPos);
     }
     // TODO: also do for robot
   }
