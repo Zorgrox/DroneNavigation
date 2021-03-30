@@ -37,7 +37,9 @@ namespace csci3081 {
    *  This function should return the id of the drone
    */
     int GetId() const;
-
+	
+	//void SetID(int ID); 
+	void SetId(int ID);
   /**
    *  This function return the name of the drone
    */
@@ -159,7 +161,6 @@ namespace csci3081 {
     void CalculateAndUpdateDroneDirection(std::vector<float>& nextPosition);
 
     private:
-      int id;
       std::string name;
       Vector3D* position;
       Vector3D* direction;

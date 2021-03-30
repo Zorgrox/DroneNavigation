@@ -36,6 +36,8 @@ namespace csci3081
    *  This function should return the id of the customer
    */
     int GetId() const;
+	
+	void SetId(int ID);
 
     /**
    *  This function return the name of the customer
@@ -68,7 +70,6 @@ namespace csci3081
     bool IsDynamic() const;
 
   private:
-    int id;
     std::string name;
     Vector3D* position;
     Vector3D* direction;

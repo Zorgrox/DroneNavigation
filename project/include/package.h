@@ -37,6 +37,8 @@ namespace csci3081
    *  This function should return the id of the package
    */
     int GetId() const;
+	
+	void SetId(int ID);
 
     /**
    *  This function return the name of the package
@@ -99,7 +101,6 @@ namespace csci3081
     float GetWeight();
 
   private:
-    int id;
     std::string name;
     Vector3D* position;
     Vector3D* direction;

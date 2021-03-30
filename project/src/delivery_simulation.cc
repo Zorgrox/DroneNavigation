@@ -9,6 +9,7 @@
 #include "drone_factory.h"
 #include "package.h"
 #include "customer.h"
+#include "entity_base.h"
 
 #include <iostream>
 
@@ -23,6 +24,9 @@ DeliverySimulation::~DeliverySimulation() {}
 IEntity* DeliverySimulation::CreateEntity(const picojson::object& val) {
   IEntity* newEntity = compositeFactory_->CreateEntity(val);
   if (newEntity) {
+	dynamic_cast<EntityBase*> (newEntity)->SetId(DelivIDs);
+	 //Provides the entity with a unique ID
+	DelivIDs++;
     return newEntity;
   } else {
     std::cout << "The newEntity is null in deliverySimulation CreateEntity" << std::endl;

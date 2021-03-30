@@ -8,8 +8,7 @@ namespace csci3081
 {
   Customer::Customer(const picojson::object &obj)
   {
-	//srand(time(0));
-	id = rand();
+	
     
     //std::cout << "This is customer ID: " << customerId << std::endl;
     name = JsonHelper::GetString(obj, "name");
@@ -26,6 +25,9 @@ namespace csci3081
   int Customer::GetId() const
   {
     return id;
+  }
+  void Customer::SetId(int ID) {
+	id=ID;
   }
 
   const std::string &Customer::GetName()

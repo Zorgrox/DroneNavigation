@@ -14,7 +14,7 @@ namespace csci3081
   Package::Package(const picojson::object &obj)
   {
 	
-	id = rand();
+	
 	
     //std::cout << "This is package ID: " << packageId << std::endl;
     name = JsonHelper::GetString(obj, "name");
@@ -36,6 +36,10 @@ namespace csci3081
   {
     return id;
   }
+  void Package::SetId(int ID) {
+	id=ID;
+  }
+  
 
   const std::string &Package::GetName()
   {

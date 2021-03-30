@@ -140,6 +140,7 @@ class DeliverySimulation : public IDeliverySystem {
   std::vector<std::vector<float>> curRoute;
   int curRouteNextIndex;
   int curRouteLength;
+  int DelivIDs=0;
 };
 
 }  // namespace csci3081

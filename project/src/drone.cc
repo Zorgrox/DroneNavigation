@@ -17,7 +17,6 @@ namespace csci3081 {
   Drone::Drone(const picojson::object &obj)
   {
 	
-	id = rand();
     //id = droneId;
    
     name = JsonHelper::GetString(obj, "name");
@@ -41,6 +40,9 @@ namespace csci3081 {
 
   int Drone::GetId() const {
     return id;
+  }
+  void Drone::SetId(int ID) {
+	id=ID;
   }
 
   const std::string& Drone::GetName() {
@@ -109,7 +111,7 @@ namespace csci3081 {
 
   void Drone::UpdateDronePosition(std::vector<float> &newPosition, float dt) {
 
-    std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
+    std::cout << "This is Drone new position: {" << id << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
 
     if (battery->GetIsEmpty()==false) {
         position->SetVector(newPosition);
