@@ -21,9 +21,11 @@ namespace csci3081 {
     //id = droneId;
    
     name = JsonHelper::GetString(obj, "name");
-    std::vector<float> position = JsonHelper::GetStdFloatVector(obj, "position");
-    std::vector<float> direction = JsonHelper::GetStdFloatVector(obj, "direction");
-    positionAndDirection = new Vector3D(position, direction);
+    std::vector<float> positionVec = JsonHelper::GetStdFloatVector(obj, "position");
+    std::vector<float> directionVec = JsonHelper::GetStdFloatVector(obj, "direction");
+    position = new Vector3D(positionVec);
+    direction = new Vector3D(directionVec);
+    direction->Normalize();
     radius = (float) JsonHelper::GetDouble(obj, "radius");
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
@@ -33,8 +35,8 @@ namespace csci3081 {
     details_ = obj;
     // curPackage = new Package();
     std::cout << "Creating drone in default constructor" << std::endl;
-    std::cout << "This is Drone's current position in default constructor: {" << position.at(0) << ", " << position.at(1) << ", " << position.at(2) << "}" << std::endl;
-    std::cout << "This is Drone's current direction in default constructor: {" << direction.at(0) << ", " << direction.at(1) << ", " << direction.at(2) << "}" << std::endl;
+    std::cout << "This is Drone's current position in default constructor: {" << positionVec.at(0) << ", " << positionVec.at(1) << ", " << positionVec.at(2) << "}" << std::endl;
+    std::cout << "This is Drone's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
   }
 
   int Drone::GetId() const {
@@ -46,11 +48,11 @@ namespace csci3081 {
   }
 
   const std::vector<float>& Drone::GetPosition() const {
-    return positionAndDirection->GetPosition();
+    return position->GetVector();
   }
 
   const std::vector<float>& Drone::GetDirection() const {
-    return positionAndDirection->GetDirection();
+    return direction->GetVector();
   }
 
   float Drone::GetRadius() const
@@ -104,22 +106,27 @@ namespace csci3081 {
     battery->DecrementCurrentCharge(decrAmount);
   }
 
+
   void Drone::UpdateDronePosition(std::vector<float> &newPosition, float dt) {
-    std::cout << "This is Drone new position: {" << id << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
-    
-	if (battery->GetIsEmpty()==false) {
-	positionAndDirection->SetPosition(newPosition);
-    if (isCarryingPackage) {
-      // then also update the package's position
-      curPackage->SetPosition(newPosition);
+
+    std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
+
+    if (battery->GetIsEmpty()==false) {
+        position->SetVector(newPosition);
+
+        if (isCarryingPackage) {
+          // then also update the package's position
+          curPackage->SetPosition(newPosition);
+        }
+    UpdateBatteryCharge(-dt);
+
     }
-	UpdateBatteryCharge(-dt);
-	}
-	
+
   }
 
   void Drone::UpdateDroneVelocity(std::vector<float> &newVelocity) {
-    positionAndDirection->SetVelocity(newVelocity);
+    direction->SetVector(newVelocity);
+    direction->Normalize();
     if (isCarryingPackage) {
       // then also update the package's velocity
       curPackage->SetVelocity(newVelocity);
@@ -128,15 +135,17 @@ namespace csci3081 {
 
   void Drone::Update(float dt)
   {
-    std::vector<float> direction = positionAndDirection->GetDirection();
-    std::vector<float> curPosition = positionAndDirection->GetPosition();
+    std::vector<float> directionVec = GetDirection();
+    std::vector<float> curPosition = GetPosition();
 
     float speedAndDt = speed * dt;
-    std::vector<float> updateDirection = positionAndDirection->MultiplyVectorWithFloat(direction, speedAndDt);
-    std::vector<float> nextPosition = positionAndDirection->AddTwoVectors(curPosition, updateDirection);
+
+    std::vector<float> updateDirection = direction->MultiplyVectorWithFloat(directionVec, speedAndDt);
+    std::vector<float> nextPosition =  position->AddTwoVectors(curPosition, updateDirection);
     UpdateDronePosition(nextPosition, dt);
+
     // Decrement the drone's battery
-    
+
     // TODO: for later iteration, give a warning if the drone's battery is close to being depleted
   }
 
@@ -245,8 +254,8 @@ namespace csci3081 {
   }
 
   void Drone::CalculateAndUpdateDroneDirection(std::vector<float> &nextPosition) {
-    std::vector<float> currentPosition = GetPosition();
-    std::vector<float> newVelocity = positionAndDirection->SubtractTwoVectors(nextPosition, currentPosition);
+    std::vector<float> currentPosition = position->GetVector();
+    std::vector<float> newVelocity = position->SubtractTwoVectors(nextPosition, currentPosition);
     UpdateDroneVelocity(newVelocity);
   }
 
