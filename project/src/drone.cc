@@ -107,17 +107,17 @@ namespace csci3081 {
 
   void Drone::UpdateDronePosition(std::vector<float> &newPosition, float dt) {
     std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
-    
-	if (battery->GetIsEmpty()==false) {
-	positionAndDirection->SetPosition(newPosition);
 
-    if (isCarryingPackage) {
-      // then also update the package's position
-      curPackage->SetPosition(newPosition);
+    if (battery->GetIsEmpty()==false) {
+        position->SetVector(newPosition);
+
+        if (isCarryingPackage) {
+          // then also update the package's position
+          curPackage->SetPosition(newPosition);
+        }
+    UpdateBatteryCharge(-dt);
     }
-	UpdateBatteryCharge(-dt);
-	}
-	
+
   }
 
   void Drone::UpdateDroneVelocity(std::vector<float> &newVelocity) {
@@ -136,12 +136,12 @@ namespace csci3081 {
 
     float speedAndDt = speed * dt;
 
-    std::vector<float> updateDirection = positionAndDirection->MultiplyVectorWithFloat(direction, speedAndDt);
-    std::vector<float> nextPosition = positionAndDirection->AddTwoVectors(curPosition, updateDirection);
+    std::vector<float> updateDirection = direction->MultiplyVectorWithFloat(directionVec, speedAndDt);
+    std::vector<float> nextPosition =  position->AddTwoVectors(curPosition, updateDirection);
     UpdateDronePosition(nextPosition, dt);
 
     // Decrement the drone's battery
-    
+
     // TODO: for later iteration, give a warning if the drone's battery is close to being depleted
   }
 
