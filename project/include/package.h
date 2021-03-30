@@ -39,6 +39,11 @@ namespace csci3081
     int GetId() const;
 
     /**
+   *  This function should set the id of the package
+   */
+    void SetId(int ID);
+
+    /**
    *  This function return the name of the package
    */
     const std::string &GetName();
@@ -119,7 +124,6 @@ namespace csci3081
     void SetIsDelivered(bool newIsDelivered);
 
   private:
-    int id;
     std::string name;
     Vector3D* position;
     Vector3D* direction;

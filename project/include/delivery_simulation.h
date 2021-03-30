@@ -142,6 +142,10 @@ class DeliverySimulation : public IDeliverySystem {
   const IGraph* systemGraph;
 
   int dronesIndex;
+  std::vector<std::vector<float>> curRoute;
+  int curRouteNextIndex;
+  int curRouteLength;
+  int DelivIDs = 0;
 };
 
 }  // namespace csci3081
