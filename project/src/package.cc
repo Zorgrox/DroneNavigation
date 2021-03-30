@@ -5,7 +5,7 @@
 #include "vector3d.h"
 #include "customer.h"
 #include "json_helper.h"
-
+#include <cmath>
 #include <iostream>
 
 namespace csci3081
@@ -13,8 +13,10 @@ namespace csci3081
 
   Package::Package(const picojson::object &obj)
   {
-    id = packageId;
-    std::cout << "This is package ID: " << packageId << std::endl;
+	
+	id = rand();
+	
+    //std::cout << "This is package ID: " << packageId << std::endl;
     name = JsonHelper::GetString(obj, "name");
     std::vector<float> position = JsonHelper::GetStdFloatVector(obj, "position");
     std::vector<float> direction = JsonHelper::GetStdFloatVector(obj, "direction");

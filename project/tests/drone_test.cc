@@ -102,7 +102,8 @@ namespace csci3081
 
     IEntity *droneEntity = system->CreateEntity(obj);
     Drone *drone = dynamic_cast<Drone *>(droneEntity);
-
+	//Drone *drone2 = dynamic_cast<Drone *> (system->CreateEntity(obj));
+	
     std::vector<float> new_position_to_add;
     new_position_to_add.push_back(2);
     new_position_to_add.push_back(4);
@@ -115,6 +116,7 @@ namespace csci3081
 
     drone->CalculateAndUpdateDroneDirection(new_position_to_add);
     ASSERT_EQ(drone->GetDirection(), expectedDirection);
+	//ASSERT_EQ(drone->GetId(), drone2->GetId());
 
   }
 
