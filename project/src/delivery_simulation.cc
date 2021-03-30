@@ -65,6 +65,7 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
       break;
     }
   }
+  std::cout << "Done with dynamic cast in scheduleDelivery" << std::endl;
   // if (!actual_drone->GetOnTheWayToPickUpPackage() && !actual_drone->GetOnTheWayToDropOffPackage())
   // {
   // Set the package for the drone
@@ -92,6 +93,7 @@ void DeliverySimulation::RemoveObserver(IEntityObserver* observer) {}
 const std::vector<IEntity*>& DeliverySimulation::GetEntities() const { return entities_; }
 
 void DeliverySimulation::Update(float dt) {
+  std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
   if (GetEntities().size() > 0 ) {
     Drone *actual_drone = NULL;
     for (IEntity *ent : entities_)
@@ -131,6 +133,7 @@ void DeliverySimulation::Update(float dt) {
           actual_drone->CalculateAndUpdateDroneDirection(nextPos);
         } else {
           // We don't need to increment the path index yet
+          std::cout << "Don't need to increment path index yet" << std::endl;
           std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
           std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
           actual_drone->CalculateAndUpdateDroneDirection(nextPos);
