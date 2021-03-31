@@ -76,7 +76,7 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   actual_package->SetCustomer(*actual_customer);
 
   if (drones_.size() > 0 && robots_.size() > 0) {
-    if (drones_.at(dronesIndex)->GetNumAssignedPackages() >= robots_.at(robotsIndex)->GetNumAssignedPackages()){
+    if (drones_.at(0)->GetNumAssignedPackages() <= robots_.at(0)->GetNumAssignedPackages()){
       assignPackageToDrone = true;}
     else {assignPackageToDrone = false;}
   } else if (drones_.size() > 0 && robots_.size() == 0) {
@@ -114,7 +114,8 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
     if (actual_robot)
     {
       actual_robot->AddAssignedPackage(*actual_package);
-
+      std::cout << "num assigned packages: " << actual_robot->GetNumAssignedPackages() << std::endl;
+      if (actual_robot->GetCurPackage() == NULL) {std::cout << "nopackage_____\n";}
       if (actual_robot->GetNumAssignedPackages() == 1)
       {
         // assign the curPackage if it's the first one assigned to the drone

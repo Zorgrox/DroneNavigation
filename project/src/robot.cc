@@ -29,6 +29,7 @@ namespace csci3081 {
     battery = new Battery(10000);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     details_ = obj;
+    assignedPackageIndex = 0;
     // curPackage = new Package();
     std::cout << "Creating robot in default constructor" << std::endl;
     std::cout << "This is Robot's current position in default constructor: {" << positionVec.at(0) << ", " << positionVec.at(1) << ", " << positionVec.at(2) << "}" << std::endl;
