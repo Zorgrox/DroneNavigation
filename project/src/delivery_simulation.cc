@@ -76,7 +76,9 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   actual_package->SetCustomer(*actual_customer);
 
   if (drones_.size() > 0 && robots_.size() > 0) {
-    assignPackageToDrone = !assignPackageToDrone;
+    if (drones_.at(dronesIndex)->GetNumAssignedPackages() >= robots_.at(robotsIndex)->GetNumAssignedPackages()){
+      assignPackageToDrone = true;}
+    else {assignPackageToDrone = false;}
   } else if (drones_.size() > 0 && robots_.size() == 0) {
     assignPackageToDrone = true;
   } else if (drones_.size() == 0 && robots_.size() > 0) {
@@ -84,6 +86,7 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   }
 
   if (assignPackageToDrone) {
+    std::cout << "Assigning to Drone\n" << std::endl;
     Drone* actual_drone = drones_.at(dronesIndex);
     if(actual_drone) {
       actual_drone->AddAssignedPackage(*actual_package);
@@ -106,6 +109,7 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
     }
   }
   else {
+    std::cout << "Assigning to Robot\n" << std::endl;
     Robot *actual_robot = robots_.at(robotsIndex);
     if (actual_robot)
     {

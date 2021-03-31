@@ -29,7 +29,7 @@ namespace csci3081
     /**
    * @brief Constructor: set up a Vector2D
    */
-    Vector2D(std::vector<float> &vector2d);
+    Vector2D(std::vector<float> vector2d);
 
     /**
    *  This function returns the vector

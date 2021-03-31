@@ -153,13 +153,15 @@ namespace csci3081 {
   {
     std::cout << "These print statements are for Robot name " << name << std::endl;
     std::cout << "===================================" << std::endl;
-
+    std::cout << "on way to pickup: " << GetOnTheWayToPickUpPackage() << std::endl;
+     std::cout << "on way to dropoff: " << GetOnTheWayToDropOffPackage() << std::endl;
     if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
     {
       std::cout << "I'm on the way to pick up the package" << std::endl;
       // The drone is on the way to pick up a package.
       if (CheckReadyToPickUp())
       {
+	std::cout << "Ready to pickup\n";
         PickUpPackage();
         // Update the path so that it's now pointed towards the customer's location
         std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), GetCurPackage()->GetDestination());
@@ -235,8 +237,11 @@ namespace csci3081 {
 
   bool Robot::CheckReadyToPickUp()
   {
+    std::cout << "madehere1\n";
     std::vector<float> currentPosition = GetPosition();
+    std::cout << "madehere2\n";
     std::vector<float> packagePosition = curPackage->GetPosition();
+    std::cout << "madehere3\n";
     std::cout << "I am in Robot::CheckReadyToPickUp checking the curPackage's position" << std::endl;
     int i = 0;
     int numWithinRadius = 0;
