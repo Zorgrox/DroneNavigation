@@ -37,6 +37,20 @@ void DeliverySimulation::AddFactory(IEntityFactory* factory) {}
 
 void DeliverySimulation::AddEntity(IEntity* entity) {
   entities_.push_back(entity);
+  Drone* maybe_drone = dynamic_cast<Drone *>(entity);
+  if (maybe_drone) {
+    drones_.push_back(maybe_drone);
+  }
+  // TODO: also add any robots to a robots vector
+
+  Customer* maybe_customer = dynamic_cast<Customer *>(entity);
+  if (maybe_customer) {
+    customers_.push_back(maybe_customer);
+  }
+  Package* maybe_package = dynamic_cast<Package *>(entity);
+  if (maybe_package) {
+    packages_.push_back(maybe_package);
+  }
 }
 
 void DeliverySimulation::SetGraph(const IGraph* graph) {
@@ -51,43 +65,34 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   navigating to the package, picking it up, and then moving to the customer and
   dropping the package.
   */
-  // first, find the drone. We currently assume that there is only one of them.
   std::cout << "Scheduling the delivery" << std::endl;
-  Drone* actual_drone = NULL;
-  Customer* actual_customer = NULL;
-  for (IEntity* ent : entities_) {
-    actual_drone = dynamic_cast<Drone *>(ent);
-    if(actual_drone) {
-      break;
-    }
-  }
-  for (IEntity *ent : entities_)
-  {
-    actual_customer = dynamic_cast<Customer *>(ent);
-    if (actual_customer)
-    {
-      break;
-    }
-  }
-  std::cout << "Done with dynamic cast in scheduleDelivery" << std::endl;
-  // if (!actual_drone->GetOnTheWayToPickUpPackage() && !actual_drone->GetOnTheWayToDropOffPackage())
-  // {
-  // Set the package for the drone
+
   Package* actual_package = dynamic_cast<Package*>(package);
+  Customer* actual_customer = dynamic_cast<Customer*>(dest);
   actual_package->SetCustomer(*actual_customer);
-  actual_drone->SetCurPackage(*actual_package);
-  // get the path and set it to the delivery simulation's curRoute
-  std::vector<float> drones_position = actual_drone->GetPosition();
-  std::vector<float> packages_position = actual_package->GetPosition();
-  curRoute = systemGraph->GetPath(drones_position, packages_position);
-  std::cout << "I'm done with GetPath" << std::endl;
-  PrintPath(curRoute);
-  curRouteNextIndex = 1;
-  curRouteLength = curRoute.size();
-  actual_drone->SetOnTheWayToPickUpPackage(true);
-  actual_drone->SetOnTheWayToDropOffPackage(false);
+
+  Drone* actual_drone = drones_.at(dronesIndex);
+  if(actual_drone) {
+    actual_drone->AddAssignedPackage(*actual_package);
+
+    if (actual_drone->GetNumAssignedPackages() == 1) {
+      // assign the curPackage if it's the first one assigned to the drone
+      actual_drone->UpdateCurPackage();
+      // get the path and set it to the delivery simulation's curRoute
+      std::vector<float> drones_position = actual_drone->GetPosition();
+      std::vector<float> packages_position = actual_package->GetPosition();
+      std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
+      actual_drone->SetNewCurRoute(anotherRoute);
+      actual_drone->SetOnTheWayToPickUpPackage(true);
+      actual_drone->SetOnTheWayToDropOffPackage(false);
+    }
+  }
+  dronesIndex = dronesIndex + 1;
+  if (dronesIndex > drones_.size()) {
+    dronesIndex = 0;
+  }
+  // TODO: if it's a robot, do the same thing as above here
   std::cout << "Done with schedule delivery" << std::endl;
-  // }
 }
 
 void DeliverySimulation::AddObserver(IEntityObserver* observer) {}
@@ -97,82 +102,15 @@ void DeliverySimulation::RemoveObserver(IEntityObserver* observer) {}
 const std::vector<IEntity*>& DeliverySimulation::GetEntities() const { return entities_; }
 
 void DeliverySimulation::Update(float dt) {
-  std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
+  // std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
   if (GetEntities().size() > 0 ) {
-    Drone *actual_drone = NULL;
-    for (IEntity *ent : entities_)
-    {
-      actual_drone = dynamic_cast<Drone *>(ent);
-      if (actual_drone)
-      {
-        break;
-      }
+    for (Drone* actual_drone : drones_) {
+      actual_drone->Update(systemGraph, dt);
+      // print out the drone's positions at each time step
+      // std::vector<float> theCurPos = actual_drone->GetPosition();
+      // Print(theCurPos);
     }
-
-    if (actual_drone->GetOnTheWayToPickUpPackage() && !actual_drone->GetOnTheWayToDropOffPackage())
-    {
-      std::cout << "I'm on the way to pick up the package" << std::endl;
-      // The drone is on the way to pick up a package.
-      if (actual_drone->CheckReadyToPickUp())
-      {
-        actual_drone->PickUpPackage();
-        // Update the path so that it's now pointed towards the customer's location
-        curRoute = systemGraph->GetPath(actual_drone->GetPosition(), actual_drone->GetCurPackage()->GetDestination());
-        curRouteNextIndex = 1;
-        std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-        actual_drone->CalculateAndUpdateDroneDirection(nextPos);
-        std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
-        actual_drone->SetOnTheWayToPickUpPackage(false);
-        actual_drone->SetOnTheWayToDropOffPackage(true);
-        std::cout << "Switching over to dropping package off" << std::endl;
-
-      } else {
-        if (actual_drone->CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
-        {
-          // We should only increment the path index when the drone gets close enough to it that we should be going to the next one
-          std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
-          curRouteNextIndex = curRouteNextIndex + 1;
-          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-          std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
-          actual_drone->CalculateAndUpdateDroneDirection(nextPos);
-        } else {
-          // We don't need to increment the path index yet
-          std::cout << "Don't need to increment path index yet" << std::endl;
-          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-          std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
-          actual_drone->CalculateAndUpdateDroneDirection(nextPos);
-        }
-      }
-      actual_drone->Update(dt);
-    }
-
-    else if (!actual_drone->GetOnTheWayToPickUpPackage() && actual_drone->GetOnTheWayToDropOffPackage())
-    {
-      std::cout << "I'm on the way to drop off the package" << std::endl;
-      if (actual_drone->CheckReadyToDropOff())
-      {
-        // Move the package out of the simulation to remove it
-        curRouteNextIndex = 1;
-        actual_drone->DropOffPackage();
-      }
-      else {
-        if (actual_drone->CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
-        {
-          curRouteNextIndex = curRouteNextIndex + 1;
-          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-          actual_drone->CalculateAndUpdateDroneDirection(nextPos);
-        } else {
-          // We don't need to increment the path index yet
-          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-          actual_drone->CalculateAndUpdateDroneDirection(nextPos);
-        }
-        actual_drone->Update(dt);
-      }
-    }
-
-    // print out the drone's positions at each time step
-    std::vector<float> theCurPos = actual_drone->GetPosition();
-    Print(theCurPos);
+    // TODO: also do for robot
   }
 }
 

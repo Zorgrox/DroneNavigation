@@ -28,6 +28,7 @@ namespace csci3081 {
     isCarryingPackage = false;
     battery = new Battery(10000);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
+    assignedPackageIndex = 0;
     details_ = obj;
     // curPackage = new Package();
     std::cout << "Creating drone in default constructor" << std::endl;
@@ -73,8 +74,16 @@ namespace csci3081 {
     return curPackage;
   }
 
-  void Drone::SetCurPackage(Package& newPackage) {
-    curPackage = &newPackage;
+  void Drone::UpdateCurPackage() {
+    if (assignedPackageIndex < GetNumAssignedPackages()) {
+        curPackage = assignedPackages.at(assignedPackageIndex);
+    }
+    // curPackage = &newPackage;
+  }
+
+  void Drone::AddAssignedPackage(Package& newPackage)
+  {
+    assignedPackages.push_back(&newPackage);
   }
 
   const bool Drone::GetIsCarryingPackage() const {
@@ -106,9 +115,16 @@ namespace csci3081 {
   }
 
 
-  void Drone::UpdateDronePosition(std::vector<float> &newPosition, float dt) {
+  void Drone::UpdateDronePosition(float dt) {
+    std::vector<float> directionVec = GetDirection();
+    std::vector<float> curPosition = GetPosition();
 
-    std::cout << "This is Drone new position: {" << id << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
+    float speedAndDt = speed * dt;
+
+    std::vector<float> updateDirection = direction->MultiplyVectorWithFloat(directionVec, speedAndDt);
+    std::vector<float> newPosition = position->AddTwoVectors(curPosition, updateDirection);
+
+    // std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
 
     if (battery->GetIsEmpty()==false) {
         position->SetVector(newPosition);
@@ -132,20 +148,88 @@ namespace csci3081 {
     }
   }
 
-  void Drone::Update(float dt)
+  void Drone::Update(const IGraph* graph, float dt)
   {
-    std::vector<float> directionVec = GetDirection();
-    std::vector<float> curPosition = GetPosition();
 
-    float speedAndDt = speed * dt;
+    std::cout << "These print statements are for Drone name " << name << std::endl;
+    std::cout << "===================================" << std::endl;
 
-    std::vector<float> updateDirection = direction->MultiplyVectorWithFloat(directionVec, speedAndDt);
-    std::vector<float> nextPosition =  position->AddTwoVectors(curPosition, updateDirection);
-    UpdateDronePosition(nextPosition, dt);
+    if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
+    {
+      std::cout << "I'm on the way to pick up the package" << std::endl;
+      // The drone is on the way to pick up a package.
+      if (CheckReadyToPickUp())
+      {
+        PickUpPackage();
+        // Update the path so that it's now pointed towards the customer's location
+        std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), GetCurPackage()->GetDestination());
+        SetNewCurRoute(anotherRoute);
+        std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+        CalculateAndUpdateDroneDirection(nextPos);
+        std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+        SetOnTheWayToPickUpPackage(false);
+        SetOnTheWayToDropOffPackage(true);
+        curRouteNextIndex = 1;
+        std::cout << "Switching over to dropping package off" << std::endl;
+      }
+      else
+      {
+        if (CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
+        {
+          // We should only increment the path index when the drone gets close enough to it that we should be going to the next one
+          std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
+          curRouteNextIndex = curRouteNextIndex + 1;
+          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+          std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+          CalculateAndUpdateDroneDirection(nextPos);
+        }
+        else
+        {
+          // We don't need to increment the path index yet
+          std::cout << "Don't need to increment path index yet" << std::endl;
+          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+          std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+          CalculateAndUpdateDroneDirection(nextPos);
+        }
+      }
+      UpdateDronePosition(dt);
+    }
 
-    // Decrement the drone's battery
+    else if (!GetOnTheWayToPickUpPackage() && GetOnTheWayToDropOffPackage())
+    {
+      std::cout << "I'm on the way to drop off the package" << std::endl;
+      if (CheckReadyToDropOff())
+      {
+        // Move the package out of the simulation to remove it
+        curRouteNextIndex = 1;
+        DropOffPackage();
 
-    // TODO: for later iteration, give a warning if the drone's battery is close to being depleted
+        // if there's another package it has to go to, then assign this new package to the curPackage
+        if (assignedPackageIndex < GetNumAssignedPackages()) {
+          UpdateCurPackage();
+          std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), curPackage->GetPosition());
+          SetNewCurRoute(anotherRoute);
+          SetOnTheWayToPickUpPackage(true);
+          SetOnTheWayToDropOffPackage(false);
+        }
+      }
+      else
+      {
+        if (CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
+        {
+          curRouteNextIndex = curRouteNextIndex + 1;
+          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+          CalculateAndUpdateDroneDirection(nextPos);
+        }
+        else
+        {
+          // We don't need to increment the path index yet
+          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+          CalculateAndUpdateDroneDirection(nextPos);
+        }
+        UpdateDronePosition(dt);
+      }
+    }
   }
 
   bool Drone::CheckReadyToPickUp()
@@ -179,10 +263,13 @@ namespace csci3081 {
     std::vector<float> currentPosition = GetPosition();
     std::vector<float> packageDestination = curPackage->GetDestination();
     std::vector<float> packagePosition = curPackage->GetPosition();
+    std::vector<float> customerPosition = curPackage->GetDestination();
     int i = 0;
     int numWithinRadius = 0;
     std::cout << "This is Drone's current position in CheckReadyToDropOff: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
     std::cout << "This is Package's current position in CheckReadyToDropOff: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
+    std::cout << "This is Customer's current position in CheckReadyToDropOff: {" << customerPosition.at(0) << ", " << customerPosition.at(1) << ", " << customerPosition.at(2) << "}" << std::endl;
+
     for (float pos : currentPosition)
     {
       float packageDes = packageDestination.at(i);
@@ -249,6 +336,8 @@ namespace csci3081 {
     std::vector<float> stopMoving{0.0001,0.0001,0.0001};
     UpdateDroneVelocity(stopMoving);
     curPackage->SetVelocity(stopMoving);
+    // increment the package index to see if there are any other packages that should be picked up
+    assignedPackageIndex = assignedPackageIndex + 1;
     std::cout << "I've dropped off the package" << std::endl;
   }
 
@@ -258,4 +347,26 @@ namespace csci3081 {
     UpdateDroneVelocity(newVelocity);
   }
 
+  int Drone::GetNumAssignedPackages() {
+    return assignedPackages.size();
+  }
+
+  void Drone::SetNewCurRoute(std::vector<std::vector<float>> &newCurRoute) {
+    // resets the curRoute
+    curRoute = newCurRoute;
+    curRouteLength = curRoute.size();
+    curRouteNextIndex = 1;
+  }
+
+  int Drone::GetCurRouteLength() {
+    return curRouteLength;
+  }
+
+  int Drone::GetCurRouteNextIndex() {
+    return curRouteNextIndex;
+  }
+
+  void Drone::IncrementCurRouteNextIndex() {
+    curRouteNextIndex = curRouteNextIndex + 1;
+  }
 }

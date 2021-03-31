@@ -25,6 +25,9 @@ namespace csci3081
 
     details_ = obj;
 
+    isAlreadyAssigned = false;
+    isDelivered = false;
+
     std::cout << "In the package default constructor" << std::endl;
   }
 
@@ -95,5 +98,21 @@ namespace csci3081
 
   float Package::GetWeight() {
     return weight;
+  }
+
+  bool Package::GetIsAlreadyAssigned() {
+    return isAlreadyAssigned;
+  }
+
+  bool Package::GetIsDelivered() {
+    return isDelivered;
+  }
+
+  void Package::SetIsAlreadyAssigned(bool newIsAlreadyAssigned) {
+    isAlreadyAssigned = newIsAlreadyAssigned;
+  }
+
+  void Package::SetIsDelivered(bool newIsDelivered) {
+    isDelivered = newIsDelivered;
   }
 }
