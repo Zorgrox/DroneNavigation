@@ -3,72 +3,91 @@
 namespace csci3081
 {
 
-  Vector2D::Vector2D()
+  Vector2D::Vector2D(std::vector<float> &vector2d)
   {
-    velocity_.push_back(0.0);
-    velocity_.push_back(0.0);
-    position_.push_back(0.0);
-    position_.push_back(0.0);
+    vector_ = vector2d;
   }
 
-  Vector2D::Vector2D(std::vector<float> position, std::vector<float> velocity)
+  const std::vector<float> &Vector2D::GetVector()
   {
-    velocity_ = velocity;
-    position_ = position;
-    direction_ = GetUnitVector();
+    return vector_;
   }
 
-  const std::vector<float> Vector2D::GetUnitVector()
+  void Vector2D::SetVector(std::vector<float> &newVector)
   {
-    std::vector<float> direction;
+    vector_ = newVector;
+  }
 
+  void Vector2D::Normalize()
+  {
+    // std::vector<float> direction;
     float divisor = CalculateMagnitude();
 
-    for (auto element : GetVelocity())
+    int i = 0;
+    for (float element : vector_)
     {
-      float norm_element = element / divisor;
-      direction.push_back(norm_element);
+      if (i != 1) {
+        vector_.at(i) = element / divisor;
+      }
+      i = i + 1;
     }
-
-    return direction;
   }
 
   float Vector2D::CalculateMagnitude()
   {
     float sum = 0.0;
-    for (auto element : velocity_)
+    int i = 0;
+    for (auto element : vector_)
     {
       float squared = element * element;
-      sum = sum + squared;
+      if (i != 1) {
+        // we do not include the y coordinate in calculating the magnitude, bc that is always going to be the same?
+        sum = sum + squared;
+      }
+      i = i + 1;
     }
     float divisor = sqrt(sum);
     return divisor;
   }
 
-  const std::vector<float>& Vector2D::GetVelocity() const
+  std::vector<float> Vector2D::AddTwoVectors(std::vector<float> &firstVector, std::vector<float> &anotherVector)
   {
-    return velocity_;
+    std::vector<float> toReturn = {0, 0, 0};
+    int i = 0;
+    for (float elemOne : firstVector)
+    {
+      float elemTwo = anotherVector.at(i);
+      float summedFloats = elemOne + elemTwo;
+      toReturn.at(i) = summedFloats;
+      i = i + 1;
+    }
+    return toReturn;
   }
 
-  const std::vector<float>& Vector2D::GetPosition() const
+  std::vector<float> Vector2D::SubtractTwoVectors(std::vector<float> &firstVector, std::vector<float> &anotherVector)
   {
-    return position_;
+    std::vector<float> toReturn = {0, 0, 0};
+    int i = 0;
+    for (float elemOne : firstVector)
+    {
+      float elemTwo = anotherVector.at(i);
+      float subtractedFloats = elemOne - elemTwo;
+      toReturn.at(i) = subtractedFloats;
+      i = i + 1;
+    }
+    return toReturn;
   }
 
-  const std::vector<float> &Vector2D::GetDirection()
+  std::vector<float> Vector2D::MultiplyVectorWithFloat(std::vector<float> &firstVector, float coeff)
   {
-    return direction_;
+    std::vector<float> toReturn = {0, 0, 0};
+    int i = 0;
+    for (float elemOne : firstVector)
+    {
+      float multipliedElem = elemOne * coeff;
+      toReturn.at(i) = multipliedElem;
+      i = i + 1;
+    }
+    return toReturn;
   }
-
-  void Vector2D::SetVelocity(std::vector<float> newVelocity)
-  {
-    velocity_ = newVelocity;
-    direction_ = GetUnitVector();
-  }
-
-  void Vector2D::SetPosition(std::vector<float> newPosition)
-  {
-    position_ = newPosition;
-  }
-
 }

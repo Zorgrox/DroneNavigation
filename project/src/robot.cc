@@ -73,8 +73,18 @@ namespace csci3081 {
     return curPackage;
   }
 
-  void Robot::SetCurPackage(Package& newPackage) {
-    curPackage = &newPackage;
+  void Robot::UpdateCurPackage()
+  {
+    if (assignedPackageIndex < GetNumAssignedPackages())
+    {
+      curPackage = assignedPackages.at(assignedPackageIndex);
+    }
+    // curPackage = &newPackage;
+  }
+
+  void Robot::AddAssignedPackage(Package &newPackage)
+  {
+    assignedPackages.push_back(&newPackage);
   }
 
   const bool Robot::GetIsCarryingPackage() const {
@@ -106,21 +116,28 @@ namespace csci3081 {
   }
 
 
-  void Robot::UpdateRobotPosition(std::vector<float> &newPosition, float dt) {
+  void Robot::UpdateRobotPosition(float dt) {
+    std::vector<float> directionVec = GetDirection();
+    std::vector<float> curPosition = GetPosition();
 
-    std::cout << "This is Robot new position: {" << id << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
+    float speedAndDt = speed * dt;
 
-    if (battery->GetIsEmpty()==false) {
-        position->SetVector(newPosition);
+    std::vector<float> updateDirection = direction->MultiplyVectorWithFloat(directionVec, speedAndDt);
+    std::vector<float> newPosition = position->AddTwoVectors(curPosition, updateDirection);
 
-        if (isCarryingPackage) {
-          // then also update the package's position
-          curPackage->SetPosition(newPosition);
-        }
-    UpdateBatteryCharge(-dt);
+    // std::cout << "This is Drone new position: {" << newPosition.at(0) << ", " << newPosition.at(1) << ", " << newPosition.at(2) << "}" << std::endl;
 
+    if (battery->GetIsEmpty() == false)
+    {
+      position->SetVector(newPosition);
+
+      if (isCarryingPackage)
+      {
+        // then also update the package's position
+        curPackage->SetPosition(newPosition);
+      }
+      UpdateBatteryCharge(-dt);
     }
-
   }
 
   void Robot::UpdateRobotVelocity(std::vector<float> &newVelocity) {
@@ -132,20 +149,88 @@ namespace csci3081 {
     }
   }
 
-  void Robot::Update(float dt)
+  void Robot::Update(const IGraph *graph, float dt)
   {
-    std::vector<float> directionVec = GetDirection();
-    std::vector<float> curPosition = GetPosition();
+    std::cout << "These print statements are for Robot name " << name << std::endl;
+    std::cout << "===================================" << std::endl;
 
-    float speedAndDt = speed * dt;
+    if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
+    {
+      std::cout << "I'm on the way to pick up the package" << std::endl;
+      // The drone is on the way to pick up a package.
+      if (CheckReadyToPickUp())
+      {
+        PickUpPackage();
+        // Update the path so that it's now pointed towards the customer's location
+        std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), GetCurPackage()->GetDestination());
+        SetNewCurRoute(anotherRoute);
+        std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+        CalculateAndUpdateRobotDirection(nextPos);
+        std::cout << "This is Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+        SetOnTheWayToPickUpPackage(false);
+        SetOnTheWayToDropOffPackage(true);
+        curRouteNextIndex = 1;
+        std::cout << "Switching over to dropping package off" << std::endl;
+      }
+      else
+      {
+        if (CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
+        {
+          // We should only increment the path index when the drone gets close enough to it that we should be going to the next one
+          std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
+          curRouteNextIndex = curRouteNextIndex + 1;
+          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+          std::cout << "This is Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+          CalculateAndUpdateRobotDirection(nextPos);
+        }
+        else
+        {
+          // We don't need to increment the path index yet
+          std::cout << "Don't need to increment path index yet" << std::endl;
+          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+          std::cout << "This is Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+          CalculateAndUpdateRobotDirection(nextPos);
+        }
+      }
+      UpdateRobotPosition(dt);
+    }
 
-    std::vector<float> updateDirection = direction->MultiplyVectorWithFloat(directionVec, speedAndDt);
-    std::vector<float> nextPosition =  position->AddTwoVectors(curPosition, updateDirection);
-    UpdateRobotPosition(nextPosition, dt);
+    else if (!GetOnTheWayToPickUpPackage() && GetOnTheWayToDropOffPackage())
+    {
+      std::cout << "I'm on the way to drop off the package" << std::endl;
+      if (CheckReadyToDropOff())
+      {
+        // Move the package out of the simulation to remove it
+        curRouteNextIndex = 1;
+        DropOffPackage();
 
-    // Decrement the robot's battery
-
-    // TODO: for later iteration, give a warning if the robot's battery is close to being depleted
+        // if there's another package it has to go to, then assign this new package to the curPackage
+        if (assignedPackageIndex < GetNumAssignedPackages())
+        {
+          UpdateCurPackage();
+          std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), curPackage->GetPosition());
+          SetNewCurRoute(anotherRoute);
+          SetOnTheWayToPickUpPackage(true);
+          SetOnTheWayToDropOffPackage(false);
+        }
+      }
+      else
+      {
+        if (CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
+        {
+          curRouteNextIndex = curRouteNextIndex + 1;
+          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+          CalculateAndUpdateRobotDirection(nextPos);
+        }
+        else
+        {
+          // We don't need to increment the path index yet
+          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+          CalculateAndUpdateRobotDirection(nextPos);
+        }
+        UpdateRobotPosition(dt);
+      }
+    }
   }
 
   bool Robot::CheckReadyToPickUp()
@@ -249,6 +334,7 @@ namespace csci3081 {
     std::vector<float> stopMoving{0.0001,0.0001,0.0001};
     UpdateRobotVelocity(stopMoving);
     curPackage->SetVelocity(stopMoving);
+    assignedPackageIndex = assignedPackageIndex + 1;
     std::cout << "I've dropped off the package" << std::endl;
   }
 
@@ -258,4 +344,31 @@ namespace csci3081 {
     UpdateRobotVelocity(newVelocity);
   }
 
+  int Robot::GetNumAssignedPackages()
+  {
+    return assignedPackages.size();
+  }
+
+  void Robot::SetNewCurRoute(std::vector<std::vector<float>> &newCurRoute)
+  {
+    // resets the curRoute
+    curRoute = newCurRoute;
+    curRouteLength = curRoute.size();
+    curRouteNextIndex = 1;
+  }
+
+  int Robot::GetCurRouteLength()
+  {
+    return curRouteLength;
+  }
+
+  int Robot::GetCurRouteNextIndex()
+  {
+    return curRouteNextIndex;
+  }
+
+  void Robot::IncrementCurRouteNextIndex()
+  {
+    curRouteNextIndex = curRouteNextIndex + 1;
+  }
 }

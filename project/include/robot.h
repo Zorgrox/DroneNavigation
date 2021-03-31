@@ -81,7 +81,7 @@ namespace csci3081 {
     /**
    *  This function should set the current package of the robot to a different package
    */
-    void SetCurPackage(Package &newPackage);
+    void UpdateCurPackage();
 
     /**
    *  This function should return whether the robot is currently carrying a package
@@ -121,7 +121,7 @@ namespace csci3081 {
   /**
     *  This function should update the robot's positions
     */
-    void UpdateRobotPosition(std::vector<float> & newPosition, float dt);
+    void UpdateRobotPosition(float dt);
 
   /**
     *  This function should update the robot's velocity
@@ -131,7 +131,7 @@ namespace csci3081 {
     /**
     *  This function is called in the Delivery Simulation's update function. It updates the robot's velocity and position based on the graph's path.
     */
-    void Update(float dt);
+    void Update(const IGraph *graph, float dt);
 
     /**
     *  This function should check whether the package is ready to be picked up, within the radius
@@ -163,19 +163,55 @@ namespace csci3081 {
     */
     void CalculateAndUpdateRobotDirection(std::vector<float>& nextPosition);
 
-    private:
-      std::string name;
-      Vector2D* position;
-      Vector2D* direction;
-      Package *curPackage;
-      Battery *battery;
-      float radius;
-      int version = 0;
-      bool dynamic = true;
-      bool onTheWayToPickUpPackage;
-      bool onTheWayToDropOffPackage;
-      bool isCarryingPackage;
-      float speed;
+    /**
+    *  This function should add another Package pointer to the vector of assigned packages
+    */
+    void AddAssignedPackage(Package &newPackage);
+
+    /**
+    *  This function returns the number of packages in the assignedPackages vector
+    */
+    int GetNumAssignedPackages();
+
+    /**
+    *  This function updates the curRoute of this robot
+    */
+    void SetNewCurRoute(std::vector<std::vector<float>> &newCurRoute);
+
+    /**
+    *  This function gets the length of the curRoute that the robot is following
+    */
+    int GetCurRouteLength();
+
+    /**
+    *  This function gets the index of the next stop within the curRoute
+    */
+    int GetCurRouteNextIndex();
+
+    /**
+    *  This function increments the index of the next stop within the curRoute
+    */
+    void IncrementCurRouteNextIndex();
+
+  private:
+    std::string name;
+    Vector2D *position;
+    Vector2D *direction;
+    Package *curPackage;
+    std::vector<Package *> assignedPackages;
+    int assignedPackageIndex;
+    Battery *battery;
+    float radius;
+    int version = 0;
+    bool dynamic = true;
+    bool onTheWayToPickUpPackage;
+    bool onTheWayToDropOffPackage;
+    bool isCarryingPackage;
+    float speed;
+
+    std::vector<std::vector<float>> curRoute;
+    int curRouteNextIndex;
+    int curRouteLength;
     };
 
 } // namespace csci3081
