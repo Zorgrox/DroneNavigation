@@ -10,6 +10,8 @@
 #include "package.h"
 #include "customer.h"
 #include "entity_base.h"
+#include "robot_factory.h"
+#include "robot.h "
 
 #include <iostream>
 
@@ -54,10 +56,17 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   // first, find the drone. We currently assume that there is only one of them.
   std::cout << "Scheduling the delivery" << std::endl;
   Drone* actual_drone = NULL;
+  Robot* actual_robot = NULLL;
   Customer* actual_customer = NULL;
   for (IEntity* ent : entities_) {
     actual_drone = dynamic_cast<Drone *>(ent);
     if(actual_drone) {
+      break;
+    }
+  }
+  for (IEntity* ent : entities_) {
+    actual_robot = dynamic_cast<Robot *>(ent);
+    if(actual_robot) {
       break;
     }
   }
@@ -70,22 +79,28 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
     }
   }
   std::cout << "Done with dynamic cast in scheduleDelivery" << std::endl;
+  std::cout << "Robot with dynamic cast in scheduleDelivery" << std::endl;
   // if (!actual_drone->GetOnTheWayToPickUpPackage() && !actual_drone->GetOnTheWayToDropOffPackage())
   // {
   // Set the package for the drone
+  // set the package for the robot
   Package* actual_package = dynamic_cast<Package*>(package);
   actual_package->SetCustomer(*actual_customer);
   actual_drone->SetCurPackage(*actual_package);
+  actual_robot->SetCurPackage(*actual_package);
   // get the path and set it to the delivery simulation's curRoute
   std::vector<float> drones_position = actual_drone->GetPosition();
+  std::vector<float> robots_position = actual_drone->GetPosition();
   std::vector<float> packages_position = actual_package->GetPosition();
-  curRoute = systemGraph->GetPath(drones_position, packages_position);
+  curRoute = systemGraph->GetPath(drones_position, robots_position, packages_position);
   std::cout << "I'm done with GetPath" << std::endl;
   PrintPath(curRoute);
   curRouteNextIndex = 1;
   curRouteLength = curRoute.size();
   actual_drone->SetOnTheWayToPickUpPackage(true);
   actual_drone->SetOnTheWayToDropOffPackage(false);
+  actual_robot->SetOnTheWayToPickUpPackage(true);
+  actual_robot->SetOnTheWayToDropOffPackage(false);
   std::cout << "Done with schedule delivery" << std::endl;
   // }
 }
@@ -100,10 +115,16 @@ void DeliverySimulation::Update(float dt) {
   std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
   if (GetEntities().size() > 0 ) {
     Drone *actual_drone = NULL;
+    Robot *actual_robot = NULL;
     for (IEntity *ent : entities_)
     {
       actual_drone = dynamic_cast<Drone *>(ent);
+      actual_robot = dynamic_cast<Robot *>(ent);
       if (actual_drone)
+      {
+        break;
+      }
+      else if(actual_robot)
       {
         break;
       }
