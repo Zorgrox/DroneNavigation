@@ -182,7 +182,12 @@ namespace csci3081 {
           // We should only increment the path index when the drone gets close enough to it that we should be going to the next one
           std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
           curRouteNextIndex = curRouteNextIndex + 1;
-          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+	  std::vector<float> nextPos;
+	  if (curRouteNextIndex >= curRoute.size()){
+	    nextPos = curPackage->GetPosition();
+	     curRouteNextIndex = curRouteNextIndex - 1;
+	  } else {
+	    nextPos = curRoute.at(curRouteNextIndex);}
           std::cout << "This is Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
           CalculateAndUpdateRobotDirection(nextPos);
         }
@@ -312,7 +317,7 @@ namespace csci3081 {
         numWithinRadius = numWithinRadius + 1;
       }
     }
-    if (numWithinRadius == 3)
+    if (numWithinRadius == 2)
     {
       std::cout << "It is within radius to increment path index" << std::endl;
       return true;
