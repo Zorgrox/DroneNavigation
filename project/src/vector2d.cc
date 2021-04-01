@@ -1,74 +1,74 @@
 #include "vector2d.h"
+#include <math.h>
 
 namespace csci3081
 {
 
-  Vector2D::Vector2D()
+  Vector2D::Vector2D(std::vector<float> adr)
   {
-    velocity_.push_back(0.0);
-    velocity_.push_back(0.0);
-    position_.push_back(0.0);
-    position_.push_back(0.0);
+    vector_ = adr;
   }
 
-  Vector2D::Vector2D(std::vector<float> position, std::vector<float> velocity)
+  const std::vector<float>& Vector2D::GetVector()
   {
-    velocity_ = velocity;
-    position_ = position;
-    direction_ = GetUnitVector();
+    return vector_;
   }
 
-  const std::vector<float> Vector2D::GetUnitVector()
-  {
-    std::vector<float> direction;
+  void Vector2D::SetVector(std::vector<float> &newVector) {
+    vector_ = newVector;
+  }
 
+  void Vector2D::Normalize()
+  {
+    // normalizes the x and z dimensions of the address stored based on the CalculateMagnitude() magnitude of x and z dimensions
+    // the y (2nd) index of the vector is zeroed because it is ignored in CalculateMagnitude() and unchanged in the motion of 2D entities, not able to be a direction component
     float divisor = CalculateMagnitude();
-
-    for (auto element : GetVelocity())
-    {
-      float norm_element = element / divisor;
-      direction.push_back(norm_element);
-    }
-
-    return direction;
+    vector_[0] = vector_[0]/divisor;
+    vector_[1] = 0.0;
+    vector_[2] = vector_[2]/divisor;
   }
 
   float Vector2D::CalculateMagnitude()
   {
-    float sum = 0.0;
-    for (auto element : velocity_)
-    {
-      float squared = element * element;
-      sum = sum + squared;
-    }
-    float divisor = sqrt(sum);
-    return divisor;
+    // adds the square of each float to the accumulator and returns the square root of the accumulator
+    // 2nd index is ignored in vector2D because the entity can only move in a 2d plane of x and z instead or x, y, z
+    float acc = 0.0;
+    acc = (vector_[0] * vector_[0]);
+    acc = acc + (vector_[2] * vector_[2]);
+    return sqrt(acc);
   }
 
-  const std::vector<float>& Vector2D::GetVelocity() const
+   std::vector<float> Vector2D::AddTwoVectors(std::vector<float>& adr1, std::vector<float>& adr2)
   {
-    return velocity_;
+    // adds the two vectors, because we want height to be unaffected the 2nd float of address1 is passed 
+    // into the return vector
+    std::vector<float> toReturn = {0,0,0};
+    toReturn[0] = adr1[0] + adr2[0];
+    toReturn[1] = adr1[1];
+    toReturn[2] = adr1[2] + adr2[2];
+    return toReturn;
   }
 
-  const std::vector<float>& Vector2D::GetPosition() const
+   std::vector<float> Vector2D::SubtractTwoVectors(std::vector<float> &adr1, std::vector<float> &adr2)
   {
-    return position_;
+    // subtracts the two vectors, because we want height to be unaffected the 2nd float of address1 is passed 
+    // into the return vector
+    std::vector<float> toReturn = {0,0,0};
+    toReturn[0] = adr1[0] - adr2[0];
+    // toReturn[1] = adr1[1];
+    toReturn[2] = adr1[2] - adr2[2];
+    return toReturn;
   }
 
-  const std::vector<float> &Vector2D::GetDirection()
+   std::vector<float> Vector2D::MultiplyVectorWithFloat(std::vector<float> &adr, float scalar)
   {
-    return direction_;
+    // multiplies each movement axis with the inputted scalar and returns the result, the 2nd index is not multiplied
+    // because entities using this class can only move in 2D, the 2nd index is passed into the return vector 
+    // so that the height is unaffected
+    std::vector<float> toReturn = {0,0,0};
+    toReturn[0] = adr[0] * scalar;
+    toReturn[1] = adr[1];
+    toReturn[2] = adr[2] * scalar;
+    return toReturn;
   }
-
-  void Vector2D::SetVelocity(std::vector<float> newVelocity)
-  {
-    velocity_ = newVelocity;
-    direction_ = GetUnitVector();
-  }
-
-  void Vector2D::SetPosition(std::vector<float> newPosition)
-  {
-    position_ = newPosition;
-  }
-
 }

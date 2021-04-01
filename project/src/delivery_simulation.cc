@@ -10,6 +10,8 @@
 #include "package.h"
 #include "customer.h"
 #include "entity_base.h"
+#include "robot_factory.h"
+#include "robot.h"
 
 #include <iostream>
 
@@ -41,8 +43,10 @@ void DeliverySimulation::AddEntity(IEntity* entity) {
   if (maybe_drone) {
     drones_.push_back(maybe_drone);
   }
-  // TODO: also add any robots to a robots vector
-
+  Robot* maybe_robot = dynamic_cast<Robot *>(entity);
+  if (maybe_robot) {
+    robots_.push_back(maybe_robot);
+  }
   Customer* maybe_customer = dynamic_cast<Customer *>(entity);
   if (maybe_customer) {
     customers_.push_back(maybe_customer);
@@ -71,27 +75,66 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   Customer* actual_customer = dynamic_cast<Customer*>(dest);
   actual_package->SetCustomer(*actual_customer);
 
-  Drone* actual_drone = drones_.at(dronesIndex);
-  if(actual_drone) {
-    actual_drone->AddAssignedPackage(*actual_package);
+  if (drones_.size() > 0 && robots_.size() > 0) {
+    if (drones_.at(dronesIndex)->GetNumAssignedPackages() <= robots_.at(robotsIndex)->GetNumAssignedPackages()){
+      assignPackageToDrone = true;}
+    else {assignPackageToDrone = false;}
+  } else if (drones_.size() > 0 && robots_.size() == 0) {
+    assignPackageToDrone = true;
+  } else if (drones_.size() == 0 && robots_.size() > 0) {
+    assignPackageToDrone = false;
+  }
 
-    if (actual_drone->GetNumAssignedPackages() == 1) {
-      // assign the curPackage if it's the first one assigned to the drone
-      actual_drone->UpdateCurPackage();
-      // get the path and set it to the delivery simulation's curRoute
-      std::vector<float> drones_position = actual_drone->GetPosition();
-      std::vector<float> packages_position = actual_package->GetPosition();
-      std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
-      actual_drone->SetNewCurRoute(anotherRoute);
-      actual_drone->SetOnTheWayToPickUpPackage(true);
-      actual_drone->SetOnTheWayToDropOffPackage(false);
+  if (assignPackageToDrone) {
+    std::cout << "Assigning to Drone\n" << std::endl;
+    Drone* actual_drone = drones_.at(dronesIndex);
+    if(actual_drone) {
+      actual_drone->AddAssignedPackage(*actual_package);
+
+      if (actual_drone->GetNumAssignedPackages() == 1) {
+        // assign the curPackage if it's the first one assigned to the drone
+        actual_drone->UpdateCurPackage();
+        // get the path and set it to the delivery simulation's curRoute
+        std::vector<float> drones_position = actual_drone->GetPosition();
+        std::vector<float> packages_position = actual_package->GetPosition();
+        std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
+        actual_drone->SetNewCurRoute(anotherRoute);
+        actual_drone->SetOnTheWayToPickUpPackage(true);
+        actual_drone->SetOnTheWayToDropOffPackage(false);
+      }
+    }
+    dronesIndex = dronesIndex + 1;
+    if (dronesIndex == drones_.size()) {
+      dronesIndex = 0;
     }
   }
-  dronesIndex = dronesIndex + 1;
-  if (dronesIndex > drones_.size()) {
-    dronesIndex = 0;
+  else {
+    std::cout << "Assigning to Robot\n" << std::endl;
+    Robot *actual_robot = robots_.at(robotsIndex);
+    if (actual_robot)
+    {
+      actual_robot->AddAssignedPackage(*actual_package);
+      std::cout << "num assigned packages: " << actual_robot->GetNumAssignedPackages() << std::endl;
+      if (actual_robot->GetCurPackage() == NULL) {std::cout << "nopackage_____\n";}
+      if (actual_robot->GetNumAssignedPackages() == 1)
+      {
+        // assign the curPackage if it's the first one assigned to the drone
+        actual_robot->UpdateCurPackage();
+        // get the path and set it to the delivery simulation's curRoute
+        std::vector<float> robots_position = actual_robot->GetPosition();
+        std::vector<float> packages_position = actual_package->GetPosition();
+        std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(robots_position, packages_position);
+        actual_robot->SetNewCurRoute(anotherRoute);
+        actual_robot->SetOnTheWayToPickUpPackage(true);
+        actual_robot->SetOnTheWayToDropOffPackage(false);
+      }
+    }
+    robotsIndex = robotsIndex + 1;
+    if (robotsIndex == robots_.size())
+    {
+      robotsIndex = 0;
+    }
   }
-  // TODO: if it's a robot, do the same thing as above here
   std::cout << "Done with schedule delivery" << std::endl;
 }
 
@@ -106,11 +149,10 @@ void DeliverySimulation::Update(float dt) {
   if (GetEntities().size() > 0 ) {
     for (Drone* actual_drone : drones_) {
       actual_drone->Update(systemGraph, dt);
-      // print out the drone's positions at each time step
-      // std::vector<float> theCurPos = actual_drone->GetPosition();
-      // Print(theCurPos);
     }
-    // TODO: also do for robot
+    for (Robot* actual_robot : robots_) {
+      actual_robot -> Update(systemGraph, dt);
+    }
   }
 }
 

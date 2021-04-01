@@ -14,6 +14,7 @@
 #include "customer.h"
 #include "package.h"
 #include "drone.h"
+#include "robot.h"
 
 namespace csci3081 {
 
@@ -136,12 +137,16 @@ class DeliverySimulation : public IDeliverySystem {
  private:
   std::vector<IEntity*> entities_;
   std::vector<Drone*> drones_;
+  std::vector<Robot*> robots_;
   std::vector<Customer*> customers_;
   std::vector<Package*> packages_;
   CompositeFactory* compositeFactory_;
   const IGraph* systemGraph;
 
   int dronesIndex;
+  int robotsIndex;
+  bool assignPackageToDrone = false;
+
   std::vector<std::vector<float>> curRoute;
   int curRouteNextIndex;
   int curRouteLength;
