@@ -305,7 +305,11 @@ namespace csci3081 {
     int numWithinRadius = 0;
     std::cout << "This is Robot's current position in CheckReadyToDropOff: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
     std::cout << "This is Package's current position in CheckReadyToDropOff: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
-    for (float pos : currentPosition)
+    if ((currentPosition.at(0)-packageDestination.at(0))<=radius&&(currentPosition.at(2)-packageDestination.at(2))<=radius)
+	{
+		return true;
+	}
+	/*for (float pos : currentPosition)
     {
       float packageDes = packageDestination.at(i);
       i = i + 1;
@@ -320,7 +324,7 @@ namespace csci3081 {
     {
       std::cout << "The package is ready to be dropped off!" << std::endl;
       return true;
-    }
+    }*/
     else
     {
       return false;
