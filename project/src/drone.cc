@@ -215,6 +215,18 @@ namespace csci3081 {
         curRouteNextIndex = 1;
         DropOffPackage();
 
+        // Notify the observers that the package has been delivered
+        picojson::object obj = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj, "value", "delivered");
+        picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+        for (IEntityObserver *obs : observers)
+        {
+          const IEntity *temp_pkg = GetCurPackage();
+          obs->OnEvent(val, *temp_pkg);
+        }
+
         // if there's another package it has to go to, then assign this new package to the curPackage
         if (assignedPackageIndex < GetNumAssignedPackages()) {
           UpdateCurPackage();
