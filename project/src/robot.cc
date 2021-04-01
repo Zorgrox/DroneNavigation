@@ -312,7 +312,7 @@ namespace csci3081 {
         numWithinRadius = numWithinRadius + 1;
       }
     }
-    if (numWithinRadius == 3)
+    if (numWithinRadius == 2)
     {
       std::cout << "The package is ready to be dropped off!" << std::endl;
       return true;
