@@ -154,7 +154,7 @@ namespace csci3081 {
     }
   }
 
-  void Drone::Update(const IGraph* graph, float dt)
+  void Drone::Update(const IGraph *graph, std::vector<IEntityObserver *>& observers, float dt)
   {
     std::cout << "These print statements are for Drone name " << name << std::endl;
     std::cout << "===================================" << std::endl;
@@ -176,6 +176,18 @@ namespace csci3081 {
         SetOnTheWayToDropOffPackage(true);
         curRouteNextIndex = 1;
         std::cout << "Switching over to dropping package off" << std::endl;
+
+        // Notify the observers that the package has been picked up
+        picojson::object obj = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj, "value", "en route");
+        picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+        for (IEntityObserver *obs : observers)
+        {
+          const IEntity *temp_pkg = GetCurPackage();
+          obs->OnEvent(val, *temp_pkg);
+        }
       }
       else
       {

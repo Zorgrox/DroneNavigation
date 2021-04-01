@@ -162,10 +162,10 @@ void DeliverySimulation::Update(float dt) {
   // std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
   if (GetEntities().size() > 0 ) {
     for (Drone* actual_drone : drones_) {
-      actual_drone->Update(systemGraph, dt);
+      actual_drone->Update(systemGraph, observers_, dt);
     }
     for (Robot* actual_robot : robots_) {
-      actual_robot -> Update(systemGraph, dt);
+      actual_robot -> Update(systemGraph, observers_, dt);
     }
   }
 }

@@ -150,7 +150,7 @@ namespace csci3081 {
     }
   }
 
-  void Robot::Update(const IGraph *graph, float dt)
+  void Robot::Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt)
   {
     std::cout << "These print statements are for Robot name " << name << std::endl;
     std::cout << "===================================" << std::endl;
@@ -174,6 +174,18 @@ namespace csci3081 {
         SetOnTheWayToDropOffPackage(true);
         curRouteNextIndex = 1;
         std::cout << "Switching over to dropping package off" << std::endl;
+
+        // Notify the observers that the package has been picked up
+        picojson::object obj = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj, "value", "en route");
+        picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+        for (IEntityObserver *obs : observers)
+        {
+          const IEntity *temp_pkg = GetCurPackage();
+          obs->OnEvent(val, *temp_pkg);
+        }
       }
       else
       {
@@ -182,14 +194,14 @@ namespace csci3081 {
           // We should only increment the path index when the drone gets close enough to it that we should be going to the next one
           std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
           curRouteNextIndex = curRouteNextIndex + 1;
-	  std::vector<float> nextPos;
-	  if (curRouteNextIndex >= curRoute.size()){
-	    nextPos = curPackage->GetPosition();
-	     curRouteNextIndex = curRouteNextIndex - 1;
-	  } else {
-	    nextPos = curRoute.at(curRouteNextIndex);}
-          std::cout << "This is Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
-          CalculateAndUpdateRobotDirection(nextPos);
+	        std::vector<float> nextPos;
+	        if (curRouteNextIndex >= curRoute.size()){
+	          nextPos = curPackage->GetPosition();
+	          curRouteNextIndex = curRouteNextIndex - 1;
+	        } else {
+	          nextPos = curRoute.at(curRouteNextIndex);}
+            std::cout << "This is Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+            CalculateAndUpdateRobotDirection(nextPos);
         }
         else
         {
