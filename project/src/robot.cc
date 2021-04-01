@@ -340,11 +340,9 @@ namespace csci3081 {
       i = i + 1;
       // std::cout << "This is pos: " << pos << std::endl;
       // std::cout << "This is nextPos: " << nextPos << std::endl;
-      if (i != 1) {
-        if (std::fabs(pos - nextPos) <= radius)
-        {
-          numWithinRadius = numWithinRadius + 1;
-        }
+      if (std::fabs(pos - nextPos) <= radius)
+      {
+        numWithinRadius = numWithinRadius + 1;
       }
     }
     if (numWithinRadius == 2)
