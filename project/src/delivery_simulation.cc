@@ -76,7 +76,7 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   actual_package->SetCustomer(*actual_customer);
 
   if (drones_.size() > 0 && robots_.size() > 0) {
-    if (drones_.at(0)->GetNumAssignedPackages() <= robots_.at(0)->GetNumAssignedPackages()){
+    if (drones_.at(dronesIndex)->GetNumAssignedPackages() <= robots_.at(robotsIndex)->GetNumAssignedPackages()){
       assignPackageToDrone = true;}
     else {assignPackageToDrone = false;}
   } else if (drones_.size() > 0 && robots_.size() == 0) {
