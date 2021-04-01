@@ -281,11 +281,9 @@ namespace csci3081 {
       float packagePos = packagePosition.at(i);
       i = i + 1;
       // std::cout << "I am about to subtract the package position from the position" << std::endl;
-      if (i != 1) {
-        if (std::fabs(pos - packagePos) <= radius) {
-          // std::cout << "I am in the pos - packagePos <= radius condition" << std::endl;
-          numWithinRadius = numWithinRadius + 1;
-        }
+      if (std::fabs(pos - packagePos) <= radius) {
+        // std::cout << "I am in the pos - packagePos <= radius condition" << std::endl;
+        numWithinRadius = numWithinRadius + 1;
       }
       // std::cout << "I am done subtracting the package position from the position" << std::endl;
     }
@@ -309,11 +307,9 @@ namespace csci3081 {
     {
       float packageDes = packageDestination.at(i);
       i = i + 1;
-      if (i != 1) {
-        if (std::fabs(pos - packageDes) <= radius)
-        {
-          numWithinRadius = numWithinRadius + 1;
-        }
+      if (std::fabs(pos - packageDes) <= radius)
+      {
+        numWithinRadius = numWithinRadius + 1;
       }
     }
     if (numWithinRadius == 2)
