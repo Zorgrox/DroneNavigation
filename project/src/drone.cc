@@ -358,14 +358,6 @@ namespace csci3081 {
     UpdateDroneVelocity(newVelocity);
   }
 
-<<<<<<< HEAD
-  bool Drone::GetIsIdle() {
-    return isIdle;
-  }
-
-  bool Drone::GetJustStartedMoving() {
-    return justStartedMoving;
-=======
   int Drone::GetNumAssignedPackages() {
     return assignedPackages.size();
   }
@@ -387,6 +379,5 @@ namespace csci3081 {
 
   void Drone::IncrementCurRouteNextIndex() {
     curRouteNextIndex = curRouteNextIndex + 1;
->>>>>>> devel
   }
 }
