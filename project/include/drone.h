@@ -208,7 +208,9 @@ namespace csci3081 {
     bool onTheWayToPickUpPackage;
     bool onTheWayToDropOffPackage;
     bool isCarryingPackage;
+	bool notified = false;
     float speed;
+	int waiter=0;
 
     std::vector<std::vector<float>> curRoute;
     int curRouteNextIndex;

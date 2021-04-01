@@ -155,6 +155,28 @@ namespace csci3081 {
 
     if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
     {
+		
+	  if(!notified) // Checks to see if its announced that its on its way to the package
+	  {
+			
+		if (waiter==30){ //Presumably due to threading of some sort, we need to wait for currRoute to actually be there 
+		   picojson::object obj2 = JsonHelper::CreateJsonObject();
+		   JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
+		   JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
+		   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
+		   picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
+		   for (IEntityObserver *obs : observers)
+		   {
+			 const IEntity *temp_drone = this;
+			 obs->OnEvent(val2, *temp_drone);
+		   }
+		  
+		notified=true;}
+		else
+		{waiter++;}
+	  }
+	
+		
       std::cout << "I'm on the way to pick up the package" << std::endl;
       // The drone is on the way to pick up a package.
       if (CheckReadyToPickUp())
@@ -253,9 +275,6 @@ namespace csci3081 {
 		 obs->OnEvent(val3, *temp_drone);
 	   }
 		/////////////
-		
-		
-		
 		
 		
         // if there's another package it has to go to, then assign this new package to the curPackage
@@ -386,6 +405,8 @@ namespace csci3081 {
     curPackage->SetPosition(outOfTheWayPosition);
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
+	notified=false;
+	waiter=0;
     // also set the drone's direction to 0,0,0 so that we stop moving
     std::vector<float> stopMoving{0.0001,0.0001,0.0001};
     UpdateDroneVelocity(stopMoving);
@@ -410,6 +431,8 @@ namespace csci3081 {
     curRoute = newCurRoute;
     curRouteLength = curRoute.size();
     curRouteNextIndex = 1;
+		   
+	
   }
 
   int Drone::GetCurRouteLength() {
