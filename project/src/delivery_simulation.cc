@@ -101,6 +101,20 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
         actual_drone->SetNewCurRoute(anotherRoute);
         actual_drone->SetOnTheWayToPickUpPackage(true);
         actual_drone->SetOnTheWayToDropOffPackage(false);
+		///////////////// notify that the drone is moving to the package
+		   picojson::object obj2 = JsonHelper::CreateJsonObject();
+		   JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
+		   JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
+		   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", anotherRoute);
+		   picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
+
+		   for (IEntityObserver *obs : observers_)
+		   {
+			 const IEntity *temp_drone = actual_drone;
+			 obs->OnEvent(val2, *temp_drone);
+		   }
+		
+		/////////////////
       }
     }
     dronesIndex = dronesIndex + 1;
