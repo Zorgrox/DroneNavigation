@@ -263,7 +263,7 @@ namespace csci3081 {
       }
       // std::cout << "I am done subtracting the package position from the position" << std::endl;
     }
-    if (numWithinRadius == 3) {
+    if (numWithinRadius == 2) {
       std::cout << "The package is ready to be picked up!" << std::endl;
       return true;
     } else {
