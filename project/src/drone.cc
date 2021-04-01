@@ -28,13 +28,7 @@ namespace csci3081 {
     isCarryingPackage = false;
     battery = new Battery(10000);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
-<<<<<<< HEAD
-    isIdle = false;
-    wasIdle = true;
-    justStartedMoving = true;
-=======
     assignedPackageIndex = 0;
->>>>>>> devel
     details_ = obj;
     // curPackage = new Package();
     std::cout << "Creating drone in default constructor" << std::endl;
