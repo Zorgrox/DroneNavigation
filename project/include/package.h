@@ -39,6 +39,11 @@ namespace csci3081
     int GetId() const;
 
     /**
+   *  This function should set the id of the package
+   */
+    void SetId(int ID);
+
+    /**
    *  This function return the name of the package
    */
     const std::string &GetName();
@@ -98,10 +103,30 @@ namespace csci3081
    */
     float GetWeight();
 
+    /**
+   *  This function should return the boolean denoting whether the package has been assigned
+   */
+    bool GetIsAlreadyAssigned();
+
+    /**
+   *  This function should return the boolean denoting whether the package has been delivered
+   */
+    bool GetIsDelivered();
+
+    /**
+   *  This function should set the boolean denoting whether the package has been assigned
+   */
+    void SetIsAlreadyAssigned(bool newIsAlreadyAssigned);
+
+    /**
+   *  This function should set the boolean denoting whether the package has been delivered
+   */
+    void SetIsDelivered(bool newIsDelivered);
+
   private:
-    int id;
     std::string name;
-    Vector3D *positionAndDirection;
+    Vector3D* position;
+    Vector3D* direction;
     float radius;
     int version = 0;
     bool dynamic = true;
@@ -109,6 +134,9 @@ namespace csci3081
     Customer* customer;
     std::vector<float> destination;
     float weight;
+
+    bool isAlreadyAssigned;
+    bool isDelivered;
   };
 
 } // namespace csci3081

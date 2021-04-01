@@ -29,44 +29,32 @@ namespace csci3081
     /**
    * @brief Constructor: set up a Vector3D with a specified velocity and position
    */
-    Vector3D(std::vector<float> position, std::vector<float> velocity);
+    Vector3D(std::vector<float>& vector3d);
 
-  /**
-   *  This function returns the normalized version of the velocity (which is equivalent to the direction)
+    /**
+   *  This function returns the vector
    */
-    const std::vector<float> GetUnitVector();
+    const std::vector<float>& GetVector();
+
+    /**
+   *  This function sets the vector to a new vector
+   */
+    void SetVector(std::vector<float>& newVector);
+
+    /**
+   *  This function returns the normalized version of the vector
+   */
+    void Normalize();
 
   /**
    *  This function calculates the magnitude of the velocity (which is equivalent to the speed)
    */
     float CalculateMagnitude();
 
-  /**
-   *  This function should return the velocity component of the Vector3D
-   */
-    const std::vector<float>& GetVelocity();
-
-  /**
-   *  This function should return the position component of the Vector3D
-   */
-    const std::vector<float>& GetPosition();
-
-    /**
-   *  This function should return the direction of the package, which is the normalized velocity vector
-   */
-    const std::vector<float> &GetDirection();
-    /**
-   *  This function should set the velocity component of the Vector3D
-   */
-    void SetVelocity(std::vector<float> newVelocity);
-    /**
-   *  This function should set the position component of the Vector3D
-   */
-    void SetPosition(std::vector<float> newPosition);
     /**
    *  This function should be used to add two standard vectors with each other
    */
-    std::vector<float> AddTwoVectors(std::vector<float>& oneVector, std::vector<float>& secondVector);
+    std::vector<float> AddTwoVectors(std::vector<float> &oneVector, std::vector<float> &secondVector);
     /**
    *  This function should be used to subtract two standard vectors from each other
    */
@@ -77,9 +65,7 @@ namespace csci3081
     std::vector<float> MultiplyVectorWithFloat(std::vector<float> &oneVector, float coeff);
 
   private:
-    std::vector<float> velocity_;
-    std::vector<float> position_;
-    std::vector<float> direction_;
+    std::vector<float> vector_;
   };
 
 } // namespace csci3081

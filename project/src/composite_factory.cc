@@ -6,15 +6,18 @@
 #include "package_factory.h"
 #include <iostream>
 #include "json_helper.h"
+#include "robot_factory.h"
 
 namespace csci3081
 {
   CompositeFactory::CompositeFactory() {
     DroneFactory* droneFactory = new DroneFactory();
+    RobotFactory* robotFactory = new RobotFactory();
     CustomerFactory* customerFactory = new CustomerFactory();
     PackageFactory* packageFactory = new PackageFactory();
 
     AddFactory(*droneFactory);
+    AddFactory(*robotFactory);
     AddFactory(*customerFactory);
     AddFactory(*packageFactory);
   }

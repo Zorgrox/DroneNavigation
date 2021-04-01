@@ -25,17 +25,16 @@ namespace csci3081 {
  */
 class EntityBase : public IEntity {
  public:
+
   virtual ~EntityBase() {}
   /**
    *  This function should return the details of the JSON object that specifies the details of the entity
    */
   const picojson::object& GetDetails() { return details_; }
-
+  void virtual SetId(int ID) {id = ID;}
  protected:
   picojson::object details_;
-  int droneId = 0;
-  int customerId = 1;
-  int packageId = 2;
+  int id = 0;
 };
 
 }  // namespace csci3081
