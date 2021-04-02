@@ -50,7 +50,7 @@ namespace csci3081
     IEntity *packageEntity = system->CreateEntity(obj);
     Package *package = dynamic_cast<Package *>(packageEntity);
 
-    int expectedPackageId = 2;
+    int expectedPackageId = 0;
     ASSERT_EQ(package->GetId(), expectedPackageId);
 
     std::string expectedPackageName = "package";
