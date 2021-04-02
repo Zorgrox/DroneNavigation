@@ -38,12 +38,12 @@ namespace csci3081
     JsonHelper::AddStringToJsonObject(obj, "name", "robot");
     std::vector<float> position_to_add;
     position_to_add.push_back(2);
-    
     position_to_add.push_back(5);
+    position_to_add.push_back(0);
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "position", position_to_add);
     std::vector<float> direction_to_add;
     direction_to_add.push_back(0);
-    
+    direction_to_add.push_back(0);
     direction_to_add.push_back(1);
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
@@ -58,9 +58,9 @@ namespace csci3081
     std::string expectedRobotName = "robot";
     ASSERT_EQ(robot->GetName(), expectedRobotName);
 
-    std::vector<float> expectedRobotPos{2, 5};
+    std::vector<float> expectedRobotPos{2, 5, 0};
     ASSERT_EQ(robot->GetPosition(), expectedRobotPos);
-    std::vector<float> expectedRobotDirection{0, 1};
+    std::vector<float> expectedRobotDirection{0, 0, 1};
     ASSERT_EQ(robot->GetDirection(), expectedRobotDirection);
 
     float expectedRobotRadius = 1.0;
@@ -89,12 +89,12 @@ namespace csci3081
     JsonHelper::AddStringToJsonObject(obj, "name", "robot");
     std::vector<float> position_to_add;
     position_to_add.push_back(2);
-    
     position_to_add.push_back(5);
+    position_to_add.push_back(0);
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "position", position_to_add);
     std::vector<float> direction_to_add;
     direction_to_add.push_back(0);
-    
+    direction_to_add.push_back(0);
     direction_to_add.push_back(1);
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
@@ -105,12 +105,12 @@ namespace csci3081
 
     std::vector<float> new_position_to_add;
     new_position_to_add.push_back(2);
-    
-    new_position_to_add.push_back(6);
+    new_position_to_add.push_back(5);
+    new_position_to_add.push_back(1);
 
     std::vector<float> expectedDirection;
     expectedDirection.push_back(0);
-    
+    expectedDirection.push_back(0);
     expectedDirection.push_back(1);
 
     robot->CalculateAndUpdateRobotDirection(new_position_to_add);
@@ -119,4 +119,3 @@ namespace csci3081
   }
 
 } // namespace csci3081
-

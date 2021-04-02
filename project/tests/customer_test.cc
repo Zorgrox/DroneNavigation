@@ -50,7 +50,7 @@ namespace csci3081
     IEntity *customerEntity = system->CreateEntity(obj);
     Customer *customer = dynamic_cast<Customer *>(customerEntity);
 
-    int expectedCustomerId = 1;
+    int expectedCustomerId = 0;
     int actualCustomerId = customer->GetId();
     ASSERT_EQ(customer->GetId(), expectedCustomerId);
 
