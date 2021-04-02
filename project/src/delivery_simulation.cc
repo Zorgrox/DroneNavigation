@@ -101,6 +101,20 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
         actual_drone->SetNewCurRoute(anotherRoute);
         actual_drone->SetOnTheWayToPickUpPackage(true);
         actual_drone->SetOnTheWayToDropOffPackage(false);
+		///////////////// notify that the drone is moving to the package
+		   /* picojson::object obj9 = JsonHelper::CreateJsonObject();
+		   JsonHelper::AddStringToJsonObject(obj9, "type", "notify");
+		   JsonHelper::AddStringToJsonObject(obj9, "value", "moving");
+		   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj9, "path", anotherRoute);
+		   picojson::value val9 = JsonHelper::ConvertPicojsonObjectToValue(obj9);
+
+		   for (IEntityObserver *obs : observers_)
+		   {
+			 const IEntity *temp_drone = actual_drone;
+			 obs->OnEvent(val9, *temp_drone);
+		   } */
+		
+		/////////////////
       }
     }
     dronesIndex = dronesIndex + 1;
@@ -136,11 +150,25 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
     }
   }
   std::cout << "Done with schedule delivery" << std::endl;
+
+  // Notify the observers that the package has been scheduled
+  picojson::object obj = JsonHelper::CreateJsonObject();
+  JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+  JsonHelper::AddStringToJsonObject(obj, "value", "scheduled");
+  picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+  for (IEntityObserver* obs : observers_) {
+    obs->OnEvent(val, *package);
+  }
 }
 
-void DeliverySimulation::AddObserver(IEntityObserver* observer) {}
+void DeliverySimulation::AddObserver(IEntityObserver* observer) {
+  observers_.push_back(observer);
+}
 
-void DeliverySimulation::RemoveObserver(IEntityObserver* observer) {}
+void DeliverySimulation::RemoveObserver(IEntityObserver* observer) {
+  observers_.erase(std::remove(observers_.begin(), observers_.end(), observer), observers_.end());
+}
 
 const std::vector<IEntity*>& DeliverySimulation::GetEntities() const { return entities_; }
 
@@ -148,10 +176,10 @@ void DeliverySimulation::Update(float dt) {
   // std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
   if (GetEntities().size() > 0 ) {
     for (Drone* actual_drone : drones_) {
-      actual_drone->Update(systemGraph, dt);
+      actual_drone->Update(systemGraph, observers_, dt);
     }
     for (Robot* actual_robot : robots_) {
-      actual_robot -> Update(systemGraph, dt);
+      actual_robot -> Update(systemGraph, observers_, dt);
     }
   }
 }

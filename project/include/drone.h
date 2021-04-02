@@ -131,7 +131,7 @@ namespace csci3081 {
     /**
     *  This function is called in the Delivery Simulation's update function. It updates the drone's velocity and position based on the graph's path.
     */
-    void Update(const IGraph* graph, float dt);
+    void Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt);
 
     /**
     *  This function should check whether the package is ready to be picked up, within the radius
@@ -208,7 +208,9 @@ namespace csci3081 {
     bool onTheWayToPickUpPackage;
     bool onTheWayToDropOffPackage;
     bool isCarryingPackage;
+	bool notified = false;
     float speed;
+	int waiter=0;
 
     std::vector<std::vector<float>> curRoute;
     int curRouteNextIndex;

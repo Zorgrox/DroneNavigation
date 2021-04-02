@@ -148,14 +148,35 @@ namespace csci3081 {
     }
   }
 
-  void Drone::Update(const IGraph* graph, float dt)
+  void Drone::Update(const IGraph *graph, std::vector<IEntityObserver *>& observers, float dt)
   {
-
     std::cout << "These print statements are for Drone name " << name << std::endl;
     std::cout << "===================================" << std::endl;
 
     if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
     {
+		
+	  if(!notified) // Checks to see if its announced that its on its way to the package
+	  {
+			
+		if (waiter==30){ //Presumably due to threading of some sort, we need to wait for currRoute to actually be there 
+		   picojson::object obj2 = JsonHelper::CreateJsonObject();
+		   JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
+		   JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
+		   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
+		   picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
+		   for (IEntityObserver *obs : observers)
+		   {
+			 const IEntity *temp_drone = this;
+			 obs->OnEvent(val2, *temp_drone);
+		   }
+		  
+		notified=true;}
+		else
+		{waiter++;}
+	  }
+	
+		
       std::cout << "I'm on the way to pick up the package" << std::endl;
       // The drone is on the way to pick up a package.
       if (CheckReadyToPickUp())
@@ -171,6 +192,31 @@ namespace csci3081 {
         SetOnTheWayToDropOffPackage(true);
         curRouteNextIndex = 1;
         std::cout << "Switching over to dropping package off" << std::endl;
+
+        // Notify the observers that the package has been picked up
+        picojson::object obj = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj, "value", "en route");
+        picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+        for (IEntityObserver *obs : observers)
+        {
+          const IEntity *temp_pkg = GetCurPackage();
+          obs->OnEvent(val, *temp_pkg);
+        }
+		///////// Notifies that it is moving when it picks up the package
+	   picojson::object obj2 = JsonHelper::CreateJsonObject();
+	   JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
+	   JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
+	   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
+	   picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
+	   for (IEntityObserver *obs : observers)
+	   {
+		 const IEntity *temp_drone = this;
+		 obs->OnEvent(val2, *temp_drone);
+	   }
+		/////////////
+		
       }
       else
       {
@@ -204,6 +250,33 @@ namespace csci3081 {
         curRouteNextIndex = 1;
         DropOffPackage();
 
+        // Notify the observers that the package has been delivered
+        picojson::object obj = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj, "value", "delivered");
+        picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+        for (IEntityObserver *obs : observers)
+        {
+          const IEntity *temp_pkg = GetCurPackage();
+          obs->OnEvent(val, *temp_pkg);
+        }
+
+		
+		///////// Notifies that it is idle since dropped off package
+	   picojson::object obj3 = JsonHelper::CreateJsonObject();
+	   JsonHelper::AddStringToJsonObject(obj3, "type", "notify");
+	   JsonHelper::AddStringToJsonObject(obj3, "value", "idle");
+	   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj3, "path", curRoute);
+	   picojson::value val3 = JsonHelper::ConvertPicojsonObjectToValue(obj3);
+	   for (IEntityObserver *obs : observers)
+	   {
+		 const IEntity *temp_drone = this;
+		 obs->OnEvent(val3, *temp_drone);
+	   }
+		/////////////
+		
+		
         // if there's another package it has to go to, then assign this new package to the curPackage
         if (assignedPackageIndex < GetNumAssignedPackages()) {
           UpdateCurPackage();
@@ -332,6 +405,8 @@ namespace csci3081 {
     curPackage->SetPosition(outOfTheWayPosition);
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
+	notified=false;
+	waiter=0;
     // also set the drone's direction to 0,0,0 so that we stop moving
     std::vector<float> stopMoving{0.0001,0.0001,0.0001};
     UpdateDroneVelocity(stopMoving);
@@ -356,6 +431,8 @@ namespace csci3081 {
     curRoute = newCurRoute;
     curRouteLength = curRoute.size();
     curRouteNextIndex = 1;
+		   
+	
   }
 
   int Drone::GetCurRouteLength() {

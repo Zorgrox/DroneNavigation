@@ -1,0 +1,5 @@
+Date: March 28th, 2021
+Issues Addressed: Implement Observer Pattern
+Priority Person: Claire Yang
+Worked with: n/a for now
+Description: Claire Yang coded out the Observer Pattern for Packages and Drones.
