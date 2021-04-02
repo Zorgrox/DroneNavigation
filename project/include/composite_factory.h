@@ -45,7 +45,7 @@ namespace csci3081
 
   private:
     std::vector<IEntityFactory*> factories;
-    std::vector<std::string> types_list{"drone", "customer", "package"};
+    std::vector<std::string> types_list{"drone", "robot", "customer", "package"};
   };
 
 } // namespace csci3081

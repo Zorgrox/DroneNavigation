@@ -1,19 +1,19 @@
 #include "customer.h"
 #include "json_helper.h"
 #include "vector3d.h"
-
 #include <iostream>
 
 namespace csci3081
 {
   Customer::Customer(const picojson::object &obj)
   {
-    id = customerId;
-    std::cout << "This is customer ID: " << customerId << std::endl;
+    //std::cout << "This is customer ID: " << customerId << std::endl;
     name = JsonHelper::GetString(obj, "name");
-    std::vector<float> position = JsonHelper::GetStdFloatVector(obj, "position");
-    std::vector<float> direction = JsonHelper::GetStdFloatVector(obj, "direction");
-    positionAndDirection = new Vector3D(position, direction);
+    std::vector<float> positionVec = JsonHelper::GetStdFloatVector(obj, "position");
+    std::vector<float> directionVec = JsonHelper::GetStdFloatVector(obj, "direction");
+    position = new Vector3D(positionVec);
+    direction = new Vector3D(directionVec);
+    direction->Normalize();
     radius = (float) JsonHelper::GetDouble(obj, "radius");
 
     details_ = obj;
@@ -23,6 +23,9 @@ namespace csci3081
   {
     return id;
   }
+  void Customer::SetId(int ID) {
+	  id = ID;
+  }
 
   const std::string &Customer::GetName()
   {
@@ -31,16 +34,19 @@ namespace csci3081
 
   const std::vector<float> &Customer::GetPosition() const
   {
-    if (positionAndDirection) {
-      return positionAndDirection->GetPosition();
-    } else {
-      std::cout << "positionAndDirection in Customer is NULL" << std::endl;
+    if (position)
+    {
+      return position->GetVector();
+    }
+    else
+    {
+      std::cout << "position in Customer is NULL" << std::endl;
     }
   }
 
   const std::vector<float> &Customer::GetDirection() const
   {
-    return positionAndDirection->GetDirection();
+    return direction->GetVector();
   }
 
   float Customer::GetRadius() const

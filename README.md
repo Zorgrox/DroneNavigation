@@ -1,3 +1,9 @@
+## Group members
+* yang5063
+* joh13503
+* conne457
+* Ahmed844 
+
 ## Pre-requisites
   * [Git](https://git-scm.com/)
 
