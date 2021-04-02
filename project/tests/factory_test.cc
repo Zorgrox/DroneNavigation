@@ -25,20 +25,24 @@ class FactoryTest : public ::testing::Test {
  * Test Cases
  ******************************************************************************/
 
+// Original test to create the drone
 TEST_F(FactoryTest, DroneCreated) {
   picojson::object obj = JsonHelper::CreateJsonObject();
   JsonHelper::AddStringToJsonObject(obj, "type", "drone");
+  JsonHelper::AddStringToJsonObject(obj, "name", "drone");
   std::vector<float> position_to_add;
-  position_to_add.push_back(498.292);
-  position_to_add.push_back(253.883);
-  position_to_add.push_back(-228.623);
+  position_to_add.push_back(2);
+  position_to_add.push_back(4);
+  position_to_add.push_back(5);
   JsonHelper::AddStdFloatVectorToJsonObject(obj, "position", position_to_add);
   std::vector<float> direction_to_add;
+  direction_to_add.push_back(0);
+  direction_to_add.push_back(0);
   direction_to_add.push_back(1);
-  direction_to_add.push_back(0);
-  direction_to_add.push_back(0);
   JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
-  IEntity* entity = system->CreateEntity(obj);
+  JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
+  JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
+  IEntity *entity = system->CreateEntity(obj);
 
   // Checks that the returned entity is not NULL
   ASSERT_NE(entity, nullptr) << "The entity created";
@@ -51,9 +55,34 @@ TEST_F(FactoryTest, DroneCreated) {
   ASSERT_FLOAT_EQ(entity->GetDirection()[1], direction_to_add[1]);
   ASSERT_FLOAT_EQ(entity->GetDirection()[2], direction_to_add[2]);
 
-  // Checks that when GetDetails() is called, the entity returns 
+  // Checks that when GetDetails() is called, the entity returns
   //  the picojson object that was used to initialize it
   ASSERT_EQ(picojson::value(system->GetEntities()[0]->GetDetails()).serialize(), picojson::value(obj).serialize());
+  }
 
-}
+  // Test that the composite factory creates the right type of entity
+  TEST_F(FactoryTest, CompositeFactoryTest) {
+    picojson::object obj = JsonHelper::CreateJsonObject();
+    JsonHelper::AddStringToJsonObject(obj, "type", "drone");
+    JsonHelper::AddStringToJsonObject(obj, "name", "drone");
+    std::vector<float> position_to_add;
+    position_to_add.push_back(2);
+    position_to_add.push_back(4);
+    position_to_add.push_back(5);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj, "position", position_to_add);
+    std::vector<float> direction_to_add;
+    direction_to_add.push_back(0);
+    direction_to_add.push_back(0);
+    direction_to_add.push_back(1);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
+    JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
+    JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
+    IEntity *entity = system->CreateEntity(obj);
+
+    CompositeFactory *compositeFactory_ = new CompositeFactory();
+    IEntity* drone = compositeFactory_->CreateEntity(obj);
+
+    ASSERT_EQ(drone->GetId(), entity->GetId());
+
+  }
 }  // namespace csci3081

@@ -1,0 +1,5 @@
+Date: March 28th, 2021
+Issues Addressed: Refactor Vector3D and Refactor Entities for new Vector3D
+Priority Person: Claire Yang
+Worked with: Casey Connell, David Johnson
+Description: Claire Yang did all of the refactoring of the code. Casey and David contributed their design ideas, based on their own Iteration One solutions.

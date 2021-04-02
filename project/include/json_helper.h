@@ -19,13 +19,13 @@ public:
    * Look at project/web/scenes/umn.json lines 5-18 for an example of how an entity is represeted in
    * a json object, or use JsonHelper::PrintEntityDetails(const picojson::object& val) to print the
    * object's contents to the terminal.
-   * 
+   *
    * Examples:
-   * 
+   *
    * `vector<float> position = JsonHelper::GetStdFloatVector(val, "position");`
-   * 
+   *
    * `string type = JsonHelper::GetString(val, "type");`
-   * 
+   *
    * ```
    * bool contains = JsonHelper::ContainsKey(val, "battery_capacity");
    * if (contains)...
@@ -50,7 +50,7 @@ public:
     }
     return obj.find(key)->second;
   }
-  
+
   /// Returns the key from json object obj as a json object, throws error if key doesn't exist.
   static const picojson::object& GetObject(const picojson::object& obj, std::string key) {
     if (!JsonHelper::ContainsKey(obj, key)) {
@@ -58,7 +58,7 @@ public:
     }
       return GetValue(obj, key).get<picojson::object>();
   }
-  
+
   /// Returns the key from json object obj as a json array, will throw an error if key doesn't exist.
   static const picojson::array& GetArray(const picojson::object& obj, std::string key) {
     if (!JsonHelper::ContainsKey(obj, key)) {
@@ -66,7 +66,7 @@ public:
     }
       return GetValue(obj, key).get<picojson::array>();
   }
-  
+
   /// Returns the key from json object obj as a string, will throw an error if key doesn't exist.
   static std::string GetString(const picojson::object& obj, std::string key) {
     if (!JsonHelper::ContainsKey(obj, key)) {
@@ -74,7 +74,7 @@ public:
     }
       return GetValue(obj, key).get<std::string>();
   }
-  
+
   /// Returns the key from json object obj as a double, will throw an error if key doesn't exist.
   static double GetDouble(const picojson::object& obj, std::string key) {
     if (!JsonHelper::ContainsKey(obj, key)) {
@@ -95,7 +95,7 @@ public:
     }
     return vec;
   }
-  
+
   /// Returns a boolean value of whether the json object obj contains key or not
   static bool ContainsKey(const picojson::object& obj, std::string key) {
     return obj.find(key) != obj.end();
@@ -176,7 +176,7 @@ public:
 
 
   /********************** Printing functions **************************/
-  
+
   /// Helper method for PrintEntityDetails.
   static void PrintArray(const picojson::array& arr) {
     std::cout << "Printing Array:" << std::endl << std::endl;
@@ -186,7 +186,7 @@ public:
       std::cout << "    " << key << std::endl;
     }
   }
-  
+
   /// Helper method for PrintEntityDetails.
   static void PrintKeyValues(const picojson::object& obj, std::string prefix = "  ") {
     std::cout << "PrintKeyValues ---------" << std::endl;
@@ -195,13 +195,13 @@ public:
       }
     std::cout << "End PrintKeyValues ---------" << std::endl;
   }
-  
+
   /// Helper method for PrintEntityDetails.
   static void Print(const picojson::object& obj, std::string prefix = "  ") {
     picojson::value val(obj);
     std::cout << prefix << val.serialize() << std::endl;
   }
-  
+
   /// Prints the details of a json object representation of an entity.
   static void PrintEntityDetails(const picojson::object& val) {
     std::cout << "\n------JSON:------" << std::endl;

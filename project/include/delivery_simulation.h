@@ -10,6 +10,11 @@
 #include <EntityProject/facade/delivery_system.h>
 #include <vector>
 #include <string>
+#include "composite_factory.h"
+#include "customer.h"
+#include "package.h"
+#include "drone.h"
+#include "robot.h"
 
 namespace csci3081 {
 
@@ -71,7 +76,7 @@ class DeliverySimulation : public IDeliverySystem {
 
   /**
   This function should simply store a reference to the IGraph* somewhere.
-  The IGraph contains useful functions such as the GetPath function which can 
+  The IGraph contains useful functions such as the GetPath function which can
   be used to get a path from one position to another.
   */
   void SetGraph(const IGraph* graph);
@@ -80,15 +85,15 @@ class DeliverySimulation : public IDeliverySystem {
   This function tells the simulation that the IEntity* package should be delivered
   to the IEntity* dest (which is likely a customer). How the delivery takes place
   is entirely dependent on how you design your code, but it should involve a drone
-  navigating to the package, picking it up, and then moving to the customer and 
+  navigating to the package, picking it up, and then moving to the customer and
   dropping the package.
   */
   void ScheduleDelivery(IEntity* package, IEntity* dest);
 
-  /** Observer functions will not be used in iteration1 */
+  /** Adds the observer to the delivery simulation */
   void AddObserver(IEntityObserver* observer);
 
-  /** Observer functions will not be used in iteration1 */
+  /** Remove the observer to the delivery simulation */
   void RemoveObserver(IEntityObserver* observer);
 
   /**
@@ -97,7 +102,7 @@ class DeliverySimulation : public IDeliverySystem {
   const std::vector<IEntity*>& GetEntities() const;
 
   /**
-  This function is used to advance time in the simulation. float dt refers to the 
+  This function is used to advance time in the simulation. float dt refers to the
   amount of time the update call should advance the simulation by. For instance if a drone
   moves 1 unit of distance per unit of time, and Update is called with dt=.05, then the
   drone should move 1 * .05 = .05 units of distance.
@@ -109,8 +114,20 @@ class DeliverySimulation : public IDeliverySystem {
   void Update(float dt);
 
   /**
+   *  This function should be used to print out the values of a vector
+   */
+
+  void Print(std::vector<float> &vectorOutput);
+
+  /**
+   *  This function should be used to print out the values of the path
+   */
+
+  void PrintPath(std::vector<std::vector<float>> &vectorOutput);
+
+  /**
    * @brief You do not need to worry about this function
-   * 
+   *
    * This function takes care of turning json into function calls of your system.
    * YOU DO NOT NEED TO IMPLEMENT THIS
    *it is already implemented in the delivery_simulation.cc we have provided.
@@ -118,10 +135,23 @@ class DeliverySimulation : public IDeliverySystem {
   void RunScript(const picojson::array& script, IEntitySystem* system) const;
 
  private:
-  // You don't strictly need to use the following variable, but it is probably
-  // the most straightforward way of storing the entities in the system.
-  // Feel free to use it as is or change it.
   std::vector<IEntity*> entities_;
+  std::vector<Drone*> drones_;
+  std::vector<Robot*> robots_;
+  std::vector<Customer*> customers_;
+  std::vector<Package*> packages_;
+  CompositeFactory* compositeFactory_;
+  const IGraph* systemGraph;
+
+  int dronesIndex;
+  int robotsIndex;
+  bool assignPackageToDrone = false;
+
+  std::vector<std::vector<float>> curRoute;
+  int curRouteNextIndex;
+  int curRouteLength;
+  std::vector<IEntityObserver*> observers_;
+  int DelivIDs = 0;
 };
 
 }  // namespace csci3081
