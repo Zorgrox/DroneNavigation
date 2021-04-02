@@ -1,0 +1,5 @@
+Date: March 30th, 2021
+Issues Addressed: Implement the Robot class so that it can 
+Priority Person: Abdirashid Ahmed
+Worked with: Casey Connell, Claire Yang
+Description: Abdirashid wrote the initial Robot class. Casey and Abdirashid worked together to debug the assigning multiple packages to the Robot class. Claire integrated the Robot class with the refactored delivery simulation code.

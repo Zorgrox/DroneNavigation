@@ -1,5 +1,5 @@
 Date: March 28th, 2021
 Issues Addressed: Implement Observer Pattern
-Priority Person: Claire Yang
-Worked with: n/a for now
-Description: Claire Yang coded out the Observer Pattern for Packages and Drones.
+Priority Person: David Johnson
+Worked with: Claire Yang
+Description: David debugged and coded out all of the Drone/Robot path notifications. Claire Yang helped with debugging the package notifications.
