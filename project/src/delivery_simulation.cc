@@ -90,7 +90,7 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
     Drone* actual_drone = drones_.at(dronesIndex);
     if(actual_drone) {
       actual_drone->AddAssignedPackage(*actual_package);
-
+      do {
       if (actual_drone->GetNumAssignedPackages() == 1) {
         // assign the curPackage if it's the first one assigned to the drone
         actual_drone->UpdateCurPackage();
@@ -98,6 +98,8 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
         std::vector<float> drones_position = actual_drone->GetPosition();
         std::vector<float> packages_position = actual_package->GetPosition();
         std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
+
+	actual_drone->SetFlightBehavior(drones_position, packages_position);
         actual_drone->SetNewCurRoute(anotherRoute);
         actual_drone->SetOnTheWayToPickUpPackage(true);
         actual_drone->SetOnTheWayToDropOffPackage(false);
@@ -116,6 +118,7 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
 		
 		/////////////////
       }
+      } while (actual_drone->GetNumAssignedPackages() == 0);
     }
     dronesIndex = dronesIndex + 1;
     if (dronesIndex == drones_.size()) {

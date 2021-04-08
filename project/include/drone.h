@@ -13,6 +13,8 @@
 #include "vector3d.h"
 #include "package.h"
 #include "battery.h"
+//#include "flight_behavior.h"
+#include "parabolic_flight.h"
 
 namespace csci3081 {
 
@@ -57,6 +59,13 @@ namespace csci3081 {
    *  This function should return the direction of the drone
    */
     const std::vector<float> &GetDirection() const;
+    
+    
+    float GetSpeed();
+    
+    void SetDirection(std::vector<float> newDirection);
+    
+    void SetPosition(std::vector<float> newPosition);
 
   /**
    *  This function should return the radius of the drone
@@ -76,7 +85,7 @@ namespace csci3081 {
   /**
    *  This function should return a pointer to the current package that the drone is looking for/carrying
    */
-    const Package* GetCurPackage();
+    Package* GetCurPackage();
 
     /**
    *  This function should set the current package of the drone to a different package. Should only be called when we want to set the current package of the drone to another package.
@@ -192,6 +201,8 @@ namespace csci3081 {
     *  This function increments the index of the next stop within the curRoute
     */
     void IncrementCurRouteNextIndex();
+    
+    void SetFlightBehavior(std::vector<float> pos, std::vector<float> target);
 
   private:
     int id;
@@ -215,6 +226,8 @@ namespace csci3081 {
     std::vector<std::vector<float>> curRoute;
     int curRouteNextIndex;
     int curRouteLength;
+    
+    FlightBehavior* FlightStrategy;
     };
 
 } // namespace csci3081

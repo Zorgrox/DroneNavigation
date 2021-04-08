@@ -311,6 +311,7 @@ namespace csci3081 {
         UpdateRobotPosition(dt);
       }
     }
+    std::cout << "Exiting RobotUpdate()\n";
   }
 
   bool Robot::CheckReadyToPickUp()
