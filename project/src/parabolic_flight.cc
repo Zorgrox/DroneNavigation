@@ -81,7 +81,7 @@ ParabolicFlight::ParabolicFlight() {
     tripDistance = CalculateDistance(pos, target);
     std::cout << "Trip Distance: " << tripDistance << std::endl;
     //parabolic height is currently set here as 10% of the trip distance
-    parabolicHeight = tripDistance * 0.10;
+    parabolicHeight = tripDistance * 0.15;
     std::cout << "Parabola Height: " << parabolicHeight << std::endl;
     initialY = pos.at(1); 
     std::cout << "initial Y-value: " << initialY << std::endl;
@@ -90,5 +90,9 @@ ParabolicFlight::ParabolicFlight() {
     flightTarget = target;
     std::cout << "madehere\n";
 }
+
+  void ParabolicFlight::SetFlightDetails(std::vector<float> pos,std::vector<float> target,  IGraph* newGraph) {
+    SetFlightDetails(pos, target);
+  }
 
 }

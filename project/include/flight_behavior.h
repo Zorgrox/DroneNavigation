@@ -3,6 +3,7 @@
 #define FLIGHT_BEHAVIOR_H
 
 //#include "drone.h"
+#include <EntityProject/facade/delivery_system.h>
 
 namespace csci3081 {
 
@@ -10,9 +11,10 @@ namespace csci3081 {
 class FlightBehavior {
 	public:
 	virtual void FlightUpdate(float dt, std::vector<float>& pos, std::vector<float>& dir) = 0;
+	virtual void SetFlightDetails(std::vector<float> pos, std::vector<float> target,  IGraph* newGraph) = 0;
 	virtual void SetFlightDetails(std::vector<float> pos, std::vector<float> target) = 0;
-	//protected:
-	//	Drone* drone_self;
+	
+	
 };
 
 }

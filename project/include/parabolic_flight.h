@@ -15,6 +15,8 @@ class ParabolicFlight : public FlightBehavior {
 		
 		void FlightUpdate(float dt, std::vector<float>& pos, std::vector<float>& dir);
 		
+		void SetFlightDetails(std::vector<float> pos,std::vector<float> target,  IGraph* newGraph);
+		
 		void SetFlightDetails(std::vector<float> pos,std::vector<float> target);
 		
 		float CalculateDistance(std::vector<float> pos,std::vector<float> target);

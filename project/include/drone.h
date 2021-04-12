@@ -15,6 +15,9 @@
 #include "battery.h"
 //#include "flight_behavior.h"
 #include "parabolic_flight.h"
+#include "beeline_flight.h"
+#include "path_flight.h"
+#include <EntityProject/facade/delivery_system.h>
 
 namespace csci3081 {
 
@@ -34,11 +37,12 @@ namespace csci3081 {
    * @brief Constructor: set up a Drone according to the details in the JSON object
    */
     Drone(const picojson::object &obj);
-
   /**
    *  This function should return the id of the drone
    */
     int GetId() const;
+    
+    void AddGraphPath(const IGraph* newGraph);
 
     /**
    *  This function should set the id of the drone
@@ -202,7 +206,7 @@ namespace csci3081 {
     */
     void IncrementCurRouteNextIndex();
     
-    void SetFlightBehavior(std::vector<float> pos, std::vector<float> target);
+    void SetFlightBehavior(std::vector<float> pos, std::vector<float> target, IGraph* newGraph);
 
   private:
     int id;
