@@ -32,7 +32,8 @@ namespace csci3081 {
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
     isCarryingPackage = false;
-    battery = new Battery(10000);
+    // TODO: change back to 10,000?
+    battery = new Battery(50);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     assignedPackageIndex = 0;
     details_ = obj;
@@ -49,7 +50,6 @@ namespace csci3081 {
   void Drone::AddGraphPath(const IGraph* newGraph) {
     dynamic_cast<PathFlight*>(flightStrategy)->AddGraph(newGraph);
   }
-
 
   int Drone::GetId() const {
     return id;
@@ -142,29 +142,35 @@ namespace csci3081 {
     battery->DecrementCurrentCharge(decrAmount);
   }
 
-
-  void Drone::UpdateDronePosition(float dt) {
+  void Drone::UpdateDronePosition(float dt, std::vector<IEntityObserver *> &observers)
+  {
     //capture the references to this drone's position and direction to use in FlightUpdate()
     std::vector<float> &tmpPos = const_cast<std::vector<float> &>(GetPosition());
     std::vector<float> &tmpDir = const_cast<std::vector<float> &>(GetDirection());
     float speed_dt = (GetSpeed() * dt);
-    flightStrategy->FlightUpdate(speed_dt, tmpPos, tmpDir);
-
-    // if (battery->GetIsEmpty()==false) {
-    //     // position->SetVector(newPosition);
-
-    //     if (isCarryingPackage) {
-    //       // then also update the package's position
-    //       curPackage->SetPosition(newPosition);
-    //     }
-    UpdateBatteryCharge(-dt);
-    std::cout << "This is battery charge: " << battery->GetCurrentCharge() << std::endl;
-
-      // else {
-      // TODO: The battery is empty! So we have to announce that the drone/robot is in idle, since it's out of battery
-      // also make it drop the package, since it's out of battery...
-      // }
+    if (battery->GetIsEmpty()==false) {
+      flightStrategy->FlightUpdate(speed_dt, tmpPos, tmpDir);
+      UpdateBatteryCharge(dt);
     }
+    if (battery->GetIsEmpty() == true) {
+      // The battery is now empty (after moving in the condition above)! So we have to announce that the drone / robot is in idle, since it's out of battery picojson::object obj3 = JsonHelper::CreateJsonObject();
+      picojson::object obj3 = JsonHelper::CreateJsonObject();
+      JsonHelper::AddStringToJsonObject(obj3, "type", "notify");
+      JsonHelper::AddStringToJsonObject(obj3, "value", "idle");
+      JsonHelper::AddStdVectorVectorFloatToJsonObject(obj3, "path", curRoute);
+      picojson::value val3 = JsonHelper::ConvertPicojsonObjectToValue(obj3);
+      for (IEntityObserver *obs : observers)
+      {
+        const IEntity *temp_drone = this;
+        obs->OnEvent(val3, *temp_drone);
+      }
+      if (isCarryingPackage) {
+        SetIsCarryingPackage(false);
+        // TODO: reschedule the package to another drone/robot, since this one is no longer active (no battery left)
+      }
+    }
+      std::cout << "This is battery charge: " << battery->GetCurrentCharge() << std::endl;
+  }
 
   void Drone::UpdateDroneVelocity(std::vector<float> &newVelocity) {
     direction->SetVector(newVelocity);
@@ -180,11 +186,56 @@ namespace csci3081 {
     std::cout << "These print statements are for Drone name " << name << std::endl;
     std::cout << "===================================" << std::endl;
 
-    if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
-    {
-      if(!notified) // Checks to see if its announced that its on its way to the package
+    if (battery->GetIsEmpty() == false) {
+      // NOTE: we only execute the code in this Update function if there is >0 battery left. Otherwise, we remain idle.
+      if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
       {
-        if (waiter==30) { //Presumably due to threading of some sort, we need to wait for currRoute to actually be there
+        if(!notified) // Checks to see if its announced that its on its way to the package
+        {
+          if (waiter==30) { //Presumably due to threading of some sort, we need to wait for currRoute to actually be there
+            picojson::object obj2 = JsonHelper::CreateJsonObject();
+            JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
+            JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
+            JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
+            picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
+            for (IEntityObserver *obs : observers)
+            {
+              const IEntity *temp_drone = this;
+              obs->OnEvent(val2, *temp_drone);
+            }
+            notified=true;
+          }
+          else
+          { waiter++; }
+        }
+        std::cout << "I'm on the way to pick up the package" << std::endl;
+        // The drone is on the way to pick up a package.
+        if (CheckReadyToPickUp())
+        {
+          PickUpPackage();
+          // Update the path so that it's now pointed towards the customer's location
+
+          std::vector<float> currentPos = GetPosition();
+          std::vector<float> customerPos = GetCurPackage()->GetDestination();
+          flightStrategy->SetFlightDetails(currentPos, customerPos);
+
+          SetOnTheWayToPickUpPackage(false);
+          SetOnTheWayToDropOffPackage(true);
+          curRouteNextIndex = 1;
+          std::cout << "Switching over to dropping package off" << std::endl;
+
+          // Notify the observers that the package has been picked up
+          picojson::object obj = JsonHelper::CreateJsonObject();
+          JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+          JsonHelper::AddStringToJsonObject(obj, "value", "en route");
+          picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+          for (IEntityObserver *obs : observers)
+          {
+            const IEntity *temp_pkg = GetCurPackage();
+            obs->OnEvent(val, *temp_pkg);
+          }
+          ///////// Notifies that it is moving when it picks up the package
           picojson::object obj2 = JsonHelper::CreateJsonObject();
           JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
           JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
@@ -192,126 +243,69 @@ namespace csci3081 {
           picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
           for (IEntityObserver *obs : observers)
           {
-            const IEntity *temp_drone = this;
-            obs->OnEvent(val2, *temp_drone);
+          const IEntity *temp_drone = this;
+          obs->OnEvent(val2, *temp_drone);
           }
-          notified=true;
         }
         else
-        { waiter++; }
-      }
-      std::cout << "I'm on the way to pick up the package" << std::endl;
-      // The drone is on the way to pick up a package.
-      if (CheckReadyToPickUp())
-      {
-        PickUpPackage();
-        // Update the path so that it's now pointed towards the customer's location
-
-        std::vector<float> currentPos = GetPosition();
-        std::vector<float> customerPos = GetCurPackage()->GetDestination();
-        flightStrategy->SetFlightDetails(currentPos, customerPos);
-        /*
-        std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), GetCurPackage()->GetDestination());
-        SetNewCurRoute(anotherRoute);
-        std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-        CalculateAndUpdateDroneDirection(nextPos); */
-        //std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
-        SetOnTheWayToPickUpPackage(false);
-        SetOnTheWayToDropOffPackage(true);
-        curRouteNextIndex = 1;
-        std::cout << "Switching over to dropping package off" << std::endl;
-
-        // Notify the observers that the package has been picked up
-        picojson::object obj = JsonHelper::CreateJsonObject();
-        JsonHelper::AddStringToJsonObject(obj, "type", "notify");
-        JsonHelper::AddStringToJsonObject(obj, "value", "en route");
-        picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
-
-        for (IEntityObserver *obs : observers)
         {
-          const IEntity *temp_pkg = GetCurPackage();
-          obs->OnEvent(val, *temp_pkg);
-        }
-        ///////// Notifies that it is moving when it picks up the package
-        picojson::object obj2 = JsonHelper::CreateJsonObject();
-        JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
-        JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
-        JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
-        picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
-        for (IEntityObserver *obs : observers)
-        {
-        const IEntity *temp_drone = this;
-        obs->OnEvent(val2, *temp_drone);
+          UpdateDronePosition(dt, observers);
         }
       }
-      else
+
+      else if (!GetOnTheWayToPickUpPackage() && GetOnTheWayToDropOffPackage())
       {
-        UpdateDronePosition(dt);
-      }
-      // std::vector<float> &tmpPos = const_cast<std::vector<float>&>(GetPosition());
-      // std::vector<float> &tmpDir = const_cast<std::vector<float>&>(GetDirection());
-      // float speed_dt = (GetSpeed() * dt);
-      // flightStrategy->FlightUpdate(speed_dt, tmpPos, tmpDir);
-    }
-
-    else if (!GetOnTheWayToPickUpPackage() && GetOnTheWayToDropOffPackage())
-    {
-      std::cout << "I'm on the way to drop off the package" << std::endl;
-      if (CheckReadyToDropOff())
-      {
-        // Move the package out of the simulation to remove it
-        curRouteNextIndex = 1;
-        DropOffPackage();
-
-        // Notify the observers that the package has been delivered
-        picojson::object obj = JsonHelper::CreateJsonObject();
-        JsonHelper::AddStringToJsonObject(obj, "type", "notify");
-        JsonHelper::AddStringToJsonObject(obj, "value", "delivered");
-        picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
-
-        for (IEntityObserver *obs : observers)
+        std::cout << "I'm on the way to drop off the package" << std::endl;
+        if (CheckReadyToDropOff())
         {
-          const IEntity *temp_pkg = GetCurPackage();
-          obs->OnEvent(val, *temp_pkg);
+          // Move the package out of the simulation to remove it
+          curRouteNextIndex = 1;
+          DropOffPackage();
+
+          // Notify the observers that the package has been delivered
+          picojson::object obj = JsonHelper::CreateJsonObject();
+          JsonHelper::AddStringToJsonObject(obj, "type", "notify");
+          JsonHelper::AddStringToJsonObject(obj, "value", "delivered");
+          picojson::value val = JsonHelper::ConvertPicojsonObjectToValue(obj);
+
+          for (IEntityObserver *obs : observers)
+          {
+            const IEntity *temp_pkg = GetCurPackage();
+            obs->OnEvent(val, *temp_pkg);
+          }
+
+
+          ///////// Notifies that it is idle since dropped off package
+          picojson::object obj3 = JsonHelper::CreateJsonObject();
+          JsonHelper::AddStringToJsonObject(obj3, "type", "notify");
+          JsonHelper::AddStringToJsonObject(obj3, "value", "idle");
+          JsonHelper::AddStdVectorVectorFloatToJsonObject(obj3, "path", curRoute);
+          picojson::value val3 = JsonHelper::ConvertPicojsonObjectToValue(obj3);
+          for (IEntityObserver *obs : observers)
+          {
+          const IEntity *temp_drone = this;
+          obs->OnEvent(val3, *temp_drone);
+          }
+          /////////////
+
+          // if there's another package it has to go to, then assign this new package to the curPackage
+          if (assignedPackageIndex < GetNumAssignedPackages()) {
+            UpdateCurPackage();
+            // std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), curPackage->GetPosition());
+            // SetNewCurRoute(anotherRoute);
+            flightStrategy->SetFlightDetails(GetPosition(), GetCurPackage()->GetPosition());
+            SetOnTheWayToPickUpPackage(true);
+            SetOnTheWayToDropOffPackage(false);
+          }
         }
-
-
-        ///////// Notifies that it is idle since dropped off package
-        picojson::object obj3 = JsonHelper::CreateJsonObject();
-        JsonHelper::AddStringToJsonObject(obj3, "type", "notify");
-        JsonHelper::AddStringToJsonObject(obj3, "value", "idle");
-        JsonHelper::AddStdVectorVectorFloatToJsonObject(obj3, "path", curRoute);
-        picojson::value val3 = JsonHelper::ConvertPicojsonObjectToValue(obj3);
-        for (IEntityObserver *obs : observers)
+        else
         {
-        const IEntity *temp_drone = this;
-        obs->OnEvent(val3, *temp_drone);
-        }
-        /////////////
+          UpdateDronePosition(dt, observers);
 
-        // if there's another package it has to go to, then assign this new package to the curPackage
-        if (assignedPackageIndex < GetNumAssignedPackages()) {
-          UpdateCurPackage();
-          // std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), curPackage->GetPosition());
-          // SetNewCurRoute(anotherRoute);
-	        flightStrategy->SetFlightDetails(GetPosition(), GetCurPackage()->GetPosition());
-          SetOnTheWayToPickUpPackage(true);
-          SetOnTheWayToDropOffPackage(false);
-        }
-      }
-      else
-      {
-        //capture the refrences to this drone's position and direction to use in FlightUpdate()
-        // std::vector<float> &tmpPos = const_cast<std::vector<float>&>(GetPosition());
-        // std::vector<float> &tmpDir = const_cast<std::vector<float>&>(GetDirection());
-        // float speed_dt = (GetSpeed() * dt);
-        // flightStrategy->FlightUpdate(speed_dt, tmpPos, tmpDir);
-
-        UpdateDronePosition(dt);
-
-        if (isCarryingPackage) {
-          std::vector<float> newPos = (GetPosition());
-          GetCurPackage()->SetPosition(newPos);
+          if (isCarryingPackage) {
+            std::vector<float> newPos = (GetPosition());
+            GetCurPackage()->SetPosition(newPos);
+          }
         }
       }
     }

@@ -134,9 +134,9 @@ namespace csci3081 {
   /**
     *  This function should update the drone's positions
     */
-    void UpdateDronePosition(float dt);
+    void UpdateDronePosition(float dt, std::vector<IEntityObserver *> &observers);
 
-  /**
+    /**
     *  This function should update the drone's velocity
     */
     void UpdateDroneVelocity(std::vector<float> & newVelocity);
