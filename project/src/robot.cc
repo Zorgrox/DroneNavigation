@@ -26,8 +26,7 @@ namespace csci3081 {
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
     isCarryingPackage = false;
-    // TODO: change back to 10000
-    battery = new Battery(10);
+    battery = new Battery(10000);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     details_ = obj;
     assignedPackageIndex = 0;
