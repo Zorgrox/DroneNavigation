@@ -32,8 +32,7 @@ namespace csci3081 {
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
     isCarryingPackage = false;
-    // TODO: change back to 10,000?
-    battery = new Battery(50);
+    battery = new Battery(10000);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     assignedPackageIndex = 0;
     details_ = obj;
@@ -43,7 +42,7 @@ namespace csci3081 {
     std::cout << "This is Drone's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
 
     flightStrategy = new PathFlight(radius);
-    // flightStrategy = new ParabolicFlight();
+    //flightStrategy = new ParabolicFlight();
     //flightStrategy = new BeelineFlight();
   }
 
@@ -169,7 +168,7 @@ namespace csci3081 {
         // TODO: reschedule the package to another drone/robot, since this one is no longer active (no battery left)
       }
     }
-      std::cout << "This is battery charge: " << battery->GetCurrentCharge() << std::endl;
+    std::cout << "This is battery charge: " << battery->GetCurrentCharge() << std::endl;
   }
 
   void Drone::UpdateDroneVelocity(std::vector<float> &newVelocity) {
