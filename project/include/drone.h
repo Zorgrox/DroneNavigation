@@ -41,7 +41,10 @@ namespace csci3081 {
    *  This function should return the id of the drone
    */
     int GetId() const;
-    
+
+    /**
+   *  This function should update the existing graph path
+   */
     void AddGraphPath(const IGraph* newGraph);
 
     /**
@@ -63,12 +66,12 @@ namespace csci3081 {
    *  This function should return the direction of the drone
    */
     const std::vector<float> &GetDirection() const;
-    
-    
+
+
     float GetSpeed();
-    
+
     void SetDirection(std::vector<float> newDirection);
-    
+
     void SetPosition(std::vector<float> newPosition);
 
   /**
@@ -205,7 +208,7 @@ namespace csci3081 {
     *  This function increments the index of the next stop within the curRoute
     */
     void IncrementCurRouteNextIndex();
-    
+
     void SetFlightBehavior(std::vector<float> pos, std::vector<float> target, IGraph* newGraph);
 
   private:
@@ -223,15 +226,15 @@ namespace csci3081 {
     bool onTheWayToPickUpPackage;
     bool onTheWayToDropOffPackage;
     bool isCarryingPackage;
-	bool notified = false;
+	  bool notified = false;
     float speed;
-	int waiter=0;
+	  int waiter=0;
 
     std::vector<std::vector<float>> curRoute;
     int curRouteNextIndex;
     int curRouteLength;
-    
-    FlightBehavior* FlightStrategy;
+    FlightBehavior* flightStrategy;
+
     };
 
 } // namespace csci3081

@@ -19,17 +19,14 @@ namespace csci3081 {
           nextPos = curRoute.at(curRouteNextIndex);
           std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
           //CalculateAndUpdateDroneDirection(nextPos);
-	  //fix
+	        //fix
         } else {
           // We don't need to increment the path index yet
           std::cout << "Don't need to increment path index yet" << std::endl;
           nextPos = curRoute.at(curRouteNextIndex);
           std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
 	 }
-    
 
-
-    
     //increment drone x,y,z position by the stored direction and it's speed and dt seconds
     Vector3D utility(pos);
     std::vector<float> currentPosition = pos;
@@ -42,23 +39,18 @@ namespace csci3081 {
     Vector3D Direction(newDirection);
     Direction.Normalize();
     newDirection = Direction.GetVector();
-    
 
     newDirection = Direction.MultiplyVectorWithFloat(newDirection,speedANDdt);
-    //newDirection now contains the x,z movement offset and will be added to the drone's position  
+    //newDirection now contains the x,z movement offset and will be added to the drone's position
     currentPosition = Direction.AddTwoVectors(currentPosition, newDirection);
-    
-    
 
-    
     // sets the vectors at input refrence pos and dir to the intended position and direction
     pos = currentPosition;
     std::vector<float> tmp = Direction.GetVector();
     dir = tmp;
 }
 
-  float PathFlight::CalculateDistance (std::vector<float> pos, std::vector<float> target){
-    
+  float PathFlight::CalculateDistance (std::vector<float> pos, std::vector<float> target) {
       //calculate distance to package from x, y, z
       float xDist = target.at(0) -pos.at(0);
       float yDist = target.at(1) -pos.at(1);
@@ -67,7 +59,7 @@ namespace csci3081 {
       return distance;
   }
 
-  void PathFlight::SetFlightDetails(std::vector<float> pos, std::vector<float> target,  IGraph* newGraph){
+  void PathFlight::SetFlightDetails(std::vector<float> pos, std::vector<float> target,  IGraph* newGraph) {
     graph = newGraph;
     flightTarget = target;
      std::vector<std::vector<float>> anotherRoute = graph->GetPath(pos, target);
@@ -75,7 +67,6 @@ namespace csci3081 {
     std::cout << "madehereP1\n";
     //std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
     //CalculateAndUpdateDroneDirection(nextPos);
-    
 }
   void PathFlight::SetFlightDetails(std::vector<float> pos, std::vector<float> target) {
      flightTarget = target;
@@ -85,7 +76,7 @@ namespace csci3081 {
   }
 
 
-  bool PathFlight::CheckWhenToIncrementPathIndex(std::vector<float> &nextPosition, std::vector<float> position)  {
+  bool PathFlight::CheckWhenToIncrementPathIndex(std::vector<float> &nextPosition, std::vector<float> position) {
     std::cout << "I am checking when to increment the path index" << std::endl;
 
     //std::vector<float> currentPosition = GetPosition();
@@ -101,8 +92,6 @@ namespace csci3081 {
       std::cout << "It is NOT within radius to increment path index" << std::endl;
       return false;
     }
-  
-
   }
 
   void PathFlight::SetNewCurRoute(std::vector<std::vector<float>> &newCurRoute) {
@@ -110,8 +99,6 @@ namespace csci3081 {
     curRoute = newCurRoute;
     curRouteLength = curRoute.size();
     curRouteNextIndex = 1;
-		   
-	
   }
 
   void PathFlight::AddGraph(const IGraph* newGraph) {
@@ -119,4 +106,3 @@ namespace csci3081 {
   }
 
 }
-

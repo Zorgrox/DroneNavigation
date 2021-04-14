@@ -4,12 +4,9 @@
 
 namespace csci3081 {
 
-ParabolicFlight::ParabolicFlight() {
-  
-}
+  ParabolicFlight::ParabolicFlight() {  }
 
   void ParabolicFlight::FlightUpdate(float speedANDdt, std::vector<float>& pos, std::vector<float>& dir) {
-    
     //increment drone x,z position by the stored direction and it's speed and dt time
     Vector2D Tmp(pos);
     std::vector<float> currentPosition = pos;
@@ -20,16 +17,13 @@ ParabolicFlight::ParabolicFlight() {
     Vector2D Direction(newDirection);
     Direction.Normalize();
     newDirection = Direction.GetVector();
-    
     //float speedAndDT = drone_self->GetSpeed() * dt;
     newDirection = Direction.MultiplyVectorWithFloat(newDirection,speedANDdt);
-    //newDirection now contains the x,z movement offset and will be added to the drone's position  
+    //newDirection now contains the x,z movement offset and will be added to the drone's position
     currentPosition = Direction.AddTwoVectors(currentPosition, newDirection);
-    
-    
+
     //then calculate and increment to the appropriate y position.
 
-    
     std::cout << "In Parabolic FlightUpdate: \n";
     float distance = CalculateDistance(pos,target);
     //calculate incrementY
@@ -56,23 +50,22 @@ ParabolicFlight::ParabolicFlight() {
     /* has to be moved back into drone:
     if (isCarryingPackage) {
       curPackage->SetPosition(parabolicYPos);
-      }*/
+    }*/
 
 }
 
-  float ParabolicFlight::CalculateDistance (std::vector<float> pos, std::vector<float> target){
-    
-      //calculate distance to package from only x and z (y has to be ignored)
+  float ParabolicFlight::CalculateDistance (std::vector<float> pos, std::vector<float> target) {
+      // calculate distance to package from only x and z (y has to be ignored)
       float xDist = target.at(0) -pos.at(0);
       float yDist = target.at(2) - pos.at(2);
       float distance = sqrt(pow((xDist),2.0)+pow((yDist),2.0));
       return distance;
   }
 
-  void ParabolicFlight::SetFlightDetails(std::vector<float> pos, std::vector<float> target){
+  void ParabolicFlight::SetFlightDetails(std::vector<float> pos, std::vector<float> target) {
     //First Setting "beeline" details aka target position saved as float vector flightTarget
     //std::vector<float> currentPosition = drone_self->GetPosition();
-  //std::vector<float> newDirection = flightTarget->SubtractTwoVectors(target, currentPosition);
+    //std::vector<float> newDirection = flightTarget->SubtractTwoVectors(target, currentPosition);
     //flightTarget->SetVector(newDirection);
     //flightTarget->Normalize();
 
@@ -83,7 +76,7 @@ ParabolicFlight::ParabolicFlight() {
     //parabolic height is currently set here as 10% of the trip distance
     parabolicHeight = tripDistance * 0.15;
     std::cout << "Parabola Height: " << parabolicHeight << std::endl;
-    initialY = pos.at(1); 
+    initialY = pos.at(1);
     std::cout << "initial Y-value: " << initialY << std::endl;
     extender = - (parabolicHeight / ((tripDistance/2.0) *( tripDistance/2.0)));
     std::cout << "Extender: " << extender << std::endl;

@@ -35,15 +35,15 @@ namespace csci3081 {
     std::cout << "This is Drone's current position in default constructor: {" << positionVec.at(0) << ", " << positionVec.at(1) << ", " << positionVec.at(2) << "}" << std::endl;
     std::cout << "This is Drone's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
 
-    //FlightStrategy = new PathFlight(radius);
-    FlightStrategy = new ParabolicFlight();
-    //FlightStrategy = new BeelineFlight();
+    //flightStrategy = new PathFlight(radius);
+    flightStrategy = new ParabolicFlight();
+    //flightStrategy = new BeelineFlight();
   }
 
   void Drone::AddGraphPath(const IGraph* newGraph) {
-    dynamic_cast<PathFlight*>(FlightStrategy)->AddGraph(newGraph);
+    dynamic_cast<PathFlight*>(flightStrategy)->AddGraph(newGraph);
   }
- 
+
 
   int Drone::GetId() const {
     return id;
@@ -56,7 +56,7 @@ namespace csci3081 {
     return name;
   }
 
-  
+
   float Drone::GetSpeed() {
     return speed;
   }
@@ -156,7 +156,10 @@ namespace csci3081 {
           curPackage->SetPosition(newPosition);
         }
     UpdateBatteryCharge(-dt);
-
+    }
+    else {
+      // The battery is empty! So we have to announce that the drone/robot is in idle, since it's out of battery
+      // also make it drop the package, since it's out of battery...
     }
 
   }
@@ -177,39 +180,34 @@ namespace csci3081 {
 
     if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
     {
-		
-	  if(!notified) // Checks to see if its announced that its on its way to the package
-	  {
-			
-		if (waiter==30){ //Presumably due to threading of some sort, we need to wait for currRoute to actually be there 
-		   picojson::object obj2 = JsonHelper::CreateJsonObject();
-		   JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
-		   JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
-		   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
-		   picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
-		   for (IEntityObserver *obs : observers)
-		   {
-			 const IEntity *temp_drone = this;
-			 obs->OnEvent(val2, *temp_drone);
-		   }
-		  
-		notified=true;}
-		else
-		{waiter++;}
-	  }
-	
-		
+      if(!notified) // Checks to see if its announced that its on its way to the package
+      {
+        if (waiter==30) { //Presumably due to threading of some sort, we need to wait for currRoute to actually be there
+          picojson::object obj2 = JsonHelper::CreateJsonObject();
+          JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
+          JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
+          JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
+          picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
+          for (IEntityObserver *obs : observers)
+          {
+          const IEntity *temp_drone = this;
+          obs->OnEvent(val2, *temp_drone);
+          }
+        notified=true;}
+        else
+        { waiter++; }
+      }
       std::cout << "I'm on the way to pick up the package" << std::endl;
       // The drone is on the way to pick up a package.
       if (CheckReadyToPickUp())
       {
         PickUpPackage();
         // Update the path so that it's now pointed towards the customer's location
-	
-	std::vector<float> currentPos = GetPosition();
-	std::vector<float> customerPos = GetCurPackage()->GetDestination();
-	FlightStrategy->SetFlightDetails(currentPos, customerPos);
-	/*
+
+        std::vector<float> currentPos = GetPosition();
+        std::vector<float> customerPos = GetCurPackage()->GetDestination();
+        flightStrategy->SetFlightDetails(currentPos, customerPos);
+        /*
         std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), GetCurPackage()->GetDestination());
         SetNewCurRoute(anotherRoute);
         std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
@@ -231,46 +229,42 @@ namespace csci3081 {
           const IEntity *temp_pkg = GetCurPackage();
           obs->OnEvent(val, *temp_pkg);
         }
-		///////// Notifies that it is moving when it picks up the package
-	   picojson::object obj2 = JsonHelper::CreateJsonObject();
-	   JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
-	   JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
-	   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
-	   picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
-	   for (IEntityObserver *obs : observers)
-	   {
-		 const IEntity *temp_drone = this;
-		 obs->OnEvent(val2, *temp_drone);
-	   }
-		/////////////
-		
+        ///////// Notifies that it is moving when it picks up the package
+        picojson::object obj2 = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
+        JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
+        picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
+        for (IEntityObserver *obs : observers)
+        {
+        const IEntity *temp_drone = this;
+        obs->OnEvent(val2, *temp_drone);
+        }
       }
       else
       {
-	/* if (CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
-        {
-          // We should only increment the path index when the drone gets close enough to it that we should be going to the next one
-          std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
-          curRouteNextIndex = curRouteNextIndex + 1;
-          std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-          std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
-          CalculateAndUpdateDroneDirection(nextPos);
-        }
-        else
-        {*/
-          // We don't need to increment the path index yet
-          //std::cout << "Don't need to increment path index yet" << std::endl;
-          //std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-          //std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
-	  // CalculateAndUpdateDroneDirection(nextPos);
-	  // }
-
-	  
+      /* if (CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
+            {
+              // We should only increment the path index when the drone gets close enough to it that we should be going to the next one
+              std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
+              curRouteNextIndex = curRouteNextIndex + 1;
+              std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+              std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+              CalculateAndUpdateDroneDirection(nextPos);
+            }
+            else
+            {*/
+              // We don't need to increment the path index yet
+              //std::cout << "Don't need to increment path index yet" << std::endl;
+              //std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+              //std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+        // CalculateAndUpdateDroneDirection(nextPos);
+        // }
       }
       std::vector<float> &tmpPos = const_cast<std::vector<float>&>(GetPosition());
       std::vector<float> &tmpDir = const_cast<std::vector<float>&>(GetDirection());
       float speed_dt = (GetSpeed() * dt);
-      FlightStrategy->FlightUpdate(speed_dt, tmpPos, tmpDir);
+      flightStrategy->FlightUpdate(speed_dt, tmpPos, tmpDir);
       //UpdateDronePosition(dt);
     }
 
@@ -295,27 +289,26 @@ namespace csci3081 {
           obs->OnEvent(val, *temp_pkg);
         }
 
-		
-		///////// Notifies that it is idle since dropped off package
-	   picojson::object obj3 = JsonHelper::CreateJsonObject();
-	   JsonHelper::AddStringToJsonObject(obj3, "type", "notify");
-	   JsonHelper::AddStringToJsonObject(obj3, "value", "idle");
-	   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj3, "path", curRoute);
-	   picojson::value val3 = JsonHelper::ConvertPicojsonObjectToValue(obj3);
-	   for (IEntityObserver *obs : observers)
-	   {
-		 const IEntity *temp_drone = this;
-		 obs->OnEvent(val3, *temp_drone);
-	   }
-		/////////////
-		
-		
+
+        ///////// Notifies that it is idle since dropped off package
+        picojson::object obj3 = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj3, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj3, "value", "idle");
+        JsonHelper::AddStdVectorVectorFloatToJsonObject(obj3, "path", curRoute);
+        picojson::value val3 = JsonHelper::ConvertPicojsonObjectToValue(obj3);
+        for (IEntityObserver *obs : observers)
+        {
+        const IEntity *temp_drone = this;
+        obs->OnEvent(val3, *temp_drone);
+        }
+        /////////////
+
         // if there's another package it has to go to, then assign this new package to the curPackage
         if (assignedPackageIndex < GetNumAssignedPackages()) {
           UpdateCurPackage();
           //std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), curPackage->GetPosition());
           //SetNewCurRoute(anotherRoute);
-	  FlightStrategy->SetFlightDetails(GetPosition(), GetCurPackage()->GetPosition());
+	        flightStrategy->SetFlightDetails(GetPosition(), GetCurPackage()->GetPosition());
           SetOnTheWayToPickUpPackage(true);
           SetOnTheWayToDropOffPackage(false);
         }
@@ -333,18 +326,19 @@ namespace csci3081 {
           // We don't need to increment the path index yet
           std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
           CalculateAndUpdateDroneDirection(nextPos);
-	  }*/
-	//capture the refrences to this drone's position and direction to use in FlightUpdate()
-	std::vector<float> &tmpPos = const_cast<std::vector<float>&>(GetPosition()); 
-	std::vector<float> &tmpDir = const_cast<std::vector<float>&>(GetDirection());
-	float speed_dt = (GetSpeed() * dt);
-	FlightStrategy->FlightUpdate(speed_dt, tmpPos, tmpDir);
-        //UpdateDronePosition(dt);
-	if (isCarryingPackage) {
-	  std::vector<float> newPos = (GetPosition());
-	  //Package* tmp = con
-	  GetCurPackage()->SetPosition(newPos);
-	}
+	      }*/
+
+        //capture the refrences to this drone's position and direction to use in FlightUpdate()
+        std::vector<float> &tmpPos = const_cast<std::vector<float>&>(GetPosition());
+        std::vector<float> &tmpDir = const_cast<std::vector<float>&>(GetDirection());
+        float speed_dt = (GetSpeed() * dt);
+        flightStrategy->FlightUpdate(speed_dt, tmpPos, tmpDir);
+              //UpdateDronePosition(dt);
+        if (isCarryingPackage) {
+          std::vector<float> newPos = (GetPosition());
+          //Package* tmp = con
+          GetCurPackage()->SetPosition(newPos);
+        }
       }
     }
   }
@@ -449,8 +443,8 @@ namespace csci3081 {
     curPackage->SetPosition(outOfTheWayPosition);
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
-	notified=false;
-	waiter=0;
+	  notified = false;
+	  waiter = 0;
     // also set the drone's direction to 0,0,0 so that we stop moving
     std::vector<float> stopMoving{0.0001,0.0001,0.0001};
     UpdateDroneVelocity(stopMoving);
@@ -475,8 +469,6 @@ namespace csci3081 {
     curRoute = newCurRoute;
     curRouteLength = curRoute.size();
     curRouteNextIndex = 1;
-		   
-	
   }
 
   int Drone::GetCurRouteLength() {
@@ -492,6 +484,6 @@ namespace csci3081 {
   }
 
   void Drone::SetFlightBehavior(std::vector<float> pos, std::vector<float> target, IGraph* newGraph) {
-    FlightStrategy->SetFlightDetails(pos, target, newGraph);
+    flightStrategy->SetFlightDetails(pos, target, newGraph);
   }
 }
