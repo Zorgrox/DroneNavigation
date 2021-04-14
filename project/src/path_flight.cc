@@ -17,14 +17,14 @@ namespace csci3081 {
           std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
           curRouteNextIndex = curRouteNextIndex + 1;
           nextPos = curRoute.at(curRouteNextIndex);
-          std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+          std::cout << "This is Drone/Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
           //CalculateAndUpdateDroneDirection(nextPos);
 	        //fix
         } else {
           // We don't need to increment the path index yet
           std::cout << "Don't need to increment path index yet" << std::endl;
           nextPos = curRoute.at(curRouteNextIndex);
-          std::cout << "This is Drone's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
+          std::cout << "This is Drone/Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
 	 }
 
     //increment drone x,y,z position by the stored direction and it's speed and dt seconds

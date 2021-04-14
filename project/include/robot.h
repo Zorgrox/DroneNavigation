@@ -121,9 +121,9 @@ namespace csci3081 {
   /**
     *  This function should update the robot's positions
     */
-    void UpdateRobotPosition(float dt);
+    void UpdateRobotPosition(float dt, std::vector<IEntityObserver *> &observers);
 
-  /**
+    /**
     *  This function should update the robot's velocity
     */
     void UpdateRobotVelocity(std::vector<float> & newVelocity);
