@@ -13,10 +13,7 @@
 #include "vector3d.h"
 #include "package.h"
 #include "battery.h"
-//#include "flight_behavior.h"
-#include "parabolic_flight.h"
-#include "beeline_flight.h"
-#include "path_flight.h"
+#include "flight_behavior.h"
 #include <EntityProject/facade/delivery_system.h>
 
 namespace csci3081 {
@@ -160,11 +157,6 @@ namespace csci3081 {
     bool CheckReadyToDropOff();
 
     /**
-    *  This function should check whether the drone should be aiming for the next node in the path
-    */
-    bool CheckWhenToIncrementPathIndex(std::vector<float> &nextPosition);
-
-    /**
     *  This function should update the curPackage so that we pick up a new package and set the status of the drone to dropping off the package
     */
     void PickUpPackage();
@@ -235,7 +227,7 @@ namespace csci3081 {
     int curRouteLength;
     FlightBehavior* flightStrategy;
 
-    };
+  };
 
 } // namespace csci3081
 

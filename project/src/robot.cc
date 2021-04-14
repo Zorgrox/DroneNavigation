@@ -158,27 +158,28 @@ namespace csci3081 {
      std::cout << "on way to dropoff: " << GetOnTheWayToDropOffPackage() << std::endl;
     if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
     {
-			
 		///////////////// Checks to see if the route is there or not
 		if(!notified) // Checks to see if its announced that its on its way to the package
 	  {
-		if (waiter==30){ //Presumably due to threading of some sort, we need to wait for currRoute to actually be there 
-		   picojson::object obj2 = JsonHelper::CreateJsonObject();
-		   JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
-		   JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
-		   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
-		   picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
-		   for (IEntityObserver *obs : observers)
-		   {
-			 const IEntity *temp_robot = this;
-			 obs->OnEvent(val2, *temp_robot);
-		   }
-		  
-		notified=true;}
-		else
-		{waiter++;}
+      if (waiter==30) { //Presumably due to threading of some sort, we need to wait for currRoute to actually be there
+        picojson::object obj2 = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
+        JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
+        picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
+        for (IEntityObserver *obs : observers)
+        {
+          const IEntity *temp_robot = this;
+          obs->OnEvent(val2, *temp_robot);
+        }
+        notified=true;
+      }
+      else
+      {
+        waiter++;
+      }
 	  }
-			
+
 		////////////////
       std::cout << "I'm on the way to pick up the package" << std::endl;
       // The drone is on the way to pick up a package.
@@ -208,20 +209,18 @@ namespace csci3081 {
           const IEntity *temp_pkg = GetCurPackage();
           obs->OnEvent(val, *temp_pkg);
         }
-		/////////////// Notify that the robot is moving when picked up package
-	   picojson::object obji = JsonHelper::CreateJsonObject();
-	   JsonHelper::AddStringToJsonObject(obji, "type", "notify");
-	   JsonHelper::AddStringToJsonObject(obji, "value", "moving");
-	   JsonHelper::AddStdVectorVectorFloatToJsonObject(obji, "path", curRoute);
-	   picojson::value vali = JsonHelper::ConvertPicojsonObjectToValue(obji);
-	   for (IEntityObserver *obs : observers)
-	   {
-		 const IEntity *temp_robot = this;
-		 obs->OnEvent(vali, *temp_robot);
-	   }
-		
-		///////////////
-		
+        /////////////// Notify that the robot is moving when picked up package
+        picojson::object obji = JsonHelper::CreateJsonObject();
+        JsonHelper::AddStringToJsonObject(obji, "type", "notify");
+        JsonHelper::AddStringToJsonObject(obji, "value", "moving");
+        JsonHelper::AddStdVectorVectorFloatToJsonObject(obji, "path", curRoute);
+        picojson::value vali = JsonHelper::ConvertPicojsonObjectToValue(obji);
+        for (IEntityObserver *obs : observers)
+        {
+          const IEntity *temp_robot = this;
+          obs->OnEvent(vali, *temp_robot);
+	      }
+
       }
       else
       {
@@ -279,11 +278,10 @@ namespace csci3081 {
 		   picojson::value val3 = JsonHelper::ConvertPicojsonObjectToValue(obj3);
 		   for (IEntityObserver *obs : observers)
 		   {
-			 const IEntity *temp_robot = this;
-			 obs->OnEvent(val3, *temp_robot);
+        const IEntity *temp_robot = this;
+        obs->OnEvent(val3, *temp_robot);
 		   }
-		
-		//////////////
+
         // if there's another package it has to go to, then assign this new package to the curPackage
         if (assignedPackageIndex < GetNumAssignedPackages())
         {
@@ -356,20 +354,6 @@ namespace csci3081 {
 	{
 		return true;
 	}
-	/*for (float pos : currentPosition)
-    {
-      float packageDes = packageDestination.at(i);
-      i = i + 1;
-      if (std::fabs(pos - packageDes) <= radius)
-      {
-        numWithinRadius = numWithinRadius + 1;
-      }
-    }
-    if (numWithinRadius == 2)
-    {
-      std::cout << "The package is ready to be dropped off!" << std::endl;
-      return true;
-    }*/
     else
     {
       return false;
