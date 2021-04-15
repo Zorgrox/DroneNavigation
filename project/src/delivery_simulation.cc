@@ -165,10 +165,24 @@ void DeliverySimulation::Update(float dt) {
   // std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
   if (GetEntities().size() > 0 ) {
     for (Drone* actual_drone : drones_) {
-      actual_drone->Update(systemGraph, observers_, dt);
+      if (actual_drone->GetBattery()->GetIsEmpty() == false) {
+        actual_drone->Update(systemGraph, observers_, dt);
+        if (actual_drone->GetBattery()->GetIsEmpty() == true) {
+          // add the drone with empty battery to the list of dead drones in the delivery simulation
+          dead_drones_.push_back(actual_drone);
+          // TODO: if the drone is carrying a package, or it has some packages left in the package queue, then reschedule those packages
+        }
+      }
     }
     for (Robot* actual_robot : robots_) {
-      actual_robot -> Update(systemGraph, observers_, dt);
+      if (actual_robot->GetBattery()->GetIsEmpty() == false) {
+        actual_robot -> Update(systemGraph, observers_, dt);
+        if (actual_robot->GetBattery()->GetIsEmpty() == true) {
+          // add the robot with empty battery to the list of dead robots in the delivery simulation
+          dead_robots_.push_back(actual_robot);
+          // TODO: if the robot is carrying a package, or it has some packages left in the package queue, then reschedule those packages
+        }
+      }
     }
   }
 }

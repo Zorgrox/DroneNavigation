@@ -152,6 +152,10 @@ class DeliverySimulation : public IDeliverySystem {
   int curRouteLength;
   std::vector<IEntityObserver*> observers_;
   int DelivIDs = 0;
+
+  std::vector<Drone*> dead_drones_;
+  std::vector<Robot*> dead_robots_;
+
 };
 
 }  // namespace csci3081

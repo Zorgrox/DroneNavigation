@@ -54,6 +54,11 @@ namespace csci3081 {
    */
     const std::string &GetName();
 
+    /**
+   *  This function return the pointer to the battery of the drone
+   */
+    const Battery* GetBattery();
+
   /**
    *  This function should return the position of the drone
    */
@@ -64,11 +69,19 @@ namespace csci3081 {
    */
     const std::vector<float> &GetDirection() const;
 
-
+    /**
+   *  This function should return the speed of the drone
+   */
     float GetSpeed();
 
+    /**
+   *  This function should set the direction of the drone
+   */
     void SetDirection(std::vector<float> newDirection);
 
+    /**
+   *  This function should set the position of the drone
+   */
     void SetPosition(std::vector<float> newPosition);
 
   /**

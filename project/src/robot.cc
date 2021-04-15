@@ -47,12 +47,17 @@ namespace csci3081 {
   int Robot::GetId() const {
     return id;
   }
+
   void Robot::SetId(int ID) {
 	  id = ID;
   }
 
   const std::string& Robot::GetName() {
     return name;
+  }
+
+  const Battery *Robot::GetBattery() {
+    return battery;
   }
 
   const std::vector<float>& Robot::GetPosition() const {

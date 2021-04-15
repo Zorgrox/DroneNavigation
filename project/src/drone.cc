@@ -68,6 +68,9 @@ namespace csci3081 {
     return name;
   }
 
+  const Battery* Drone::GetBattery() {
+    return battery;
+  }
 
   float Drone::GetSpeed() {
     return speed;

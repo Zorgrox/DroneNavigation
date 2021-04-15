@@ -48,7 +48,12 @@ namespace csci3081 {
    */
     const std::string &GetName();
 
-  /**
+    /**
+   *  This function return the pointer to the battery of the robot
+   */
+    const Battery* GetBattery();
+
+    /**
    *  This function should return the position of the robot
    */
     const std::vector<float> &GetPosition() const;
