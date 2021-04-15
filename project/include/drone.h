@@ -227,6 +227,8 @@ namespace csci3081 {
     int curRouteLength;
     FlightBehavior* flightStrategy;
 
+    float battery_capacity;
+
   };
 
 } // namespace csci3081

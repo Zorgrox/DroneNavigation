@@ -204,16 +204,18 @@ namespace csci3081 {
     float radius;
     int version = 0;
     bool dynamic = true;
-	bool notified = false;
+	  bool notified = false;
     bool onTheWayToPickUpPackage;
     bool onTheWayToDropOffPackage;
     bool isCarryingPackage;
     float speed;
-	int waiter=0;
+	  int waiter=0;
     std::vector<std::vector<float>> curRoute;
     int curRouteNextIndex;
     int curRouteLength;
-    };
+    float battery_capacity;
+
+  };
 
 } // namespace csci3081
 

@@ -26,7 +26,15 @@ namespace csci3081 {
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
     isCarryingPackage = false;
-    battery = new Battery(10000);
+    try
+    {
+      battery_capacity = JsonHelper::GetDouble(obj, "battery_capacity");
+    }
+    catch (const std::logic_error)
+    {
+      battery_capacity = 10000;
+    }
+    battery = new Battery(battery_capacity);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     details_ = obj;
     assignedPackageIndex = 0;
