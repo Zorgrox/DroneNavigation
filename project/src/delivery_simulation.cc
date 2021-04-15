@@ -90,32 +90,21 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
     Drone* actual_drone = drones_.at(dronesIndex);
     if(actual_drone) {
       actual_drone->AddAssignedPackage(*actual_package);
-
-      if (actual_drone->GetNumAssignedPackages() == 1) {
-        // assign the curPackage if it's the first one assigned to the drone
-        actual_drone->UpdateCurPackage();
-        // get the path and set it to the delivery simulation's curRoute
-        std::vector<float> drones_position = actual_drone->GetPosition();
-        std::vector<float> packages_position = actual_package->GetPosition();
-        std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
-        actual_drone->SetNewCurRoute(anotherRoute);
-        actual_drone->SetOnTheWayToPickUpPackage(true);
-        actual_drone->SetOnTheWayToDropOffPackage(false);
-		///////////////// notify that the drone is moving to the package
-		   /* picojson::object obj9 = JsonHelper::CreateJsonObject();
-		   JsonHelper::AddStringToJsonObject(obj9, "type", "notify");
-		   JsonHelper::AddStringToJsonObject(obj9, "value", "moving");
-		   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj9, "path", anotherRoute);
-		   picojson::value val9 = JsonHelper::ConvertPicojsonObjectToValue(obj9);
-
-		   for (IEntityObserver *obs : observers_)
-		   {
-			 const IEntity *temp_drone = actual_drone;
-			 obs->OnEvent(val9, *temp_drone);
-		   } */
-		
-		/////////////////
-      }
+      do {
+        if (actual_drone->GetNumAssignedPackages() == 1) {
+          // assign the curPackage if it's the first one assigned to the drone
+          actual_drone->UpdateCurPackage();
+          // get the path and set it to the delivery simulation's curRoute
+          std::vector<float> drones_position = actual_drone->GetPosition();
+          std::vector<float> packages_position = actual_package->GetPosition();
+          std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
+          std::cout << "made here\n";
+          actual_drone->SetFlightBehavior(drones_position, packages_position, const_cast<IGraph*>(systemGraph));
+          actual_drone->SetNewCurRoute(anotherRoute);
+          actual_drone->SetOnTheWayToPickUpPackage(true);
+          actual_drone->SetOnTheWayToDropOffPackage(false);
+        }
+      } while (actual_drone->GetNumAssignedPackages() == 0);
     }
     dronesIndex = dronesIndex + 1;
     if (dronesIndex == drones_.size()) {

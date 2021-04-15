@@ -13,6 +13,8 @@
 #include "vector3d.h"
 #include "package.h"
 #include "battery.h"
+#include "flight_behavior.h"
+#include <EntityProject/facade/delivery_system.h>
 
 namespace csci3081 {
 
@@ -32,11 +34,15 @@ namespace csci3081 {
    * @brief Constructor: set up a Drone according to the details in the JSON object
    */
     Drone(const picojson::object &obj);
-
   /**
    *  This function should return the id of the drone
    */
     int GetId() const;
+
+    /**
+   *  This function should update the existing graph path
+   */
+    void AddGraphPath(const IGraph* newGraph);
 
     /**
    *  This function should set the id of the drone
@@ -58,6 +64,13 @@ namespace csci3081 {
    */
     const std::vector<float> &GetDirection() const;
 
+
+    float GetSpeed();
+
+    void SetDirection(std::vector<float> newDirection);
+
+    void SetPosition(std::vector<float> newPosition);
+
   /**
    *  This function should return the radius of the drone
    */
@@ -76,7 +89,7 @@ namespace csci3081 {
   /**
    *  This function should return a pointer to the current package that the drone is looking for/carrying
    */
-    const Package* GetCurPackage();
+    Package* GetCurPackage();
 
     /**
    *  This function should set the current package of the drone to a different package. Should only be called when we want to set the current package of the drone to another package.
@@ -121,9 +134,9 @@ namespace csci3081 {
   /**
     *  This function should update the drone's positions
     */
-    void UpdateDronePosition(float dt);
+    void UpdateDronePosition(float dt, std::vector<IEntityObserver *> &observers);
 
-  /**
+    /**
     *  This function should update the drone's velocity
     */
     void UpdateDroneVelocity(std::vector<float> & newVelocity);
@@ -142,11 +155,6 @@ namespace csci3081 {
     *  This function should check whether the package is ready to be dropped off, within the radius
     */
     bool CheckReadyToDropOff();
-
-    /**
-    *  This function should check whether the drone should be aiming for the next node in the path
-    */
-    bool CheckWhenToIncrementPathIndex(std::vector<float> &nextPosition);
 
     /**
     *  This function should update the curPackage so that we pick up a new package and set the status of the drone to dropping off the package
@@ -193,6 +201,8 @@ namespace csci3081 {
     */
     void IncrementCurRouteNextIndex();
 
+    void SetFlightBehavior(std::vector<float> pos, std::vector<float> target, IGraph* newGraph);
+
   private:
     int id;
     std::string name;
@@ -208,14 +218,16 @@ namespace csci3081 {
     bool onTheWayToPickUpPackage;
     bool onTheWayToDropOffPackage;
     bool isCarryingPackage;
-	bool notified = false;
+	  bool notified = false;
     float speed;
-	int waiter=0;
+	  int waiter=0;
 
     std::vector<std::vector<float>> curRoute;
     int curRouteNextIndex;
     int curRouteLength;
-    };
+    FlightBehavior* flightStrategy;
+
+  };
 
 } // namespace csci3081
 

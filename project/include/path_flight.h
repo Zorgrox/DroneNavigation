@@ -1,0 +1,84 @@
+/**
+ * @file path_flight.h
+ */
+#ifndef PATH_FLIGHT_H
+#define PATH_FLIGHT_H
+
+/*******************************************************************************
+ * Includes
+ ******************************************************************************/
+#include <vector>
+#include "vector3d.h"
+#include "flight_behavior.h"
+#include <EntityProject/facade/delivery_system.h>
+
+namespace csci3081 {
+  /*******************************************************************************
+ * Class Definitions
+ ******************************************************************************/
+  /**
+ * @brief This is the smart route path flight strategy for the movement for the drone/robot, where the drone/robot follows the route specified by the smart path calculated in iGraph.
+ *
+ */
+
+  class PathFlight : public FlightBehavior
+  {
+    public:
+      /**
+       *  @brief Constructor: set up Path Flight
+       */
+      PathFlight();
+
+      /**
+       *  @brief Constructor: set up Path Flight with a specific radius
+       */
+      PathFlight(float radius);
+
+      /**
+       *  This function adds an IGraph
+       */
+      void AddGraph(const IGraph *systemGraph);
+
+      /**
+       *  This function is called to update the drone/robot's position, based on the smart route
+       */
+      void FlightUpdate(float dt, std::vector<float>& pos, std::vector<float>& dir);
+
+      /**
+       *  This function is used whenever the drone's target needs to be set. This one is specifically used for the smart route.
+       */
+      void SetFlightDetails(std::vector<float> pos,std::vector<float> target,  IGraph* newGraph);
+
+      /**
+       *  This function is used whenever the drone's target needs to be set, for flights that do not need the smart route Graph.
+       */
+      void SetFlightDetails(std::vector<float> pos,std::vector<float> target);
+
+      /**
+       *  This function is used to calculate and return the distance from the drone/robot to the package from only x and z (y has to be ignored)
+       */
+      float CalculateDistance(std::vector<float> pos,std::vector<float> target);
+
+      /**
+       *  This function should check whether the drone/robot should be aiming for the next node in the path
+       */
+      bool CheckWhenToIncrementPathIndex(std::vector<float> &nextPosition, std::vector<float> position);
+
+      /**
+       *  This function updates the existing route, based on the new current position and destination
+       */
+      void SetNewCurRoute(std::vector<std::vector<float>> &newPosition);
+
+    private:
+      const IGraph *graph;
+      std::vector<float> flightTarget;
+
+      std::vector<std::vector<float>> curRoute;
+      int curRouteNextIndex;
+      int curRouteLength;
+      float radius;
+  };
+
+} // namespace csci3081
+
+#endif // PATH_FLIGHT_H
