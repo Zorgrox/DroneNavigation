@@ -153,8 +153,8 @@ class DeliverySimulation : public IDeliverySystem {
   std::vector<IEntityObserver*> observers_;
   int DelivIDs = 0;
 
-  std::vector<Drone*> dead_drones_;
-  std::vector<Robot*> dead_robots_;
+  std::vector<Drone*> dead_drones_with_remaining_packages_;
+  std::vector<Robot*> dead_robots_with_remaining_packages_;
 
 };
 

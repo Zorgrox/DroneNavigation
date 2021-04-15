@@ -169,7 +169,7 @@ void DeliverySimulation::Update(float dt) {
         actual_drone->Update(systemGraph, observers_, dt);
         if (actual_drone->GetBattery()->GetIsEmpty() == true) {
           // add the drone with empty battery to the list of dead drones in the delivery simulation
-          dead_drones_.push_back(actual_drone);
+          dead_drones_with_remaining_packages_.push_back(actual_drone);
           // TODO: if the drone is carrying a package, or it has some packages left in the package queue, then reschedule those packages
         }
       }
@@ -179,7 +179,7 @@ void DeliverySimulation::Update(float dt) {
         actual_robot -> Update(systemGraph, observers_, dt);
         if (actual_robot->GetBattery()->GetIsEmpty() == true) {
           // add the robot with empty battery to the list of dead robots in the delivery simulation
-          dead_robots_.push_back(actual_robot);
+          dead_robots_with_remaining_packages_.push_back(actual_robot);
           // TODO: if the robot is carrying a package, or it has some packages left in the package queue, then reschedule those packages
         }
       }
