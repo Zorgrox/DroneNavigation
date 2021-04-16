@@ -100,7 +100,8 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
           //std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
           std::cout << "made here\n";
           actual_drone->SetFlightBehavior(drones_position, packages_position, const_cast<IGraph*>(systemGraph));
-          //actual_drone->SetNewCurRoute(anotherRoute);
+          //SetFlightBehavior Now sets the route for the drone
+		  //actual_drone->SetNewCurRoute(anotherRoute);
           actual_drone->SetOnTheWayToPickUpPackage(true);
           actual_drone->SetOnTheWayToDropOffPackage(false);
         }

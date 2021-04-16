@@ -217,7 +217,8 @@ namespace csci3081 {
           std::vector<float> currentPos = GetPosition();
           std::vector<float> customerPos = GetCurPackage()->GetDestination();
           flightStrategy->SetFlightDetails(currentPos, customerPos);
-
+		  std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
+		  SetNewCurRoute(anotherRoute);
           SetOnTheWayToPickUpPackage(false);
           SetOnTheWayToDropOffPackage(true);
           curRouteNextIndex = 1;
@@ -290,10 +291,12 @@ namespace csci3081 {
           // if there's another package it has to go to, then assign this new package to the curPackage
           if (assignedPackageIndex < GetNumAssignedPackages()) {
             UpdateCurPackage();
-            // std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), curPackage->GetPosition());
-            // SetNewCurRoute(anotherRoute);
+            
             flightStrategy->SetFlightDetails(GetPosition(), GetCurPackage()->GetPosition());
-            SetOnTheWayToPickUpPackage(true);
+            std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
+            SetNewCurRoute(anotherRoute);
+			
+			SetOnTheWayToPickUpPackage(true);
             SetOnTheWayToDropOffPackage(false);
           }
         }
