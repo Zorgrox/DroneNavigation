@@ -104,5 +104,12 @@ namespace csci3081 {
   void PathFlight::AddGraph(const IGraph* newGraph) {
     graph = newGraph;
   }
+  
+  std::vector<std::vector<float>> PathFlight::GetCurRoute()
+  {
+	  return curRoute;
+  }
+  
+  
 
 }

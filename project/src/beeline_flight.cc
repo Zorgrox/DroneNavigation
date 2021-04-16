@@ -36,5 +36,10 @@ namespace csci3081 {
     flightTarget = target;
     //std::cout << "madehere\n";
   }
+  
+  std::vector<std::vector<float>> BeelineFlight::GetCurRoute() {
+	  return curRoute;
+  }
+  
 
 }

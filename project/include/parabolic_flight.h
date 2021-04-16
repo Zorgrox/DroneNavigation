@@ -48,6 +48,10 @@ namespace csci3081 {
        */
       float CalculateDistance(std::vector<float> pos,std::vector<float> target);
 
+	  /**
+        *  This function is used to return the current route
+        */
+	  std::vector<std::vector<float>> GetCurRoute();
     private:
       std::vector<float> flightTarget;
       float parabolicHeight;

@@ -421,5 +421,7 @@ namespace csci3081 {
 
   void Drone::SetFlightBehavior(std::vector<float> pos, std::vector<float> target, IGraph* newGraph) {
     flightStrategy->SetFlightDetails(pos, target, newGraph);
+	std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
+	SetNewCurRoute(anotherRoute); 
   }
 }

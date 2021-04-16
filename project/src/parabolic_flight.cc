@@ -87,5 +87,11 @@ namespace csci3081 {
   void ParabolicFlight::SetFlightDetails(std::vector<float> pos,std::vector<float> target,  IGraph* newGraph) {
     SetFlightDetails(pos, target);
   }
+  
+  
+  std::vector<std::vector<float>> ParabolicFlight::GetCurRoute()
+  {
+	  return curRoute;
+  }
 
 }

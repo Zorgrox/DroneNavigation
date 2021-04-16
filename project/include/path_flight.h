@@ -68,12 +68,17 @@ namespace csci3081 {
        *  This function updates the existing route, based on the new current position and destination
        */
       void SetNewCurRoute(std::vector<std::vector<float>> &newPosition);
-
+	
+		/**
+        *  This function is used to return the current route
+        */
+	  std::vector<std::vector<float>> GetCurRoute();
+	
     private:
       const IGraph *graph;
       std::vector<float> flightTarget;
 
-      std::vector<std::vector<float>> curRoute;
+     
       int curRouteNextIndex;
       int curRouteLength;
       float radius;

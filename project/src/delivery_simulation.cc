@@ -97,10 +97,10 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
           // get the path and set it to the delivery simulation's curRoute
           std::vector<float> drones_position = actual_drone->GetPosition();
           std::vector<float> packages_position = actual_package->GetPosition();
-          std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
+          //std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
           std::cout << "made here\n";
           actual_drone->SetFlightBehavior(drones_position, packages_position, const_cast<IGraph*>(systemGraph));
-          actual_drone->SetNewCurRoute(anotherRoute);
+          //actual_drone->SetNewCurRoute(anotherRoute);
           actual_drone->SetOnTheWayToPickUpPackage(true);
           actual_drone->SetOnTheWayToDropOffPackage(false);
         }

@@ -35,6 +35,12 @@ namespace csci3081 {
      *  This function is used whenever the drone's target needs to be set, for flights that do not need the smart route Graph.
      */
     virtual void SetFlightDetails(std::vector<float> pos, std::vector<float> target) = 0;
+	
+	
+	virtual std::vector<std::vector<float>> GetCurRoute() = 0;
+	
+	protected:
+	 std::vector<std::vector<float>> curRoute;
 };
 
 } // namespace csci3081
