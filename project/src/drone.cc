@@ -41,9 +41,9 @@ namespace csci3081 {
     std::cout << "This is Drone's current position in default constructor: {" << positionVec.at(0) << ", " << positionVec.at(1) << ", " << positionVec.at(2) << "}" << std::endl;
     std::cout << "This is Drone's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
 
-    flightStrategy = new PathFlight(radius);
+    //flightStrategy = new PathFlight(radius);
     //flightStrategy = new ParabolicFlight();
-    //flightStrategy = new BeelineFlight();
+    flightStrategy = new BeelineFlight();
   }
 
   void Drone::AddGraphPath(const IGraph* newGraph) {

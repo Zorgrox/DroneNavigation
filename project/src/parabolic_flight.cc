@@ -51,7 +51,6 @@ namespace csci3081 {
     if (isCarryingPackage) {
       curPackage->SetPosition(parabolicYPos);
     }*/
-
 }
 
   float ParabolicFlight::CalculateDistance (std::vector<float> pos, std::vector<float> target) {
@@ -82,7 +81,25 @@ namespace csci3081 {
     std::cout << "Extender: " << extender << std::endl;
     flightTarget = target;
     std::cout << "madehere\n";
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
+
+void ParabolicFlight::SetCurRoute(std::vector<float> pos, std::vector<float> target) {
+	
+	
+	
+}
+
+
 
   void ParabolicFlight::SetFlightDetails(std::vector<float> pos,std::vector<float> target,  IGraph* newGraph) {
     SetFlightDetails(pos, target);

@@ -52,6 +52,12 @@ namespace csci3081 {
         *  This function is used to return the current route
         */
 	  std::vector<std::vector<float>> GetCurRoute();
+	  
+	  void SetCurRoute(std::vector<float> pos, std::vector<float> target);
+	  
+	 
+	  
+	  
     private:
       std::vector<float> flightTarget;
       float parabolicHeight;

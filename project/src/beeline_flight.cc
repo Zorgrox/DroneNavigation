@@ -35,6 +35,13 @@ namespace csci3081 {
     // Setting target position saved as float vector flightTarget
     flightTarget = target;
     //std::cout << "madehere\n";
+	
+	
+	
+
+	
+	
+	
   }
   
   std::vector<std::vector<float>> BeelineFlight::GetCurRoute() {
