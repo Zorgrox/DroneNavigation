@@ -59,7 +59,7 @@ namespace csci3081 {
       return distance;
   }
 
-  void PathFlight::SetFlightDetails(std::vector<float> pos, std::vector<float> target,  IGraph* newGraph) {
+  void PathFlight::SetFlightDetails(std::vector<float> pos, std::vector<float> target, const IGraph* newGraph) {
     graph = newGraph;
     flightTarget = target;
      std::vector<std::vector<float>> anotherRoute = graph->GetPath(pos, target);
@@ -103,6 +103,10 @@ namespace csci3081 {
 
   void PathFlight::AddGraph(const IGraph* newGraph) {
     graph = newGraph;
+  }
+
+  void PathFlight::SetCurRoute(std::vector<float> pos, std::vector<float> target) {
+    
   }
   
   std::vector<std::vector<float>> PathFlight::GetCurRoute()

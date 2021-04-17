@@ -291,12 +291,13 @@ namespace csci3081 {
           // if there's another package it has to go to, then assign this new package to the curPackage
           if (assignedPackageIndex < GetNumAssignedPackages()) {
             UpdateCurPackage();
-            
-            flightStrategy->SetFlightDetails(GetPosition(), GetCurPackage()->GetPosition());
-            std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
-            SetNewCurRoute(anotherRoute);
-			
-			SetOnTheWayToPickUpPackage(true);
+
+
+	    std::vector<float> curPosition = GetPosition();
+	    std::vector<float> curTarget = GetCurPackage()->GetPosition();
+            SetFlightBehavior(curPosition, curTarget, graph);
+	    	
+	    SetOnTheWayToPickUpPackage(true);
             SetOnTheWayToDropOffPackage(false);
           }
         }
@@ -422,9 +423,29 @@ namespace csci3081 {
     curRouteNextIndex = curRouteNextIndex + 1;
   }
 
-  void Drone::SetFlightBehavior(std::vector<float> pos, std::vector<float> target, IGraph* newGraph) {
+  void Drone::SetFlightBehavior(std::vector<float> pos, std::vector<float> target, const IGraph* newGraph) {
+    ChooseFlightStrategy();
     flightStrategy->SetFlightDetails(pos, target, newGraph);
-	std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
-	SetNewCurRoute(anotherRoute); 
+    std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
+    SetNewCurRoute(anotherRoute); 
+  }
+
+
+  void Drone::ChooseFlightStrategy() {
+    //~flightStrategy;
+    switch (flightStrategyIndex){
+    case 0:
+      flightStrategy = new ParabolicFlight();
+      flightStrategyIndex++;
+      break;
+    case 1:
+      flightStrategy = new BeelineFlight();
+      flightStrategyIndex++;
+      break;
+    default:
+      flightStrategy = new PathFlight(radius);
+      flightStrategyIndex = 0;
+      
+    }
   }
 }

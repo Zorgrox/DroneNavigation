@@ -80,28 +80,59 @@ namespace csci3081 {
     extender = - (parabolicHeight / ((tripDistance/2.0) *( tripDistance/2.0)));
     std::cout << "Extender: " << extender << std::endl;
     flightTarget = target;
-    std::cout << "madehere\n";
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}
+    SetCurRoute(pos,target);
+  }
 
 void ParabolicFlight::SetCurRoute(std::vector<float> pos, std::vector<float> target) {
-	
-	
+  // for 31 intervals, calculate the position of a path node and add to the vector
+  std::vector<std::vector<float>> tmpRoute;
+  for (int i(0); i <= 30; i++) {
+    //calculate the temp node position at the i/30th distance
+    Vector2D Tmp(pos);
+    std::vector<float> currentPosition = pos;
+    std::vector<float> newDirection = Tmp.SubtractTwoVectors(target, currentPosition);
+    //from pos to target, add i/30 increment of the distance using vector2D math
+     Vector2D Direction(newDirection);
+    Direction.Normalize();
+    newDirection = Direction.GetVector();
+    
+    newDirection = Direction.MultiplyVectorWithFloat(newDirection, (i * tripDistance / 30) );
+    //newDirection now contains the x,z movement offset and will be added to the drone's original position
+    currentPosition = Direction.AddTwoVectors(currentPosition, newDirection);
+
+    std::cout << "Creating Parabolic Offset in SetFlightDetails\n";
+    //next calculate and apply the parabolic y-axis offset
+    float distance = (i * tripDistance / 30);
+    //calculate incrementY
+    std::cout << "Trip Distance: " << tripDistance <<std::endl;
+    float x = abs((distance)-(tripDistance / 2.0));
+    std::cout << "x: " << x <<std::endl;
+    std::cout << "Extender: " << extender <<std::endl;
+    std::cout << "Extender * x^2: " << extender*(x*x) <<std::endl;
+    float incrementY = (extender * (x * x) + parabolicHeight);
+    std::cout << "increment Y: " << incrementY <<std::endl;
+    std::cout << "initial Y: " << initialY <<std::endl;
+    float intendedY = initialY + incrementY;
+    std::cout << "intended Y: " << intendedY <<std::endl;
+    float dronesX = currentPosition.at(0);
+    float dronesZ = currentPosition.at(2);
+    std::vector<float> parabolicYPos{dronesX, intendedY, dronesZ};
+    std::cout << parabolicYPos[0] << " " << parabolicYPos[1] << " " << parabolicYPos[2] << std::endl;
+    //apply the y-axis offset
+    currentPosition[1] = intendedY;
+    //push_back the temp position node onto the tmpRoute
+    tmpRoute.push_back(parabolicYPos);
+    
+  }
+  
+  curRoute = tmpRoute;
+  
 	
 }
 
 
 
-  void ParabolicFlight::SetFlightDetails(std::vector<float> pos,std::vector<float> target,  IGraph* newGraph) {
+  void ParabolicFlight::SetFlightDetails(std::vector<float> pos,std::vector<float> target, const IGraph* newGraph) {
     SetFlightDetails(pos, target);
   }
   
