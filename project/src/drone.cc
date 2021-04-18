@@ -48,9 +48,9 @@ namespace csci3081 {
     std::cout << "This is Drone's current position in default constructor: {" << positionVec.at(0) << ", " << positionVec.at(1) << ", " << positionVec.at(2) << "}" << std::endl;
     std::cout << "This is Drone's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
 
-    flightStrategy = new PathFlight(radius);
+    //flightStrategy = new PathFlight(radius);
     //flightStrategy = new ParabolicFlight();
-    //flightStrategy = new BeelineFlight();
+    flightStrategy = new BeelineFlight();
   }
 
   void Drone::AddGraphPath(const IGraph* newGraph) {
@@ -227,7 +227,8 @@ namespace csci3081 {
           std::vector<float> currentPos = GetPosition();
           std::vector<float> customerPos = GetCurPackage()->GetDestination();
           flightStrategy->SetFlightDetails(currentPos, customerPos);
-
+		  std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
+		  SetNewCurRoute(anotherRoute);
           SetOnTheWayToPickUpPackage(false);
           SetOnTheWayToDropOffPackage(true);
           curRouteNextIndex = 1;
@@ -300,10 +301,13 @@ namespace csci3081 {
           // if there's another package it has to go to, then assign this new package to the curPackage
           if (assignedPackageIndex < GetNumAssignedPackages()) {
             UpdateCurPackage();
-            // std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), curPackage->GetPosition());
-            // SetNewCurRoute(anotherRoute);
-            flightStrategy->SetFlightDetails(GetPosition(), GetCurPackage()->GetPosition());
-            SetOnTheWayToPickUpPackage(true);
+
+
+	    std::vector<float> curPosition = GetPosition();
+	    std::vector<float> curTarget = GetCurPackage()->GetPosition();
+            SetFlightBehavior(curPosition, curTarget, graph);
+	    	
+	    SetOnTheWayToPickUpPackage(true);
             SetOnTheWayToDropOffPackage(false);
           }
         }
@@ -429,7 +433,29 @@ namespace csci3081 {
     curRouteNextIndex = curRouteNextIndex + 1;
   }
 
-  void Drone::SetFlightBehavior(std::vector<float> pos, std::vector<float> target, IGraph* newGraph) {
+  void Drone::SetFlightBehavior(std::vector<float> pos, std::vector<float> target, const IGraph* newGraph) {
+    ChooseFlightStrategy();
     flightStrategy->SetFlightDetails(pos, target, newGraph);
+    std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
+    SetNewCurRoute(anotherRoute); 
+  }
+
+
+  void Drone::ChooseFlightStrategy() {
+    //~flightStrategy;
+    switch (flightStrategyIndex){
+    case 0:
+      flightStrategy = new ParabolicFlight();
+      flightStrategyIndex++;
+      break;
+    case 1:
+      flightStrategy = new BeelineFlight();
+      flightStrategyIndex++;
+      break;
+    default:
+      flightStrategy = new PathFlight(radius);
+      flightStrategyIndex = 0;
+      
+    }
   }
 }

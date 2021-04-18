@@ -214,7 +214,9 @@ namespace csci3081 {
     */
     void IncrementCurRouteNextIndex();
 
-    void SetFlightBehavior(std::vector<float> pos, std::vector<float> target, IGraph* newGraph);
+    void SetFlightBehavior(std::vector<float> pos, std::vector<float> target, const IGraph* newGraph);
+    
+    void ChooseFlightStrategy();
 
   private:
     int id;
@@ -239,6 +241,7 @@ namespace csci3081 {
     int curRouteNextIndex;
     int curRouteLength;
     FlightBehavior* flightStrategy;
+    int flightStrategyIndex = 0;
 
     float battery_capacity;
 
