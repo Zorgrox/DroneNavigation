@@ -7,8 +7,9 @@ namespace csci3081 {
   BeelineFlight::BeelineFlight() {  }
 
   void BeelineFlight::FlightUpdate(float speedANDdt, std::vector<float>& pos, std::vector<float>& dir) {
- if (pos.at(1)<280) {pos.at(1)+=.1;}
-else {
+ if (pos.at(1)<280) {pos.at(1)+=.1;} // Cause the drone to rise, to fly over buildings
+ else {
+
   //increment drone x,y,z position by the stored direction and it's speed and dt time
     Vector3D Tmp(pos);
     std::vector<float> currentPosition = pos;

@@ -73,6 +73,7 @@ namespace csci3081 {
 
     private:
       std::vector<float> flightTarget;
+
   };
 
 } // namespace csci3081
