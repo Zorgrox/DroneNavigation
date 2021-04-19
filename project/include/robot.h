@@ -30,6 +30,7 @@ namespace csci3081 {
   public:
     /**
    * @brief Constructor: set up a Robot according to the details in the JSON object
+   * @param obj the picojson object that contains the details
    */
     Robot(const picojson::object &obj);
 
@@ -40,6 +41,7 @@ namespace csci3081 {
 
     /**
    *  This function should set the id of the robot
+   * @param ID the id
    */
     void SetId(int ID);
 
@@ -95,6 +97,7 @@ namespace csci3081 {
 
     /**
    *  This function should set the boolean that denotes whether robot is currently carrying a package
+   * @param newIsCarryingPackage boolean that denotes whether robot is currently carrying a package
    */
     void SetIsCarryingPackage(bool newIsCarryingPackage);
 
@@ -103,8 +106,9 @@ namespace csci3081 {
    */
     const bool GetOnTheWayToPickUpPackage() const;
 
-  /**
+    /**
    *  This function should set whether the robot is on the way to pick up a package
+   * @param newOnTheWayToPickUpPackage boolean that denotes whether the robot is on the way to pick up a package
    */
     void SetOnTheWayToPickUpPackage(bool newOnTheWayToPickUpPackage);
 
@@ -115,26 +119,34 @@ namespace csci3081 {
 
     /**
    *  This function should set whether the robot is on the way to drop off a package
+   * @param newOnTheWayToDropOffPackage boolean that denotes whether the robot is on the way to drop off a package
    */
     void SetOnTheWayToDropOffPackage(bool newOnTheWayToDropOffPackage);
 
     /**
    *  This function should update the battery's charge by decrementing it by the set amount
+   * @param decrAmount the amount that the battery should be decremented by
    */
     void UpdateBatteryCharge(float decrAmount);
 
   /**
     *  This function should update the robot's positions
+    * @param dt the time difference in calls to Update function
+    * @param observers the list of observers to be notified
     */
     void UpdateRobotPosition(float dt, std::vector<IEntityObserver *> &observers);
 
     /**
     *  This function should update the robot's velocity
+    * @param newVelocity the velocity
     */
     void UpdateRobotVelocity(std::vector<float> & newVelocity);
 
     /**
     *  This function is called in the Delivery Simulation's update function. It updates the robot's velocity and position based on the graph's path.
+    * @param graph the graph
+    * @param observers the list of observers
+    * @param dt the time difference in calls to the Update function
     */
     void Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt);
 
@@ -150,6 +162,7 @@ namespace csci3081 {
 
     /**
     *  This function should check whether the robot should be aiming for the next node in the path
+    * @param nextPosition the next position
     */
     bool CheckWhenToIncrementPathIndex(std::vector<float> &nextPosition);
 
@@ -165,11 +178,13 @@ namespace csci3081 {
 
     /**
     *  This function should calculate the direction from the curPosition to the next node in the graph and update the robot's direction accordingly
+    * @param nextPosition the next position
     */
     void CalculateAndUpdateRobotDirection(std::vector<float>& nextPosition);
 
     /**
     *  This function should add another Package pointer to the vector of assigned packages
+    * @param newPackage the new package to be added to the assigned packages list
     */
     void AddAssignedPackage(Package &newPackage);
 
@@ -180,6 +195,7 @@ namespace csci3081 {
 
     /**
     *  This function updates the curRoute of this robot
+    * @param newCurRoute the new route to be set
     */
     void SetNewCurRoute(std::vector<std::vector<float>> &newCurRoute);
 

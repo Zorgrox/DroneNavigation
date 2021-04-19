@@ -93,7 +93,6 @@ namespace csci3081 {
     {
       curPackage = assignedPackages.at(assignedPackageIndex);
     }
-    // curPackage = &newPackage;
   }
 
   void Robot::AddAssignedPackage(Package &newPackage)
@@ -473,9 +472,6 @@ namespace csci3081 {
 
   std::vector<Package *> Robot::GetRemainingAssignedPackages()
   {
-    // first need to check whether the curpackageindex is within range of the packageslist
-    // if it's not, then we just return an empty vector
-    // if it is, then we return everything after that package, itself included
     std::vector<Package *> remainingAssignedPackages;
     for (int i = assignedPackageIndex; i < GetNumAssignedPackages(); i++)
     {

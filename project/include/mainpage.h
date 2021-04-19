@@ -1,13 +1,16 @@
-/*! \mainpage Claire Yang (yang5063)'s Iteration One
+/*! \mainpage Claire Yang, David Johnson, Casey Connell, Abdirashid Ahmed's Iteration Two Submission
+
 * Getting Started
-*===================
-* 1) Build the environment in Docker by going to the `project` directory, and running `bin/build-env.sh`
+* ===================
+* 1) Run `git clone git@github.umn.edu:umn-csci-3081-s21/repo-iter2-01-28.git`
 
-* 2) Run the actual environment by running `bin/run-env.sh`
+* 2) Build the environment in Docker by going to the `project` directory, and running `bin/build-env.sh`
 
-* 3) Run the delivery simulation by going to the project directory in Docker, `make`, and running `./bin/run.sh`
+* 3) Run the actual environment by running `bin/run-env.sh`
 
-* 4) Open the 127.0.0.1:8081 in your browser to view the simulation
+* 4) Run the delivery simulation by going to the project directory in Docker, `make`, and running `./bin/run.sh`
+
+* 5) Open the 127.0.0.1:8081 in your browser to view the simulation
 
 
 * Running Tests
@@ -24,9 +27,24 @@
 * 2) Then open `project/docs/html/index.html` in your web browser to view the documentation.
 
 
+* TODO: Teamwork Documentation
+* ==================
+TODO: here are the meetings and people in those meetings to work on this...
+
+
+* TODO: Discussion of Different Route Implementations (Smart Route, Beeline, Parabolic)
+* ==================
+The Smart Route is implemented via the A-star/Djikstra shortest path algorithm. It generates a graph of all the nodes and vertices in the scene, and then when given a position and destination, it calculates the shortest path.
+
+
+* TODO: Discussion of Observer Pattern Design
+* ==================
+We successfully implemented the observer pattern to send notifications to the observers regarding the entities' statuses.
+
+
 * Discussion of Implemented Composite Factory
 * ==================
-* For Iteration One, I implemented a composite factory pattern for the creation of the three entities (Drone, Customer, and Package).
+* For Iteration One, I (Claire Yang) implemented a composite factory pattern for the creation of the three entities (Drone, Customer, and Package).
 * Each of these entities has their own factory that solely handles the creation of that respective entity. The Drone object is created by the DroneFactory, the Customer object is created by CustomerFactory, and the Package object is created by PackageFactory.
 * The management and creation of the three factories mentioned above happen in the CompositeFactory. When the delivery simulation wants to add an entity, it will pass the JSON object to the CompositeFactory to create the correct type of entity.
 

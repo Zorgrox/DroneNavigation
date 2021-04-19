@@ -32,6 +32,7 @@ namespace csci3081
     CustomerFactory() {}
     /**
    *  This function creates a new customer
+   * @param val picojson object with details for the creation of the entity
    */
     IEntity *CreateEntity(const picojson::object &val) {
       std::cout << "The customer factory has been called" << std::endl;

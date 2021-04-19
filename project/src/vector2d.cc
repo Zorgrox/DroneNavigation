@@ -40,7 +40,7 @@ namespace csci3081
 
    std::vector<float> Vector2D::AddTwoVectors(std::vector<float>& adr1, std::vector<float>& adr2)
   {
-    // adds the two vectors, because we want height to be unaffected the 2nd float of address1 is passed 
+    // adds the two vectors, because we want height to be unaffected the 2nd float of address1 is passed
     // into the return vector
     std::vector<float> toReturn = {0,0,0};
     toReturn[0] = adr1[0] + adr2[0];
@@ -51,7 +51,7 @@ namespace csci3081
 
    std::vector<float> Vector2D::SubtractTwoVectors(std::vector<float> &adr1, std::vector<float> &adr2)
   {
-    // subtracts the two vectors, because we want height to be unaffected the 2nd float of address1 is passed 
+    // subtracts the two vectors, because we want height to be unaffected the 2nd float of address1 is passed
     // into the return vector
     std::vector<float> toReturn = {0,0,0};
     toReturn[0] = adr1[0] - adr2[0];
@@ -63,7 +63,7 @@ namespace csci3081
    std::vector<float> Vector2D::MultiplyVectorWithFloat(std::vector<float> &adr, float scalar)
   {
     // multiplies each movement axis with the inputted scalar and returns the result, the 2nd index is not multiplied
-    // because entities using this class can only move in 2D, the 2nd index is passed into the return vector 
+    // because entities using this class can only move in 2D, the 2nd index is passed into the return vector
     // so that the height is unaffected
     std::vector<float> toReturn = {0,0,0};
     toReturn[0] = adr[0] * scalar;

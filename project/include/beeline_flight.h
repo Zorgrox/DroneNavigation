@@ -31,31 +31,46 @@ namespace csci3081 {
 
       /**
         *  This function is called to update the drone/robot's position, based on the beeline straight path route
+        * @param speedANDdt the value of the speed multiplied by the dt (difference in time between calls to the Update function)
+        * @param pos the position
+        * @param dir the direction
         */
       void FlightUpdate(float speedANDdt, std::vector<float>& pos, std::vector<float>& dir);
 
       /**
-        * This function is used whenever the drone's target needs to be set. This one is specifically used for the smart route.
+        * This function is used whenever the target needs to be set. This one is specifically used for the smart route.
+        * @param pos the current position
+        * @param target the intended target position of the flight
+        * @param newGraph the graph for calculating smart route, if needed
         */
       void SetFlightDetails(std::vector<float> pos,std::vector<float> target, const IGraph* newGraph);
 
       /**
-        *  This function is used whenever the drone's target needs to be set, for flights that do not need the smart route Graph.
+        *  This function is used whenever the target needs to be set, for flights that do not need the smart route Graph.
+        * @param pos the current position
+        * @param target the intended target position of the flight
         */
       void SetFlightDetails(std::vector<float> pos,std::vector<float> target);
+
       /**
-       *  This function is used to calculate and return the distance from the drone/robot to the package or customer
+       *  This function is used to calculate and return the distance from the drone/robot to the package or customer.
+       * @param pos the current position
+       * @param target the intended target position of the flight
        */
       float CalculateDistance(std::vector<float> pos,std::vector<float> target);
 
+      /**
+       *  This function is used to set the current route.
+       * @param pos the current position
+       * @param target the intended target position of the flight
+       */
       void SetCurRoute(std::vector<float> pos,std::vector<float> target);
-	  /**
-        *  This function is used to return the current route
+
+	    /**
+        *  This function is used to return the current route.
         */
-      
-	std::vector<std::vector<float>> GetCurRoute();
-	  
-	  
+	    std::vector<std::vector<float>> GetCurRoute();
+
     private:
       std::vector<float> flightTarget;
   };

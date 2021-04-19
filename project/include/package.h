@@ -30,6 +30,7 @@ namespace csci3081
   public:
     /**
    * @brief Constructor: set up a Package according to the details in the JSON object
+   * @param obj the picojson object that sets details for the package
    */
     Package(const picojson::object &obj);
 
@@ -40,6 +41,7 @@ namespace csci3081
 
     /**
    *  This function should set the id of the package
+   * @param ID the id
    */
     void SetId(int ID);
 
@@ -55,6 +57,7 @@ namespace csci3081
 
     /**
    *  This function should set the position of the package
+   * @param newPosition the new position
    */
     void SetPosition(std::vector<float>& newPosition);
 
@@ -65,6 +68,7 @@ namespace csci3081
 
     /**
     *  This function should set the package's velocity
+    * @param newVelocity the new velocity to be set
     */
     void SetVelocity(std::vector<float> &newVelocity);
 
@@ -90,6 +94,7 @@ namespace csci3081
 
     /**
    *  This function should set the package's intended customer
+   * @param newCustomer the new customer
    */
     void SetCustomer(Customer& newCustomer);
 
@@ -115,11 +120,13 @@ namespace csci3081
 
     /**
    *  This function should set the boolean denoting whether the package has been assigned
+   * @param newIsAlreadyAssigned the boolean denoting whether the package has been assigned
    */
     void SetIsAlreadyAssigned(bool newIsAlreadyAssigned);
 
     /**
    *  This function should set the boolean denoting whether the package has been delivered
+   * @param newIsDelivered the boolean denoting whether the package has been delivered
    */
     void SetIsDelivered(bool newIsDelivered);
 

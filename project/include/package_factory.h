@@ -33,6 +33,7 @@ namespace csci3081
     PackageFactory() {}
     /**
    *  This function creates a new package
+   * @param val the picojson object that contains the details
    */
     IEntity *CreateEntity(const picojson::object &val) {
       std::cout << "The package factory has been called" << std::endl;

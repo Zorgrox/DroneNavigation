@@ -32,6 +32,7 @@ namespace csci3081
     RobotFactory() {}
     /**
    *  This function creates a new robot.
+   * @param val the picojson object that holds the details of the entity
    */
     IEntity *CreateEntity(const picojson::object &val) {
       std::cout << "The robot factory has been called" << std::endl;

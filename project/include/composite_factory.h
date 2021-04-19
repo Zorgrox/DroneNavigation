@@ -36,10 +36,12 @@ namespace csci3081
     ~CompositeFactory();
   /**
    *  This function creates a new entity, based on the type of object passed in. Technically, we loop over the entities' factories CreateEntity functions here.
+   * @param val picojson object with details for the creation of the entity
    */
     IEntity *CreateEntity(const picojson::object &val);
   /**
    *  This function adds a factory to the factories member attribute vector.
+   * @param factory the factory for creating the entities
    */
     void AddFactory(IEntityFactory& factory);
 

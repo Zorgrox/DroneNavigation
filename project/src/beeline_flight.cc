@@ -35,9 +35,7 @@ namespace csci3081 {
     // Setting target position saved as float vector flightTarget
     flightTarget = target;
     //std::cout << "madehere\n";
-	
     SetCurRoute(pos, target);
-	
   }
 
   float BeelineFlight::CalculateDistance (std::vector<float> pos, std::vector<float> target) {
@@ -72,12 +70,12 @@ namespace csci3081 {
     }
 
     curRoute = tmpRoute;
-    
+
   }
-  
+
   std::vector<std::vector<float>> BeelineFlight::GetCurRoute() {
 	  return curRoute;
   }
-  
+
 
 }
