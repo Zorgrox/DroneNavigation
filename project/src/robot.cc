@@ -357,25 +357,13 @@ namespace csci3081 {
     std::vector<float> currentPosition = GetPosition();
     std::vector<float> packagePosition = curPackage->GetPosition();
     std::cout << "I am in Robot::CheckReadyToPickUp checking the curPackage's position" << std::endl;
-    int i = 0;
-    int numWithinRadius = 0;
     std::cout << "This is Robot's current position in CheckReadyToPickUp: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
     std::cout << "This is Package's current position in CheckReadyToPickUp: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
-    for(float pos : currentPosition) {
-      float packagePos = packagePosition.at(i);
-      i = i + 1;
-      // std::cout << "I am about to subtract the package position from the position" << std::endl;
-      if (std::fabs(pos - packagePos) <= radius) {
-        // std::cout << "I am in the pos - packagePos <= radius condition" << std::endl;
-        numWithinRadius = numWithinRadius + 1;
-      }
-      // std::cout << "I am done subtracting the package position from the position" << std::endl;
-    }
-   if ((currentPosition.at(0)-packagePosition.at(0))<=radius&&(currentPosition.at(2)-packagePosition.at(2))<=radius)
-	{
-		return true;
-	} else {
-    return false;
+    if (std::fabs(currentPosition.at(0)-packagePosition.at(0))<=radius && std::fabs(currentPosition.at(2)-packagePosition.at(2)) <= radius)
+	  {
+		  return true;
+	  } else {
+      return false;
     }
   }
 
