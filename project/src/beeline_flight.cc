@@ -7,7 +7,9 @@ namespace csci3081 {
   BeelineFlight::BeelineFlight() {  }
 
   void BeelineFlight::FlightUpdate(float speedANDdt, std::vector<float>& pos, std::vector<float>& dir) {
-    //increment drone x,y,z position by the stored direction and it's speed and dt time
+ if (pos.at(1)<280) {pos.at(1)+=.1;}
+else {
+  //increment drone x,y,z position by the stored direction and it's speed and dt time
     Vector3D Tmp(pos);
     std::vector<float> currentPosition = pos;
     std::vector<float> target = flightTarget;
@@ -25,11 +27,10 @@ namespace csci3081 {
 
 
     pos = currentPosition;
-    if (pos.at(1)<280) {pos.at(1)+=.1;}
     std::vector<float> tmp = Direction.GetVector();
-
-
      dir = tmp;
+ }
+
   }
 
   void BeelineFlight::SetFlightDetails(std::vector<float> pos,std::vector<float> target, const IGraph* newGraph) {
