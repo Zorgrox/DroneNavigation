@@ -1,4 +1,5 @@
 
+#include "drone.h"
 #include "entity_base.h"
 #include <vector>
 #include <string>
@@ -16,8 +17,6 @@
 #include "parabolic_flight.h"
 #include "path_flight.h"
 
-#include "drone.h"
-
 namespace csci3081 {
 
   Drone::Drone(const picojson::object &obj)
@@ -32,7 +31,14 @@ namespace csci3081 {
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
     isCarryingPackage = false;
-    battery = new Battery(10000);
+    try {
+      battery_capacity = JsonHelper::GetDouble(obj, "battery_capacity");
+    }
+    catch (const std::logic_error)
+    {
+      battery_capacity = 10000;
+    }
+    battery = new Battery(battery_capacity);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     assignedPackageIndex = 0;
     details_ = obj;
@@ -61,6 +67,9 @@ namespace csci3081 {
     return name;
   }
 
+  const Battery* Drone::GetBattery() {
+    return battery;
+  }
 
   float Drone::GetSpeed() {
     return speed;
@@ -165,7 +174,6 @@ namespace csci3081 {
       }
       if (isCarryingPackage) {
         SetIsCarryingPackage(false);
-        // TODO: reschedule the package to another drone/robot, since this one is no longer active (no battery left)
       }
     }
     std::cout << "This is battery charge: " << battery->GetCurrentCharge() << std::endl;
@@ -291,13 +299,11 @@ namespace csci3081 {
           // if there's another package it has to go to, then assign this new package to the curPackage
           if (assignedPackageIndex < GetNumAssignedPackages()) {
             UpdateCurPackage();
+            std::vector<float> curPosition = GetPosition();
+            std::vector<float> curTarget = GetCurPackage()->GetPosition();
+            SetFlightBehavior(curPosition, curTarget, graph);
 
-
-			std::vector<float> curPosition = GetPosition();
-			std::vector<float> curTarget = GetCurPackage()->GetPosition();
-			SetFlightBehavior(curPosition, curTarget, graph);
-
-			SetOnTheWayToPickUpPackage(true);
+            SetOnTheWayToPickUpPackage(true);
             SetOnTheWayToDropOffPackage(false);
           }
         }
@@ -457,21 +463,34 @@ namespace csci3081 {
       if (allowFlightChange) {
       flightStrategyIndex++; }
       break;
-	case 2:
+	  case 2:
       flightStrategy = new PathFlight(radius);
       if (allowFlightChange) {
       flightStrategyIndex = 0; }
       break;
     default:
       flightStrategy = new PathFlight(radius);
-      if (allowFlightChange) {
-      flightStrategyIndex = 0; }
+      if (allowFlightChange)
+      {
+        flightStrategyIndex = 0;
+      }
     }
+  }
+
+  std::vector<Package *> Drone::GetRemainingAssignedPackages() {
+    // first need to check whether the curpackageindex is within range of the packageslist
+    // if it's not, then we just return an empty vector
+    // if it is, then we return everything after that package, itself included
+    std::vector<Package*> remainingAssignedPackages;
+    for (int i = assignedPackageIndex; i < GetNumAssignedPackages(); i++) {
+      remainingAssignedPackages.push_back(assignedPackages.at(i));
+    }
+    return remainingAssignedPackages;
   }
 
   void Drone::SetFlightStrategyIndex(int index, bool allowChange)
   {
-	  allowFlightChange=allowChange;
-	  flightStrategyIndex=index;
+	  allowFlightChange = allowChange;
+	  flightStrategyIndex = index;
   }
 }

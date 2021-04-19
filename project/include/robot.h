@@ -48,7 +48,12 @@ namespace csci3081 {
    */
     const std::string &GetName();
 
-  /**
+    /**
+   *  This function return the pointer to the battery of the robot
+   */
+    const Battery* GetBattery();
+
+    /**
    *  This function should return the position of the robot
    */
     const std::vector<float> &GetPosition() const;
@@ -193,6 +198,11 @@ namespace csci3081 {
     */
     void IncrementCurRouteNextIndex();
 
+    /**
+    *  This function returns the list of remaining packages to be delivered by the robot, if there are any. This should only be used when checking for packages to be rescheduled in the case that the robot dies.
+    */
+    std::vector<Package *> GetRemainingAssignedPackages();
+
   private:
     std::string name;
     Vector2D *position;
@@ -204,16 +214,18 @@ namespace csci3081 {
     float radius;
     int version = 0;
     bool dynamic = true;
-	bool notified = false;
+	  bool notified = false;
     bool onTheWayToPickUpPackage;
     bool onTheWayToDropOffPackage;
     bool isCarryingPackage;
     float speed;
-	int waiter=0;
+	  int waiter=0;
     std::vector<std::vector<float>> curRoute;
     int curRouteNextIndex;
     int curRouteLength;
-    };
+    float battery_capacity;
+
+  };
 
 } // namespace csci3081
 

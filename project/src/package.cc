@@ -88,8 +88,8 @@ namespace csci3081
     destination = customer->GetPosition();
   }
 
-  const Customer Package::GetCustomer() {
-    return *customer;
+  Customer* Package::GetCustomer() {
+    return customer;
   }
 
   const std::vector<float> Package::GetDestination() const {

@@ -54,6 +54,11 @@ namespace csci3081 {
    */
     const std::string &GetName();
 
+    /**
+   *  This function return the pointer to the battery of the drone
+   */
+    const Battery* GetBattery();
+
   /**
    *  This function should return the position of the drone
    */
@@ -64,11 +69,19 @@ namespace csci3081 {
    */
     const std::vector<float> &GetDirection() const;
 
-
+    /**
+   *  This function should return the speed of the drone
+   */
     float GetSpeed();
 
+    /**
+   *  This function should set the direction of the drone
+   */
     void SetDirection(std::vector<float> newDirection);
 
+    /**
+   *  This function should set the position of the drone
+   */
     void SetPosition(std::vector<float> newPosition);
 
   /**
@@ -201,11 +214,25 @@ namespace csci3081 {
     */
     void IncrementCurRouteNextIndex();
 
+    /**
+    *  This function sets the flight behavior for the drone
+    */
     void SetFlightBehavior(std::vector<float> pos, std::vector<float> target, const IGraph* newGraph);
 
+    /**
+    *  This function chooses the flight strategy for the drone
+    */
     void ChooseFlightStrategy();
 
-	  void SetFlightStrategyIndex(int index, bool allowChange);
+    /**
+    *  This function returns the list of remaining packages to be delivered by the drone, if there are any. This should only be used when checking for packages to be rescheduled in the case that the drone dies.
+    */
+    std::vector<Package*> GetRemainingAssignedPackages();
+
+    /**
+    *  This function sets the flight strategy index
+    */
+    void SetFlightStrategyIndex(int index, bool allowChange);
 
   private:
     int id;
@@ -232,6 +259,8 @@ namespace csci3081 {
     int curRouteLength;
     FlightBehavior* flightStrategy;
     int flightStrategyIndex = 0;
+
+    float battery_capacity;
 
   };
 

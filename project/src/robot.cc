@@ -26,7 +26,15 @@ namespace csci3081 {
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
     isCarryingPackage = false;
-    battery = new Battery(10000);
+    try
+    {
+      battery_capacity = JsonHelper::GetDouble(obj, "battery_capacity");
+    }
+    catch (const std::logic_error)
+    {
+      battery_capacity = 10000;
+    }
+    battery = new Battery(battery_capacity);
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     details_ = obj;
     assignedPackageIndex = 0;
@@ -39,12 +47,17 @@ namespace csci3081 {
   int Robot::GetId() const {
     return id;
   }
+
   void Robot::SetId(int ID) {
 	  id = ID;
   }
 
   const std::string& Robot::GetName() {
     return name;
+  }
+
+  const Battery *Robot::GetBattery() {
+    return battery;
   }
 
   const std::vector<float>& Robot::GetPosition() const {
@@ -155,7 +168,6 @@ namespace csci3081 {
       if (isCarryingPackage)
       {
         SetIsCarryingPackage(false);
-        // TODO: reschedule the package to another drone/robot, since this one is no longer active (no battery left)
       }
     }
     std::cout << "This is battery charge of ROBOT: " << battery->GetCurrentCharge() << std::endl;
@@ -460,5 +472,18 @@ namespace csci3081 {
   void Robot::IncrementCurRouteNextIndex()
   {
     curRouteNextIndex = curRouteNextIndex + 1;
+  }
+
+  std::vector<Package *> Robot::GetRemainingAssignedPackages()
+  {
+    // first need to check whether the curpackageindex is within range of the packageslist
+    // if it's not, then we just return an empty vector
+    // if it is, then we return everything after that package, itself included
+    std::vector<Package *> remainingAssignedPackages;
+    for (int i = assignedPackageIndex; i < GetNumAssignedPackages(); i++)
+    {
+      remainingAssignedPackages.push_back(assignedPackages.at(i));
+    }
+    return remainingAssignedPackages;
   }
 }
