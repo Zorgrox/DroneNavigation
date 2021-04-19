@@ -17,11 +17,9 @@ namespace csci3081 {
     Vector2D Direction(newDirection);
     Direction.Normalize();
     newDirection = Direction.GetVector();
-    //float speedAndDT = drone_self->GetSpeed() * dt;
     newDirection = Direction.MultiplyVectorWithFloat(newDirection,speedANDdt);
     //newDirection now contains the x,z movement offset and will be added to the drone's position
     currentPosition = Direction.AddTwoVectors(currentPosition, newDirection);
-
     //then calculate and increment to the appropriate y position.
 
     std::cout << "In Parabolic FlightUpdate: \n";
@@ -45,13 +43,7 @@ namespace csci3081 {
     pos = parabolicYPos;
     std::vector<float> tmp = Direction.GetVector();
     dir = tmp;
-    //position->SetVector(parabolicYPos);
-    //set drone's y to the intended Y
-    /* has to be moved back into drone:
-    if (isCarryingPackage) {
-      curPackage->SetPosition(parabolicYPos);
-    }*/
-}
+  }
 
   float ParabolicFlight::CalculateDistance (std::vector<float> pos, std::vector<float> target) {
       // calculate distance to package from only x and z (y has to be ignored)
@@ -95,7 +87,7 @@ void ParabolicFlight::SetCurRoute(std::vector<float> pos, std::vector<float> tar
      Vector2D Direction(newDirection);
     Direction.Normalize();
     newDirection = Direction.GetVector();
-    
+
     newDirection = Direction.MultiplyVectorWithFloat(newDirection, (i * tripDistance / 30) );
     //newDirection now contains the x,z movement offset and will be added to the drone's original position
     currentPosition = Direction.AddTwoVectors(currentPosition, newDirection);
@@ -122,24 +114,17 @@ void ParabolicFlight::SetCurRoute(std::vector<float> pos, std::vector<float> tar
     currentPosition[1] = intendedY;
     //push_back the temp position node onto the tmpRoute
     tmpRoute.push_back(parabolicYPos);
-    
+
   }
-  
   curRoute = tmpRoute;
-  
-	
 }
 
-
-
-  void ParabolicFlight::SetFlightDetails(std::vector<float> pos,std::vector<float> target, const IGraph* newGraph) {
-    SetFlightDetails(pos, target);
-  }
-  
-  
-  std::vector<std::vector<float>> ParabolicFlight::GetCurRoute()
-  {
-	  return curRoute;
-  }
-
+void ParabolicFlight::SetFlightDetails(std::vector<float> pos,std::vector<float> target, const IGraph* newGraph) {
+  SetFlightDetails(pos, target);
 }
+
+std::vector<std::vector<float>> ParabolicFlight::GetCurRoute()
+{
+  return curRoute;
+}
+} // namespace csci3081w

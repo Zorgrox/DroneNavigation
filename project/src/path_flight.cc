@@ -106,14 +106,12 @@ namespace csci3081 {
   }
 
   void PathFlight::SetCurRoute(std::vector<float> pos, std::vector<float> target) {
-    
+    // not necessary, since we use SetNewCurRoute
   }
-  
+
   std::vector<std::vector<float>> PathFlight::GetCurRoute()
   {
 	  return curRoute;
   }
-  
-  
 
 }

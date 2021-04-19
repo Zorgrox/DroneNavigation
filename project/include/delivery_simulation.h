@@ -61,16 +61,19 @@ class DeliverySimulation : public IDeliverySystem {
     battery_capacity: float
 
   Don't add the entity to the simulation until it is passed in via AddEntity
+  @param val picojson object with details for the creation of the entity
   */
   IEntity* CreateEntity(const picojson::object& val);
 
   /**
    *  This function should add a factory to the composite factory pattern
+   * @param factory the factory for creating the entities
    */
   void AddFactory(IEntityFactory* factory);
 
   /**
    *  This function should add an entity to the simulation
+   * @param entity the entity to be added
    */
   void AddEntity(IEntity* entity);
 
@@ -78,6 +81,7 @@ class DeliverySimulation : public IDeliverySystem {
   This function should simply store a reference to the IGraph* somewhere.
   The IGraph contains useful functions such as the GetPath function which can
   be used to get a path from one position to another.
+  @param graph the graph
   */
   void SetGraph(const IGraph* graph);
 
@@ -87,13 +91,19 @@ class DeliverySimulation : public IDeliverySystem {
   is entirely dependent on how you design your code, but it should involve a drone
   navigating to the package, picking it up, and then moving to the customer and
   dropping the package.
+  @param package the package to be scheduled
+  @param dest the destination of the package to be scheduled (usually the customer)
   */
   void ScheduleDelivery(IEntity* package, IEntity* dest);
 
-  /** Adds the observer to the delivery simulation */
+  /** Adds the observer to the delivery simulation
+   * @param observer the observer to be added
+  */
   void AddObserver(IEntityObserver* observer);
 
-  /** Remove the observer to the delivery simulation */
+  /** Remove the observer to the delivery simulation
+   * @param observer the observer to be removed
+  */
   void RemoveObserver(IEntityObserver* observer);
 
   /**
@@ -109,18 +119,21 @@ class DeliverySimulation : public IDeliverySystem {
 
   Some things that should happen in the Update function: move drones, check if
   packages have been delivered to customers, etc.
+  @param dt the amount of time the update call should advance the simulation by
   */
 
   void Update(float dt);
 
   /**
    *  This function should be used to print out the values of a vector
+   * @param vectorOutput the vector that we want pretty printed
    */
 
   void Print(std::vector<float> &vectorOutput);
 
   /**
    *  This function should be used to print out the values of the path
+   * @param vectorOutput the vector of vectors that we want pretty printed
    */
 
   void PrintPath(std::vector<std::vector<float>> &vectorOutput);

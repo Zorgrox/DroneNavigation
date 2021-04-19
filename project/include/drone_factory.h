@@ -32,6 +32,7 @@ namespace csci3081
     DroneFactory() {}
     /**
    *  This function creates a new drone.
+   * @param val picojson object with details for the creation of the entity
    */
     IEntity *CreateEntity(const picojson::object &val) {
       std::cout << "The drone factory has been called" << std::endl;

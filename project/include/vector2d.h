@@ -28,6 +28,7 @@ namespace csci3081
   public:
     /**
    * @brief Constructor: set up a Vector2D
+   * @param vector2d a two element vector that contains the values
    */
     Vector2D(std::vector<float> vector2d);
 
@@ -38,6 +39,7 @@ namespace csci3081
 
     /**
    *  This function sets the vector to a new vector
+   * @param newVector the new vector
    */
     void SetVector(std::vector<float> &newVector);
 
@@ -53,14 +55,20 @@ namespace csci3081
 
     /**
    *  This function should be used to add two standard vectors with each other
+   * @param oneVector vector number one
+   * @param secondVector vector number two
    */
     std::vector<float> AddTwoVectors(std::vector<float> &oneVector, std::vector<float> &secondVector);
     /**
    *  This function should be used to subtract two standard vectors from each other
+   * @param oneVector vector number one
+   * @param secondVector vector number two to subtract from vector number one
    */
     std::vector<float> SubtractTwoVectors(std::vector<float> &oneVector, std::vector<float> &secondVector);
     /**
    *  This function should be used to multiple a vector with a float
+   * @param oneVector vector number one
+   * @param coeff the coefficient to multiply the vector by
    */
     std::vector<float> MultiplyVectorWithFloat(std::vector<float> &oneVector, float coeff);
 

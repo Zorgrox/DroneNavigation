@@ -153,15 +153,8 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
           // get the path and set it to the delivery simulation's curRoute
           std::vector<float> drones_position = actual_drone->GetPosition();
           std::vector<float> packages_position = actual_package->GetPosition();
-          //std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
-          std::cout << "made here\n";
-          // /*picojson::object info = actual_drone->GetDetails();
-          // std::string path = JsonHelper::GetString(info, "path");
-          // actual_drone->SetFlightStrategyIndex(1,false);
-          //     */
 		      actual_drone->SetFlightBehavior(drones_position, packages_position, const_cast<IGraph*>(systemGraph));
-		      //SetFlightBehavior Now sets the route for the drone
-		      //actual_drone->SetNewCurRoute(anotherRoute);
+		      //SetFlightBehavior now sets the route for the drone
           actual_drone->SetOnTheWayToPickUpPackage(true);
           actual_drone->SetOnTheWayToDropOffPackage(false);
         }
@@ -223,7 +216,6 @@ void DeliverySimulation::RemoveObserver(IEntityObserver* observer) {
 const std::vector<IEntity*>& DeliverySimulation::GetEntities() const { return entities_; }
 
 void DeliverySimulation::Update(float dt) {
-  // std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
   if (GetEntities().size() > 0 ) {
     int drone_idx = 0;
     for (Drone* actual_drone : drones_) {

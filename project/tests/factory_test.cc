@@ -3,7 +3,10 @@
 #include "../include/delivery_simulation.h"
 #include <EntityProject/entity.h>
 #include "json_helper.h"
-
+#include "drone_factory.h"
+#include "robot_factory.h"
+#include "package_factory.h"
+#include "customer_factory.h"
 
 #include <iostream>
 
@@ -83,6 +86,72 @@ TEST_F(FactoryTest, DroneCreated) {
     IEntity* drone = compositeFactory_->CreateEntity(obj);
 
     ASSERT_EQ(drone->GetId(), entity->GetId());
+  }
+
+  // Test the different factories independently of IDeliverySystem and of CompositeFactory
+  TEST_F(FactoryTest, IndependentFactoryTests)
+  {
+    DroneFactory *drone_factory = new DroneFactory();
+    picojson::object obj = JsonHelper::CreateJsonObject();
+    JsonHelper::AddStringToJsonObject(obj, "type", "drone");
+    JsonHelper::AddStringToJsonObject(obj, "name", "drone");
+    std::vector<float> position_to_add;
+    position_to_add.push_back(2);
+    position_to_add.push_back(4);
+    position_to_add.push_back(5);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj, "position", position_to_add);
+    std::vector<float> direction_to_add;
+    direction_to_add.push_back(0);
+    direction_to_add.push_back(0);
+    direction_to_add.push_back(1);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
+    JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
+    JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
+    drone_factory->CreateEntity(obj);
+    IEntity *drone = drone_factory->CreateEntity(obj);
+    ASSERT_EQ(drone->GetName(), "drone");
+
+    RobotFactory *robot_factory = new RobotFactory();
+    picojson::object robot_obj = JsonHelper::CreateJsonObject();
+    JsonHelper::AddStringToJsonObject(robot_obj, "type", "robot");
+    JsonHelper::AddStringToJsonObject(robot_obj, "name", "robot");
+    std::vector<float> position_to_add;
+    JsonHelper::AddStdFloatVectorToJsonObject(robot_obj, "position", position_to_add);
+    std::vector<float> direction_to_add;
+    JsonHelper::AddStdFloatVectorToJsonObject(robot_obj, "direction", direction_to_add);
+    JsonHelper::AddFloatToJsonObject(robot_obj, "radius", 1.0);
+    JsonHelper::AddFloatToJsonObject(robot_obj, "speed", 30);
+    robot_factory->CreateEntity(robot_obj);
+    IEntity *robot = robot_factory->CreateEntity(robot_obj);
+    ASSERT_EQ(robot->GetName(), "robot");
+
+    CustomerFactory *customer_factory = new CustomerFactory();
+    picojson::object customer_obj = JsonHelper::CreateJsonObject();
+    JsonHelper::AddStringToJsonObject(customer_obj, "type", "customer");
+    JsonHelper::AddStringToJsonObject(customer_obj, "name", "customer");
+    std::vector<float> position_to_add;
+    JsonHelper::AddStdFloatVectorToJsonObject(customer_obj, "position", position_to_add);
+    std::vector<float> direction_to_add;
+    JsonHelper::AddStdFloatVectorToJsonObject(customer_obj, "direction", direction_to_add);
+    JsonHelper::AddFloatToJsonObject(customer_obj, "radius", 1.0);
+    customer_factory->CreateEntity(customer_obj);
+    IEntity *customer = customer_factory->CreateEntity(customer_obj);
+    ASSERT_EQ(customer->GetName(), "customer");
+
+    PackageFactory *package_factory = new PackageFactory();
+    picojson::object package_obj = JsonHelper::CreateJsonObject();
+    JsonHelper::AddStringToJsonObject(package_obj, "type", "package");
+    JsonHelper::AddStringToJsonObject(package_obj, "name", "package");
+    std::vector<float> position_to_add;
+    JsonHelper::AddStdFloatVectorToJsonObject(package_obj, "position", position_to_add);
+    std::vector<float> direction_to_add;
+    JsonHelper::AddStdFloatVectorToJsonObject(package_obj, "direction", direction_to_add);
+    JsonHelper::AddFloatToJsonObject(package_obj, "radius", 1.0);
+    package_factory->CreateEntity(package_obj);
+    IEntity *package = package_factory->CreateEntity(package_obj);
+    ASSERT_EQ(package->GetName(), "package");
 
   }
+
+
 }  // namespace csci3081

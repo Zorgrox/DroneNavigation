@@ -114,7 +114,6 @@ namespace csci3081 {
     if (assignedPackageIndex < GetNumAssignedPackages()) {
         curPackage = assignedPackages.at(assignedPackageIndex);
     }
-    // curPackage = &newPackage;
   }
 
   void Drone::AddAssignedPackage(Package& newPackage)
@@ -340,10 +339,8 @@ namespace csci3081 {
       float packagePos = packagePosition.at(i);
       i = i + 1;
       if (std::fabs(pos - packagePos) <= radius * 2.0) {
-        // std::cout << "I am in the pos - packagePos <= radius condition" << std::endl;
         numWithinRadius = numWithinRadius + 1;
       }
-      // std::cout << "I am done subtracting the package position from the position" << std::endl;
     }
     if (numWithinRadius == 2) {
       std::cout << "The package is ready to be picked up!" << std::endl;
@@ -458,7 +455,6 @@ namespace csci3081 {
   }
 
   void Drone::ChooseFlightStrategy() {
-    //~flightStrategy;
     switch (flightStrategyIndex){
     case 0:
       flightStrategy = new ParabolicFlight();
@@ -485,9 +481,6 @@ namespace csci3081 {
   }
 
   std::vector<Package *> Drone::GetRemainingAssignedPackages() {
-    // first need to check whether the curpackageindex is within range of the packageslist
-    // if it's not, then we just return an empty vector
-    // if it is, then we return everything after that package, itself included
     std::vector<Package*> remainingAssignedPackages;
     for (int i = assignedPackageIndex; i < GetNumAssignedPackages(); i++) {
       remainingAssignedPackages.push_back(assignedPackages.at(i));

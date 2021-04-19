@@ -93,7 +93,6 @@ namespace csci3081 {
     {
       curPackage = assignedPackages.at(assignedPackageIndex);
     }
-    // curPackage = &newPackage;
   }
 
   void Robot::AddAssignedPackage(Package &newPackage)
@@ -375,7 +374,7 @@ namespace csci3081 {
     int numWithinRadius = 0;
     std::cout << "This is Robot's current position in CheckReadyToDropOff: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
     std::cout << "This is Package's current position in CheckReadyToDropOff: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
-    if ((currentPosition.at(0)-packageDestination.at(0))<=radius&&(currentPosition.at(2)-packageDestination.at(2))<=radius)
+    if (std::fabs(currentPosition.at(0)-packageDestination.at(0))<=radius&&std::fabs(currentPosition.at(2)-packageDestination.at(2))<=radius)
 	{
 		return true;
 	}
@@ -473,9 +472,6 @@ namespace csci3081 {
 
   std::vector<Package *> Robot::GetRemainingAssignedPackages()
   {
-    // first need to check whether the curpackageindex is within range of the packageslist
-    // if it's not, then we just return an empty vector
-    // if it is, then we return everything after that package, itself included
     std::vector<Package *> remainingAssignedPackages;
     for (int i = assignedPackageIndex; i < GetNumAssignedPackages(); i++)
     {
