@@ -155,9 +155,13 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
           std::vector<float> packages_position = actual_package->GetPosition();
           //std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
           std::cout << "made here\n";
-          actual_drone->SetFlightBehavior(drones_position, packages_position, const_cast<IGraph*>(systemGraph));
-          //SetFlightBehavior Now sets the route for the drone
-		  //actual_drone->SetNewCurRoute(anotherRoute);
+          // /*picojson::object info = actual_drone->GetDetails();
+          // std::string path = JsonHelper::GetString(info, "path");
+          // actual_drone->SetFlightStrategyIndex(1,false);
+          //     */
+		      actual_drone->SetFlightBehavior(drones_position, packages_position, const_cast<IGraph*>(systemGraph));
+		      //SetFlightBehavior Now sets the route for the drone
+		      //actual_drone->SetNewCurRoute(anotherRoute);
           actual_drone->SetOnTheWayToPickUpPackage(true);
           actual_drone->SetOnTheWayToDropOffPackage(false);
         }

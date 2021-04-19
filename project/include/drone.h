@@ -229,6 +229,11 @@ namespace csci3081 {
     */
     std::vector<Package*> GetRemainingAssignedPackages();
 
+    /**
+    *  This function sets the flight strategy index
+    */
+    void SetFlightStrategyIndex(int index, bool allowChange);
+
   private:
     int id;
     std::string name;
@@ -244,10 +249,11 @@ namespace csci3081 {
     bool onTheWayToPickUpPackage;
     bool onTheWayToDropOffPackage;
     bool isCarryingPackage;
+
 	  bool notified = false;
     float speed;
-	  int waiter=0;
-
+	int waiter=0;
+	bool allowFlightChange=true;
     std::vector<std::vector<float>> curRoute;
     int curRouteNextIndex;
     int curRouteLength;
