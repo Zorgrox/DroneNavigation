@@ -150,7 +150,10 @@ namespace csci3081 {
         // then also update the package's position
         curPackage->SetPosition(newPosition);
       }
-      UpdateBatteryCharge(dt);
+      if (onTheWayToDropOffPackage || onTheWayToPickUpPackage)
+      {
+        UpdateBatteryCharge(dt);
+      }
     }
     if (battery->GetIsEmpty() == true)
     {
@@ -169,6 +172,9 @@ namespace csci3081 {
       {
         SetIsCarryingPackage(false);
       }
+      // also set the on the way to drop off package and pick up package to false
+      onTheWayToDropOffPackage = false;
+      onTheWayToPickUpPackage = false;
     }
     std::cout << "This is battery charge of ROBOT: " << battery->GetCurrentCharge() << std::endl;
   }
