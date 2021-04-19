@@ -204,6 +204,8 @@ namespace csci3081 {
     void SetFlightBehavior(std::vector<float> pos, std::vector<float> target, const IGraph* newGraph);
     
     void ChooseFlightStrategy();
+	
+	void SetFlightStrategyIndex(int index, bool allowChange); 
 
   private:
     int id;
@@ -220,10 +222,11 @@ namespace csci3081 {
     bool onTheWayToPickUpPackage;
     bool onTheWayToDropOffPackage;
     bool isCarryingPackage;
+	
 	  bool notified = false;
     float speed;
-	  int waiter=0;
-
+	int waiter=0;
+	bool allowFlightChange=true;
     std::vector<std::vector<float>> curRoute;
     int curRouteNextIndex;
     int curRouteLength;
