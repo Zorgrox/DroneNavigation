@@ -22,9 +22,14 @@ namespace csci3081 {
     //newDirection now contains the x,z movement offset and will be added to the drone's position
     currentPosition = Direction.AddTwoVectors(currentPosition, newDirection);
     // sets the vectors at input refrence pos and dir to the intended position and direction
+
+
     pos = currentPosition;
+    if (pos.at(1)<280) {pos.at(1)+=.1;}
     std::vector<float> tmp = Direction.GetVector();
-    dir = tmp;
+
+
+     dir = tmp;
   }
 
   void BeelineFlight::SetFlightDetails(std::vector<float> pos,std::vector<float> target, const IGraph* newGraph) {
