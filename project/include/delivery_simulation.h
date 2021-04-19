@@ -155,6 +155,9 @@ class DeliverySimulation : public IDeliverySystem {
 
   std::vector<Drone*> dead_drones_with_remaining_packages_;
   std::vector<Robot*> dead_robots_with_remaining_packages_;
+  std::vector<Package*> packages_to_be_scheduled_;
+  std::vector<int> dead_drones_indices;
+  std::vector<int> dead_robots_indices;
 
 };
 

@@ -86,7 +86,7 @@ namespace csci3081
     /**
    *  This function should return the package's intended customer
    */
-    const Customer GetCustomer();
+    Customer* GetCustomer();
 
     /**
    *  This function should set the package's intended customer

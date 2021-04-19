@@ -198,6 +198,11 @@ namespace csci3081 {
     */
     void IncrementCurRouteNextIndex();
 
+    /**
+    *  This function returns the list of remaining packages to be delivered by the robot, if there are any. This should only be used when checking for packages to be rescheduled in the case that the robot dies.
+    */
+    std::vector<Package *> GetRemainingAssignedPackages();
+
   private:
     std::string name;
     Vector2D *position;

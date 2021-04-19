@@ -214,9 +214,20 @@ namespace csci3081 {
     */
     void IncrementCurRouteNextIndex();
 
+    /**
+    *  This function sets the flight behavior for the drone
+    */
     void SetFlightBehavior(std::vector<float> pos, std::vector<float> target, const IGraph* newGraph);
-    
+
+    /**
+    *  This function chooses the flight strategy for the drone
+    */
     void ChooseFlightStrategy();
+
+    /**
+    *  This function returns the list of remaining packages to be delivered by the drone, if there are any. This should only be used when checking for packages to be rescheduled in the case that the drone dies.
+    */
+    std::vector<Package*> GetRemainingAssignedPackages();
 
   private:
     int id;
