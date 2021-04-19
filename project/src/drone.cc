@@ -43,7 +43,7 @@ namespace csci3081 {
 
     //flightStrategy = new PathFlight(radius);
     //flightStrategy = new ParabolicFlight();
-    flightStrategy = new BeelineFlight();
+    flightStrategy = new BeelineFlight(); //Perhaps not needed, comment out?
   }
 
   void Drone::AddGraphPath(const IGraph* newGraph) {
@@ -293,11 +293,11 @@ namespace csci3081 {
             UpdateCurPackage();
 
 
-	    std::vector<float> curPosition = GetPosition();
-	    std::vector<float> curTarget = GetCurPackage()->GetPosition();
-            SetFlightBehavior(curPosition, curTarget, graph);
-	    	
-	    SetOnTheWayToPickUpPackage(true);
+			std::vector<float> curPosition = GetPosition();
+			std::vector<float> curTarget = GetCurPackage()->GetPosition();
+			SetFlightBehavior(curPosition, curTarget, graph);
+
+			SetOnTheWayToPickUpPackage(true);
             SetOnTheWayToDropOffPackage(false);
           }
         }
@@ -424,28 +424,54 @@ namespace csci3081 {
   }
 
   void Drone::SetFlightBehavior(std::vector<float> pos, std::vector<float> target, const IGraph* newGraph) {
+    bool containspath = JsonHelper::ContainsKey(details_, "path");
+    if (containspath)
+    {
+      std::string path = JsonHelper::GetString(details_, "path");
+      if (path=="beeline") {
+      SetFlightStrategyIndex(1,false); //The false makes it so flight does not change
+      }
+      if (path=="smart") {
+      SetFlightStrategyIndex(2,false);
+      }
+      if (path=="parabolic") {
+      SetFlightStrategyIndex(0,false);
+      }
+    }
     ChooseFlightStrategy();
     flightStrategy->SetFlightDetails(pos, target, newGraph);
     std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
-    SetNewCurRoute(anotherRoute); 
+    SetNewCurRoute(anotherRoute);
   }
-
 
   void Drone::ChooseFlightStrategy() {
     //~flightStrategy;
     switch (flightStrategyIndex){
     case 0:
       flightStrategy = new ParabolicFlight();
-      flightStrategyIndex++;
+	  if (allowFlightChange) {
+      flightStrategyIndex++; }
       break;
     case 1:
       flightStrategy = new BeelineFlight();
-      flightStrategyIndex++;
+      if (allowFlightChange) {
+      flightStrategyIndex++; }
+      break;
+	case 2:
+      flightStrategy = new PathFlight(radius);
+      if (allowFlightChange) {
+      flightStrategyIndex = 0; }
       break;
     default:
       flightStrategy = new PathFlight(radius);
-      flightStrategyIndex = 0;
-      
+      if (allowFlightChange) {
+      flightStrategyIndex = 0; }
     }
+  }
+
+  void Drone::SetFlightStrategyIndex(int index, bool allowChange)
+  {
+	  allowFlightChange=allowChange;
+	  flightStrategyIndex=index;
   }
 }
