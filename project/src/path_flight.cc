@@ -62,16 +62,12 @@ namespace csci3081 {
   void PathFlight::SetFlightDetails(std::vector<float> pos, std::vector<float> target, const IGraph* newGraph) {
     graph = newGraph;
     flightTarget = target;
-     std::vector<std::vector<float>> anotherRoute = graph->GetPath(pos, target);
-    SetNewCurRoute(anotherRoute);
+    SetCurRoute(pos, target);
     std::cout << "madehereP1\n";
-    //std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-    //CalculateAndUpdateDroneDirection(nextPos);
 }
   void PathFlight::SetFlightDetails(std::vector<float> pos, std::vector<float> target) {
      flightTarget = target;
-     std::vector<std::vector<float>> anotherRoute = graph->GetPath(pos, target);
-     SetNewCurRoute(anotherRoute);
+     SetCurRoute(pos, target);
      std::cout << "madehereP2\n";
   }
 
@@ -94,19 +90,16 @@ namespace csci3081 {
     }
   }
 
-  void PathFlight::SetNewCurRoute(std::vector<std::vector<float>> &newCurRoute) {
-    // resets the curRoute
-    curRoute = newCurRoute;
-    curRouteLength = curRoute.size();
-    curRouteNextIndex = 1;
-  }
-
   void PathFlight::AddGraph(const IGraph* newGraph) {
     graph = newGraph;
   }
 
   void PathFlight::SetCurRoute(std::vector<float> pos, std::vector<float> target) {
-    // not necessary, since we use SetNewCurRoute
+    // resets the curRoute
+    std::vector<std::vector<float>> newCurRoute = graph->GetPath(pos, target);
+    curRoute = newCurRoute;
+    curRouteLength = curRoute.size();
+    curRouteNextIndex = 1;
   }
 
   std::vector<std::vector<float>> PathFlight::GetCurRoute()

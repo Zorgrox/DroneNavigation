@@ -79,13 +79,7 @@ namespace csci3081 {
       bool CheckWhenToIncrementPathIndex(std::vector<float> &nextPosition, std::vector<float> position);
 
       /**
-       *  This function updates the existing route, based on the new current position and destination
-       * @param newPosition the new position
-       */
-      void SetNewCurRoute(std::vector<std::vector<float>> &newPosition);
-
-      /**
-        *  This function is used to set the current route
+        *  This function updates the existing route, based on the new current position and destination
         * @param pos the position
         * @param target the target destination
         */
