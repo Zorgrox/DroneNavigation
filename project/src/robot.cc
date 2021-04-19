@@ -195,36 +195,37 @@ namespace csci3081 {
     if (battery->GetIsEmpty() == false) {
       if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
       {
-      ///////////////// Checks to see if the route is there or not
-      if(!notified) // Checks to see if its announced that its on its way to the package
-      {
-        if (waiter==30) { //Presumably due to threading of some sort, we need to wait for currRoute to actually be there
-          picojson::object obj2 = JsonHelper::CreateJsonObject();
-          JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
-          JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
-          JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
-          picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
-          for (IEntityObserver *obs : observers)
-          {
-            const IEntity *temp_robot = this;
-            obs->OnEvent(val2, *temp_robot);
-          }
-          notified=true;
-        }
-        else
+        ///////////////// Checks to see if the route is there or not
+        if(!notified) // Checks to see if its announced that its on its way to the package
         {
-          waiter++;
+          if (waiter==30) { //Presumably due to threading of some sort, we need to wait for currRoute to actually be there
+            picojson::object obj2 = JsonHelper::CreateJsonObject();
+            JsonHelper::AddStringToJsonObject(obj2, "type", "notify");
+            JsonHelper::AddStringToJsonObject(obj2, "value", "moving");
+            JsonHelper::AddStdVectorVectorFloatToJsonObject(obj2, "path", curRoute);
+            picojson::value val2 = JsonHelper::ConvertPicojsonObjectToValue(obj2);
+            for (IEntityObserver *obs : observers)
+            {
+              const IEntity *temp_robot = this;
+              obs->OnEvent(val2, *temp_robot);
+            }
+            notified=true;
+          }
+          else
+          {
+            waiter++;
+          }
         }
-      }
 
-      ////////////////
+        ////////////////
         std::cout << "I'm on the way to pick up the package" << std::endl;
         // The drone is on the way to pick up a package.
         if (CheckReadyToPickUp())
         {
-    std::cout << "Ready to pickup\n";
+          std::cout << "Ready to pickup\n";
           PickUpPackage();
           // Update the path so that it's now pointed towards the customer's location
+
           std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), GetCurPackage()->GetDestination());
           SetNewCurRoute(anotherRoute);
           std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
@@ -322,9 +323,11 @@ namespace csci3081 {
           // if there's another package it has to go to, then assign this new package to the curPackage
           if (assignedPackageIndex < GetNumAssignedPackages())
           {
+            std::cout << "IMPORTANT: I'm here assigning a new package to the curPackage in ROBOT" << std::endl;
             UpdateCurPackage();
             std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), curPackage->GetPosition());
             SetNewCurRoute(anotherRoute);
+
             SetOnTheWayToPickUpPackage(true);
             SetOnTheWayToDropOffPackage(false);
           }
@@ -354,25 +357,13 @@ namespace csci3081 {
     std::vector<float> currentPosition = GetPosition();
     std::vector<float> packagePosition = curPackage->GetPosition();
     std::cout << "I am in Robot::CheckReadyToPickUp checking the curPackage's position" << std::endl;
-    int i = 0;
-    int numWithinRadius = 0;
     std::cout << "This is Robot's current position in CheckReadyToPickUp: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
     std::cout << "This is Package's current position in CheckReadyToPickUp: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
-    for(float pos : currentPosition) {
-      float packagePos = packagePosition.at(i);
-      i = i + 1;
-      // std::cout << "I am about to subtract the package position from the position" << std::endl;
-      if (std::fabs(pos - packagePos) <= radius) {
-        // std::cout << "I am in the pos - packagePos <= radius condition" << std::endl;
-        numWithinRadius = numWithinRadius + 1;
-      }
-      // std::cout << "I am done subtracting the package position from the position" << std::endl;
-    }
-   if ((currentPosition.at(0)-packagePosition.at(0))<=radius&&(currentPosition.at(2)-packagePosition.at(2))<=radius)
-	{
-		return true;
-	} else {
-    return false;
+    if (std::fabs(currentPosition.at(0)-packagePosition.at(0))<=radius && std::fabs(currentPosition.at(2)-packagePosition.at(2)) <= radius)
+	  {
+		  return true;
+	  } else {
+      return false;
     }
   }
 
@@ -437,7 +428,7 @@ namespace csci3081 {
     onTheWayToPickUpPackage = false;
     onTheWayToDropOffPackage = false;
 	  notified=false;
-	  waiter=0;
+	  waiter = 0;
     // also set the robot's direction to 0,0,0 so that we stop moving
     std::vector<float> stopMoving{0.0001,0.0001,0.0001};
     UpdateRobotVelocity(stopMoving);
