@@ -158,7 +158,11 @@ namespace csci3081 {
     float speed_dt = (GetSpeed() * dt);
     if (battery->GetIsEmpty()==false) {
       flightStrategy->FlightUpdate(speed_dt, tmpPos, tmpDir);
-      UpdateBatteryCharge(dt);
+      if (onTheWayToDropOffPackage || onTheWayToPickUpPackage) {
+        // if it's on the way to drop off the package or pick up the package, update the battery
+        // otherwise, don't, because it's idle
+        UpdateBatteryCharge(dt);
+      }
     }
     if (battery->GetIsEmpty() == true) {
       // The battery is now empty (after moving in the condition above)! So we have to announce that the drone / robot is in idle, since it's out of battery picojson::object obj3 = JsonHelper::CreateJsonObject();
@@ -175,6 +179,9 @@ namespace csci3081 {
       if (isCarryingPackage) {
         SetIsCarryingPackage(false);
       }
+      // also set the on the way to drop off package and pick up package to false
+      onTheWayToDropOffPackage = false;
+      onTheWayToPickUpPackage = false;
     }
     std::cout << "This is battery charge: " << battery->GetCurrentCharge() << std::endl;
   }
@@ -225,8 +232,8 @@ namespace csci3081 {
           std::vector<float> currentPos = GetPosition();
           std::vector<float> customerPos = GetCurPackage()->GetDestination();
           flightStrategy->SetFlightDetails(currentPos, customerPos);
-		  std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
-		  SetNewCurRoute(anotherRoute);
+		      std::vector<std::vector<float>> anotherRoute = flightStrategy->GetCurRoute();
+		      SetNewCurRoute(anotherRoute);
           SetOnTheWayToPickUpPackage(false);
           SetOnTheWayToDropOffPackage(true);
           curRouteNextIndex = 1;
