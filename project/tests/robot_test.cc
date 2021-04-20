@@ -16,14 +16,6 @@ namespace csci3081
 {
   class RobotTest : public ::testing::Test
   {
-  protected:
-    virtual void SetUp()
-    {
-      system = dynamic_cast<IDeliverySystem *>(GetEntitySystem("default"));
-    }
-    virtual void TearDown() {}
-
-    IDeliverySystem *system;
   };
 
   /*******************************************************************************
@@ -49,8 +41,7 @@ namespace csci3081
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
     JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
 
-    IEntity *robotEntity = system->CreateEntity(obj);
-    Robot *robot = dynamic_cast<Robot *>(robotEntity);
+    Robot* robot = new Robot(obj);
 
     int expectedRobotId = 0;
     ASSERT_EQ(robot->GetId(), expectedRobotId);
@@ -100,8 +91,7 @@ namespace csci3081
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
     JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
 
-    IEntity *robotEntity = system->CreateEntity(obj);
-    Robot *robot = dynamic_cast<Robot *>(robotEntity);
+    Robot *robot = new Robot(obj);
 
     std::vector<float> new_position_to_add;
     new_position_to_add.push_back(2);
