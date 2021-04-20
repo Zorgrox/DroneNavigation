@@ -141,22 +141,22 @@ namespace csci3081
 
     Robot *robot = new Robot(obj);
 
-    picojson::object obj = JsonHelper::CreateJsonObject();
-    JsonHelper::AddStringToJsonObject(obj, "type", "package");
-    JsonHelper::AddStringToJsonObject(obj, "name", "package");
-    std::vector<float> position_to_add;
-    position_to_add.push_back(2);
-    position_to_add.push_back(4);
-    position_to_add.push_back(5);
-    JsonHelper::AddStdFloatVectorToJsonObject(obj, "position", position_to_add);
-    std::vector<float> direction_to_add;
-    direction_to_add.push_back(0);
-    direction_to_add.push_back(0);
-    direction_to_add.push_back(1);
-    JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
-    JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
+    picojson::object obj1 = JsonHelper::CreateJsonObject();
+    JsonHelper::AddStringToJsonObject(obj1, "type", "package");
+    JsonHelper::AddStringToJsonObject(obj1, "name", "package");
+    std::vector<float> position_to_add1;
+    position_to_add1.push_back(2);
+    position_to_add1.push_back(4);
+    position_to_add1.push_back(5);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj1, "position", position_to_add1);
+    std::vector<float> direction_to_add1;
+    direction_to_add1.push_back(0);
+    direction_to_add1.push_back(0);
+    direction_to_add1.push_back(1);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj1, "direction", direction_to_add1);
+    JsonHelper::AddFloatToJsonObject(obj1, "radius", 1.0);
 
-    Package *package = new Package(obj);
+    Package *package = new Package(obj1);
 
     robot->AddAssignedPackage(*package);
     ASSERT_EQ(robot->GetNumAssignedPackages(), 1);
