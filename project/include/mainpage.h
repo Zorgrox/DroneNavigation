@@ -37,7 +37,7 @@ TODO: here are the meetings and people in those meetings to work on this...
 The Smart Route is implemented via the A-star/Djikstra shortest path algorithm. It generates a graph of all the nodes and vertices in the scene, and then when given a position and destination, it calculates the shortest path.
 
 
-* TODO: Discussion of Observer Pattern Design
+* Discussion of Observer Pattern Design
 * ==================
 We successfully implemented the observer pattern to send notifications to the observers regarding the entities' status when a change occurs
 DeliverySimulation will first notify the observers that an entity has been assigned to a package, and that it is on its way
