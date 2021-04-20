@@ -29,7 +29,9 @@
 
 * TODO: Teamwork Documentation
 * ==================
-TODO: here are the meetings and people in those meetings to work on this...
+Meetings:
+
+* April 14th, 2021 -- David Johnson, Claire Yang, Casey Connell
 
 
 * TODO: Discussion of Different Route Implementations (Smart Route, Beeline, Parabolic)
