@@ -44,9 +44,6 @@ namespace csci3081
 
     Drone* drone = new Drone(obj);
 
-    int expectedDroneId = 0;
-    ASSERT_EQ(drone->GetId(), expectedDroneId);
-
     int newDroneId = 2;
     drone->SetId(newDroneId);
     ASSERT_EQ(drone->GetId(), newDroneId);
@@ -123,9 +120,62 @@ namespace csci3081
 
   }
 
-  // TODO: Test the drone package queue system
+  // Test the drone package queue system
   TEST_F(DroneTest, DronePackageTest)
   {
+    picojson::object obj = JsonHelper::CreateJsonObject();
+    JsonHelper::AddStringToJsonObject(obj, "type", "drone");
+    JsonHelper::AddStringToJsonObject(obj, "name", "drone");
+    std::vector<float> position_to_add;
+    position_to_add.push_back(2);
+    position_to_add.push_back(4);
+    position_to_add.push_back(5);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj, "position", position_to_add);
+    std::vector<float> direction_to_add;
+    direction_to_add.push_back(0);
+    direction_to_add.push_back(0);
+    direction_to_add.push_back(1);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
+    JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
+    JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
+
+    Drone *drone = new Drone(obj);
+
+    picojson::object obj1 = JsonHelper::CreateJsonObject();
+    JsonHelper::AddStringToJsonObject(obj1, "type", "package");
+    JsonHelper::AddStringToJsonObject(obj1, "name", "package");
+    std::vector<float> position_to_add1;
+    position_to_add1.push_back(2);
+    position_to_add1.push_back(4);
+    position_to_add1.push_back(5);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj1, "position", position_to_add1);
+    std::vector<float> direction_to_add1;
+    direction_to_add1.push_back(0);
+    direction_to_add1.push_back(0);
+    direction_to_add1.push_back(1);
+    JsonHelper::AddStdFloatVectorToJsonObject(obj1, "direction", direction_to_add1);
+    JsonHelper::AddFloatToJsonObject(obj1, "radius", 1.0);
+
+    Package *package = new Package(obj1);
+
+    drone->AddAssignedPackage(*package);
+    ASSERT_EQ(drone->GetNumAssignedPackages(), 1);
+
+    drone->SetIsCarryingPackage(true);
+    ASSERT_EQ(drone->GetIsCarryingPackage(), true);
+
+    drone->UpdateCurPackage();
+    ASSERT_EQ(drone->GetCurPackage(), package);
+
+    std::vector<Package *> assignedPackages;
+    assignedPackages.push_back(package);
+    ASSERT_EQ(drone->GetRemainingAssignedPackages(), assignedPackages);
+
+    drone->DropOffPackage();
+    ASSERT_EQ(drone->GetIsCarryingPackage(), false);
+
+    drone->PickUpPackage();
+    ASSERT_EQ(drone->GetIsCarryingPackage(), true);
   }
 
 } // namespace csci3081
