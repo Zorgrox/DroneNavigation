@@ -84,7 +84,7 @@ namespace csci3081
     ASSERT_EQ(drone->GetOnTheWayToPickUpPackage(), true);
   }
 
-  // TODO: Test the drone movement and update functions, according to the different flight strategies
+  // Test the drone movement and update functions, according to the smart path strategy
   TEST_F(DroneTest, DroneMovementTest)
   {
     picojson::object obj = JsonHelper::CreateJsonObject();
@@ -92,8 +92,8 @@ namespace csci3081
     JsonHelper::AddStringToJsonObject(obj, "name", "drone");
     std::vector<float> position_to_add;
     position_to_add.push_back(2);
-    position_to_add.push_back(4);
     position_to_add.push_back(5);
+    position_to_add.push_back(0);
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "position", position_to_add);
     std::vector<float> direction_to_add;
     direction_to_add.push_back(0);
@@ -102,13 +102,25 @@ namespace csci3081
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
     JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
+    JsonHelper::AddStringToJsonObject(obj, "path", "smart");
 
     Drone* drone = new Drone(obj);
+    std::vector<IEntityObserver *> observers;
+
+    drone->UpdateDronePosition(1.0, observers);
+
+    std::vector<float> another_position;
+    another_position.push_back(2);
+    another_position.push_back(5);
+    another_position.push_back(30);
+
+    std::cout << "This is the direction: " << drone->GetDirection().at(0) << ", " << drone->GetDirection().at(1) << ", " << drone->GetDirection().at(2) << std::endl;
+    ASSERT_EQ(drone->GetPosition(), another_position);
 
     std::vector<float> new_position_to_add;
     new_position_to_add.push_back(2);
-    new_position_to_add.push_back(4);
-    new_position_to_add.push_back(6);
+    new_position_to_add.push_back(5);
+    new_position_to_add.push_back(31);
 
     std::vector<float> expectedDirection;
     expectedDirection.push_back(0);
@@ -118,6 +130,21 @@ namespace csci3081
     drone->CalculateAndUpdateDroneDirection(new_position_to_add);
     ASSERT_EQ(drone->GetDirection(), expectedDirection);
 
+    // test the route functions
+    std::vector<std::vector<float>> hardcodedRoute;
+    std::vector<float> first_node;
+    first_node.push_back(3.2);
+    first_node.push_back(5);
+    first_node.push_back(31);
+    hardcodedRoute.push_back(new_position_to_add);
+    hardcodedRoute.push_back(first_node);
+
+    drone->SetNewCurRoute(hardcodedRoute);
+    ASSERT_EQ(drone->GetCurRouteLength(), 2);
+    ASSERT_EQ(drone->GetCurRouteNextIndex(), 1);
+    drone->IncrementCurRouteNextIndex();
+
+    ASSERT_EQ(drone->GetCurRouteNextIndex(), 2);
   }
 
   // Test the drone package queue system

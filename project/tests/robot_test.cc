@@ -85,7 +85,7 @@ namespace csci3081
     ASSERT_EQ(robot->GetOnTheWayToPickUpPackage(), true);
   }
 
-  // TODO: test the robot movement update functions
+  // Test the robot movement update functions
   TEST_F(RobotTest, RobotMovementTest)
   {
     picojson::object obj = JsonHelper::CreateJsonObject();
@@ -105,11 +105,20 @@ namespace csci3081
     JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
 
     Robot *robot = new Robot(obj);
+    std::vector<IEntityObserver*> observers;
+
+    robot->UpdateRobotPosition(1.0, observers);
+
+    std::vector<float> another_position;
+    another_position.push_back(2);
+    another_position.push_back(5);
+    another_position.push_back(30);
+    ASSERT_EQ(robot->GetPosition(), another_position);
 
     std::vector<float> new_position_to_add;
     new_position_to_add.push_back(2);
     new_position_to_add.push_back(5);
-    new_position_to_add.push_back(1);
+    new_position_to_add.push_back(31);
 
     std::vector<float> expectedDirection;
     expectedDirection.push_back(0);
@@ -118,6 +127,23 @@ namespace csci3081
 
     robot->CalculateAndUpdateRobotDirection(new_position_to_add);
     ASSERT_EQ(robot->GetDirection(), expectedDirection);
+
+    // test the route functions
+    std::vector<std::vector<float>> hardcodedRoute;
+    std::vector<float> first_node;
+    first_node.push_back(3.2);
+    first_node.push_back(5);
+    first_node.push_back(31);
+    hardcodedRoute.push_back(new_position_to_add);
+    hardcodedRoute.push_back(first_node);
+
+    robot->SetNewCurRoute(hardcodedRoute);
+    ASSERT_EQ(robot->GetCurRouteLength(), 2);
+    ASSERT_EQ(robot->GetCurRouteNextIndex(), 1);
+    ASSERT_EQ(robot->CheckWhenToIncrementPathIndex(first_node), false);
+    robot->IncrementCurRouteNextIndex();
+
+    ASSERT_EQ(robot->GetCurRouteNextIndex(), 2);
   }
 
   // Test the package queue system in the robot
