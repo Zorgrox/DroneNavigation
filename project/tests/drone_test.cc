@@ -16,14 +16,6 @@ namespace csci3081
 {
   class DroneTest : public ::testing::Test
   {
-  protected:
-    virtual void SetUp()
-    {
-      system = dynamic_cast<IDeliverySystem *>(GetEntitySystem("default"));
-    }
-    virtual void TearDown() {}
-
-    IDeliverySystem *system;
   };
 
   /*******************************************************************************
@@ -48,12 +40,23 @@ namespace csci3081
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
     JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
+    JsonHelper::AddFloatToJsonObject(obj, "battery_capacity", 20.0);
 
-    IEntity *droneEntity = system->CreateEntity(obj);
-    Drone *drone = dynamic_cast<Drone *>(droneEntity);
+    Drone* drone = new Drone(obj);
 
     int expectedDroneId = 0;
     ASSERT_EQ(drone->GetId(), expectedDroneId);
+
+    int newDroneId = 2;
+    drone->SetId(newDroneId);
+    ASSERT_EQ(drone->GetId(), newDroneId);
+
+    float battery_capacity = 20.0;
+    const Battery* battery = drone->GetBattery();
+    ASSERT_EQ(battery->GetMaxCharge(), battery_capacity);
+
+    drone->UpdateBatteryCharge(10.0);
+    ASSERT_EQ(battery->GetCurrentCharge(), battery_capacity - 10.0);
 
     std::string expectedDroneName = "drone";
     ASSERT_EQ(drone->GetName(), expectedDroneName);
@@ -62,6 +65,8 @@ namespace csci3081
     ASSERT_EQ(drone->GetPosition(), expectedDronePos);
     std::vector<float> expectedDroneDirection{0, 0, 1};
     ASSERT_EQ(drone->GetDirection(), expectedDroneDirection);
+
+    ASSERT_EQ(drone->GetSpeed(), 30);
 
     float expectedDroneRadius = 1.0;
     ASSERT_EQ(drone->GetRadius(), expectedDroneRadius);
@@ -82,6 +87,7 @@ namespace csci3081
     ASSERT_EQ(drone->GetOnTheWayToPickUpPackage(), true);
   }
 
+  // TODO: Test the drone movement and update functions, according to the different flight strategies
   TEST_F(DroneTest, DroneMovementTest)
   {
     picojson::object obj = JsonHelper::CreateJsonObject();
@@ -100,8 +106,7 @@ namespace csci3081
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
     JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
 
-    IEntity *droneEntity = system->CreateEntity(obj);
-    Drone *drone = dynamic_cast<Drone *>(droneEntity);
+    Drone* drone = new Drone(obj);
 
     std::vector<float> new_position_to_add;
     new_position_to_add.push_back(2);
@@ -116,6 +121,11 @@ namespace csci3081
     drone->CalculateAndUpdateDroneDirection(new_position_to_add);
     ASSERT_EQ(drone->GetDirection(), expectedDirection);
 
+  }
+
+  // TODO: Test the drone package queue system
+  TEST_F(DroneTest, DronePackageTest)
+  {
   }
 
 } // namespace csci3081

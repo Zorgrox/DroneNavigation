@@ -16,14 +16,6 @@ namespace csci3081
 {
   class PackageTest : public ::testing::Test
   {
-  protected:
-    virtual void SetUp()
-    {
-      system = dynamic_cast<IDeliverySystem *>(GetEntitySystem("default"));
-    }
-    virtual void TearDown() {}
-
-    IDeliverySystem *system;
   };
 
   /*******************************************************************************
@@ -47,8 +39,8 @@ namespace csci3081
     direction_to_add.push_back(1);
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
-    IEntity *packageEntity = system->CreateEntity(obj);
-    Package *package = dynamic_cast<Package *>(packageEntity);
+
+    Package* package = new Package(obj);
 
     int expectedPackageId = 0;
     ASSERT_EQ(package->GetId(), expectedPackageId);
