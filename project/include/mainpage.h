@@ -39,12 +39,14 @@ The Smart Route is implemented via the A-star/Djikstra shortest path algorithm. 
 
 * Discussion of Observer Pattern Design
 * ==================
-We successfully implemented the observer pattern to send notifications to the observers regarding the entities' status when a change occurs
-DeliverySimulation will first notify the observers that an entity has been assigned to a package, and that it is on its way
+We successfully implemented the observer pattern to send notifications to the observers regarding the entities' status when a change occurs.
+
+
+DeliverySimulation will first notify the observers that an entity has been assigned to a package, and that it is on its way.
 The rest is then handled within the Robot and the Drone class.
-After a Drone or a Robot has been scheduled, it will notify the observers that it is now moving
+After a Drone or a Robot has been scheduled, it will notify the observers that it is now moving.
 When it gets to the package it will notify the observers that it has been picked up.
-When the package is dropped off it will announce that it has been delivered to its destination
+When the package is dropped off it will announce that it has been delivered to its destination.
 The Robot and the Drone will announce that they have stopped moving if the package is delivered and there are no more deliveries left, or if they have run out of battery.
 
 
