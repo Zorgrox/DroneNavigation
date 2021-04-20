@@ -27,11 +27,21 @@
 * 2) Then open `project/docs/html/index.html` in your web browser to view the documentation.
 
 
-* TODO: Teamwork Documentation
+* Teamwork Documentation
 * ==================
-Meetings:
+Iteration 2 Deliverable 2 Meetings:
 
+* April 11th, 2021 -- David Johnson, Claire Yang, Casey Connell
 * April 14th, 2021 -- David Johnson, Claire Yang, Casey Connell
+* April 17th, 2021 -- David Johnson, Claire Yang, Casey Connell
+
+Casey Connell Created the Strategy patterns, as well as the routes for Parabolic and Beeline.
+
+David Johnson was assigned to fixing/reimplementing the observer pattern, obtaining and choosing the flight pattern from the JSON. Helped re-implement Flight_path, and help switch between strategies
+I did some debugging so the drone would not fly into buildings, and then moved the routing line up so the drone would match it.
+
+Claire Yang - Robot re-scheduling, Battery, 
+
 
 
 * TODO: Discussion of Different Route Implementations (Smart Route, Beeline, Parabolic)
