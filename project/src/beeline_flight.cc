@@ -73,7 +73,8 @@ namespace csci3081 {
       //newDirection now contains the x,z movement offset and will be added to the drone's position
       currentPosition = Direction.AddTwoVectors(currentPosition, newDirection);
       // sets the vectors at input refrence pos and dir to the intended position and direction
-      currentPosition.at(1)=280;
+      currentPosition.at(1)=280; // Magic number to stay on the path, in some sense this might
+      // run into problems later, if there were radical height changes one way or another
       tmpRoute.push_back(currentPosition);
 
     }
