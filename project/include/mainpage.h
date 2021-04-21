@@ -40,7 +40,8 @@ Claire Yang - Project Manager
 * April 14th, 2021 -- David Johnson, Claire Yang, Casey Connell
 * April 17th, 2021 -- David Johnson, Claire Yang, Casey Connell
 
-Casey Connell Created the Strategy patterns, as well as the routes for Parabolic and Beeline.
+Casey Connell Created the Strategy patterns, as well as the routes for Parabolic and Beeline Flight.
+Casey created the strategy methods that compute and return a route for the observers to display. He also helped debug and finish the flight strategy google tests.
 
 David Johnson was assigned to fixing/reimplementing the observer pattern, obtaining and choosing the flight pattern from the JSON. He helped re-implement Flight_path, and help switch between strategies.
 David did some debugging so the drone would not fly into buildings, and then moved the routing line up so the drone would match it.
