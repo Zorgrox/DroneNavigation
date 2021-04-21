@@ -335,8 +335,14 @@ namespace csci3081 {
         {
           if (CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
           {
-            curRouteNextIndex = curRouteNextIndex + 1;
-            std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
+	    curRouteNextIndex = curRouteNextIndex + 1;
+            std::vector<float> nextPos;
+            if (curRouteNextIndex >= curRoute.size()){
+              nextPos = curPackage->GetDestination();
+              curRouteNextIndex = curRouteNextIndex - 1;
+            } else {
+              nextPos = curRoute.at(curRouteNextIndex);}
+	    
             CalculateAndUpdateRobotDirection(nextPos);
           }
           else
