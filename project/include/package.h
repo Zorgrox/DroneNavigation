@@ -108,28 +108,6 @@ namespace csci3081
    */
     float GetWeight();
 
-    /**
-   *  This function should return the boolean denoting whether the package has been assigned
-   */
-    bool GetIsAlreadyAssigned();
-
-    /**
-   *  This function should return the boolean denoting whether the package has been delivered
-   */
-    bool GetIsDelivered();
-
-    /**
-   *  This function should set the boolean denoting whether the package has been assigned
-   * @param newIsAlreadyAssigned the boolean denoting whether the package has been assigned
-   */
-    void SetIsAlreadyAssigned(bool newIsAlreadyAssigned);
-
-    /**
-   *  This function should set the boolean denoting whether the package has been delivered
-   * @param newIsDelivered the boolean denoting whether the package has been delivered
-   */
-    void SetIsDelivered(bool newIsDelivered);
-
   private:
     std::string name;
     Vector3D* position;
@@ -141,9 +119,6 @@ namespace csci3081
     Customer* customer;
     std::vector<float> destination;
     float weight;
-
-    bool isAlreadyAssigned;
-    bool isDelivered;
   };
 
 } // namespace csci3081

@@ -115,9 +115,7 @@ TEST_F(FactoryTest, DroneCreated) {
     picojson::object robot_obj = JsonHelper::CreateJsonObject();
     JsonHelper::AddStringToJsonObject(robot_obj, "type", "robot");
     JsonHelper::AddStringToJsonObject(robot_obj, "name", "robot");
-    std::vector<float> position_to_add;
     JsonHelper::AddStdFloatVectorToJsonObject(robot_obj, "position", position_to_add);
-    std::vector<float> direction_to_add;
     JsonHelper::AddStdFloatVectorToJsonObject(robot_obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(robot_obj, "radius", 1.0);
     JsonHelper::AddFloatToJsonObject(robot_obj, "speed", 30);
@@ -129,9 +127,7 @@ TEST_F(FactoryTest, DroneCreated) {
     picojson::object customer_obj = JsonHelper::CreateJsonObject();
     JsonHelper::AddStringToJsonObject(customer_obj, "type", "customer");
     JsonHelper::AddStringToJsonObject(customer_obj, "name", "customer");
-    std::vector<float> position_to_add;
     JsonHelper::AddStdFloatVectorToJsonObject(customer_obj, "position", position_to_add);
-    std::vector<float> direction_to_add;
     JsonHelper::AddStdFloatVectorToJsonObject(customer_obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(customer_obj, "radius", 1.0);
     customer_factory->CreateEntity(customer_obj);
@@ -142,9 +138,7 @@ TEST_F(FactoryTest, DroneCreated) {
     picojson::object package_obj = JsonHelper::CreateJsonObject();
     JsonHelper::AddStringToJsonObject(package_obj, "type", "package");
     JsonHelper::AddStringToJsonObject(package_obj, "name", "package");
-    std::vector<float> position_to_add;
     JsonHelper::AddStdFloatVectorToJsonObject(package_obj, "position", position_to_add);
-    std::vector<float> direction_to_add;
     JsonHelper::AddStdFloatVectorToJsonObject(package_obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(package_obj, "radius", 1.0);
     package_factory->CreateEntity(package_obj);

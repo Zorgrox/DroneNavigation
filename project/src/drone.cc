@@ -49,7 +49,7 @@ namespace csci3081 {
 
     //flightStrategy = new PathFlight(radius);
     //flightStrategy = new ParabolicFlight();
-    flightStrategy = new BeelineFlight(); //Perhaps not needed, comment out?
+    // flightStrategy = new BeelineFlight(); //Perhaps not needed, comment out?
   }
 
   void Drone::AddGraphPath(const IGraph* newGraph) {

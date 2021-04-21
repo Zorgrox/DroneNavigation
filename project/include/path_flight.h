@@ -84,7 +84,11 @@ namespace csci3081 {
         * @param target the target destination
         */
       void SetCurRoute(std::vector<float> pos, std::vector<float> target);
-
+	
+	/**
+        *  This function updates the existing route, based an input route. It is only used in testing to get around the need for an IGraph object to set a path of nodes
+        */
+      virtual void SetCurRouteTest(std::vector<std::vector<float>> newCurRoute);
       /**
         *  This function is used to return the current route
         */

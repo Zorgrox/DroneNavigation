@@ -102,6 +102,13 @@ namespace csci3081 {
     curRouteNextIndex = 1;
   }
 
+  void PathFlight::SetCurRouteTest(std::vector<std::vector<float>> newCurRoute) {
+    // resets the curRoute
+    curRoute = newCurRoute;
+    curRouteLength = curRoute.size();
+    curRouteNextIndex = 1;
+  }
+
   std::vector<std::vector<float>> PathFlight::GetCurRoute()
   {
 	  return curRoute;

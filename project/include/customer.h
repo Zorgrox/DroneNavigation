@@ -39,7 +39,7 @@ namespace csci3081
     int GetId() const;
 
     /**
-   *  This function should set the id of the package
+   *  This function should set the id of the customer
    * @param ID new id
    */
     void SetId(int ID);
