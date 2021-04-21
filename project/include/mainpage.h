@@ -27,6 +27,7 @@
 * 2) Then open `project/docs/html/index.html` in your web browser to view the documentation.
 
 
+
 * Teamwork Documentation
 * ==================
 Iteration 2 Deliverable 2 Meetings:
@@ -48,10 +49,31 @@ Claire Yang - Robot re-scheduling, Battery,
 
 
 
-* TODO: Discussion of Different Route Implementations (Smart Route, Beeline, Parabolic)
-* ==================
-The Smart Route is implemented via the A-star/Djikstra shortest path algorithm. It generates a graph of all the nodes and vertices in the scene, and then when given a position and destination, it calculates the shortest path.
 
+* Designing and Implementing the routes
+* ==================
+* Using the Strategy Pattern to implement different flight routes gives our program a wider range of functionality, allowing us to apply different flight algorithms to our drones, and to easily swap them out, implement new ones, or extend the existing ones.
+* This is possible because the flight routes are mostly calculated from the same data, the drone's starting position and the position of the target. For the Smart Route, the IGraph object was necessary in order to use its method to compute the shortest path of graph nodes between the drone and its destination.
+* Each flight strategy can be implemented to update each step of the flight using the same data, making them interchangeable in both setting up their algorithms and executing each step.
+
+* We successfully implemented the strategy pattern to allow each Drone to use their own flight algorithm to create and execute a delivery. This required creating a strategy interface (FlightBehavior class) that defined pure virtual methods that would be implemented by the various flight strategy classes (BeelineFlight, ParabolicFlight, PathFlight). These flight classes are used by Drone, which contains a pointer to an object of the strategy interface that allows us to easily set or change the algorithms used by the drone.
+* Currently, the drone checks if the picojson object passed into its constructor includes a specific "path" or route to use. If that detail is specified, it uses the specified route. Otherwise, it will cycle through the three types of routes whenever it updates to a new route. The three different routes are described below. The implementation details are discussed in even greater detail after the description of the different routes.
+
+* The Smart Route is implemented via the A-star/Djikstra shortest path algorithm. It generates a graph of all the nodes and vertices in the scene, and then when given a position and destination, it calculates the shortest path and returns that vector of path nodes.
+* A drone or robot will use a Vector3D direction vector to point at each successive node in the path, and it will fly towards that specific node until the node's position is within the entity's radius before targeting the next node. Once the entity is within radius of the last path node, it will stop moving until it is given another new route to follow.
+
+* The Beeline Route is implemented to first make the drone rise to a set height (280 in our simulation) in order to avoid building collisions, then fly in a straight line from the current position to the target, and lastly descend to either pick up the package or finish the delivery.
+* It uses Vector2D to compute the direction unit vector and apply the speed and time offset to update the drone's position in each time step.
+
+* The Parabolic Route is implemented to create a parabolic flight plan, creating a parabola than spans the drone's starting position and it's destination, with the height set to 15% of the flight distance to create a shallow, efficient parabolic flight. It uses Vector2D functions to implement a beeline path that ignores the y-axis, and instead applies a y-axis offset calculated from the equation of the parabola that was calculated.
+* It uses the equation:
+ y offset = -ax^2+bx+c where x is the distance from the flight midpoint, c is the parabola height, b is zero, and a is some small decimal computed:
+ a = c / (initial x / 2)^2
+* This y offset is applied to the initial y value to calculate the drone's intended hight and it is applied at each update. The direction's y-value is also zeroed because it looks more accurate to how a drone flies.
+
+* The UML diagram of our flight route implementation is shown here:
+
+* \image{inline} html strategy-pattern.png "Strategy Pattern Flight Route Implementation UML Diagram"
 
 * Discussion of Observer Pattern Design
 * ==================
