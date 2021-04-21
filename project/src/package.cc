@@ -19,13 +19,13 @@ namespace csci3081
     position = new Vector3D(positionVec);
     direction = new Vector3D(directionVec);
     direction->Normalize();
-    std::cout << "Here's the direction of package:" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << std::endl;
+    // std::cout << "Here's the direction of package:" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << std::endl;
     radius = (float)JsonHelper::GetDouble(obj, "radius");
     weight = 0.0;
 
     details_ = obj;
 
-    std::cout << "In the package default constructor" << std::endl;
+    // std::cout << "In the package default constructor" << std::endl;
   }
 
   int Package::GetId() const
