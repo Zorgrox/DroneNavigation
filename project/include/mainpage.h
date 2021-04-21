@@ -30,6 +30,10 @@
 * Teamwork Documentation
 * ==================
 Iteration 2 Deliverable 2 Meetings:
+Casey Connell - Development Lead
+David Johnson - Scheduler
+Claire Yang - Project Manager
+
 
 * April 11th, 2021 -- David Johnson, Claire Yang, Casey Connell
 * April 14th, 2021 -- David Johnson, Claire Yang, Casey Connell
