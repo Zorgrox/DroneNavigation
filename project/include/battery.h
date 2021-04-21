@@ -28,10 +28,16 @@ namespace csci3081
   public:
     /**
    * @brief Constructor: set up a Battery with a specified maxCharge
+   * @param maxCharge the maximum charge of the battery
    */
     Battery(float maxCharge);
-	
-	Battery(float maxCharge, float currentCharg);
+
+    /**
+   * @brief Constructor: set up a Battery with a specified maxCharge and a specific currentCharge
+   * @param maxCharge the maximum charge of the battery
+   * @param currentCharge the current charge of the battery. If not set, it defaults to being equal to maxCharge.
+   */
+    Battery(float maxCharge, float currentCharg);
 
     /**
    *  This function should return the max charge of the Battery
@@ -45,6 +51,7 @@ namespace csci3081
 
     /**
    *  This function should decrement the current charge by a constant amount
+   * @param decrAmt the amount that the battery should be decremented by
    */
     void DecrementCurrentCharge(float decrAmt);
 

@@ -21,7 +21,6 @@ namespace csci3081
 
   void Vector3D::Normalize()
   {
-    // std::vector<float> direction;
     float divisor = CalculateMagnitude();
 
     int i = 0;
@@ -29,11 +28,7 @@ namespace csci3081
     {
       vector_.at(i) = element / divisor;
       i = i + 1;
-      // float norm_element = element / divisor;
-      // direction.push_back(norm_element);
     }
-
-    // return direction;
   }
 
   float Vector3D::CalculateMagnitude()
@@ -52,16 +47,12 @@ namespace csci3081
   {
     std::vector<float> toReturn = {0,0,0};
     int i = 0;
-    // std::vector<float> firstVector = oneVector.GetVector();
-    // std::vector<float> anotherVector = secondVector.GetVector();
     for(float elemOne : firstVector) {
       float elemTwo = anotherVector.at(i);
       float summedFloats = elemOne + elemTwo;
       toReturn.at(i) = summedFloats;
       i = i + 1;
     }
-    // Vector3D *toBeReturned = new Vector3D(toReturn);
-    // return *toBeReturned;
     return toReturn;
   }
 
@@ -69,8 +60,6 @@ namespace csci3081
   {
     std::vector<float> toReturn = {0, 0, 0};
     int i = 0;
-    // std::vector<float> firstVector = oneVector.GetVector();
-    // std::vector<float> anotherVector = secondVector.GetVector();
     for (float elemOne : firstVector)
     {
       float elemTwo = anotherVector.at(i);
@@ -78,8 +67,6 @@ namespace csci3081
       toReturn.at(i) = subtractedFloats;
       i = i + 1;
     }
-    // Vector3D *toBeReturned = new Vector3D(toReturn);
-    // return *toBeReturned;
     return toReturn;
   }
 
@@ -87,15 +74,12 @@ namespace csci3081
   {
     std::vector<float> toReturn = {0,0,0};
     int i = 0;
-    // std::vector<float> firstVector = oneVector.GetVector();
     for (float elemOne : firstVector)
     {
       float multipliedElem = elemOne * coeff;
       toReturn.at(i) = multipliedElem;
       i = i + 1;
     }
-    // Vector3D* toBeReturned = new Vector3D(toReturn);
-    // return *toBeReturned;
     return toReturn;
   }
 }

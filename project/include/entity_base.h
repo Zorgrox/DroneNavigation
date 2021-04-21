@@ -31,7 +31,11 @@ class EntityBase : public IEntity {
    *  This function should return the details of the JSON object that specifies the details of the entity
    */
   const picojson::object& GetDetails() { return details_; }
+  /**
+   *  This function sets the ID of the entity
+   */
   void virtual SetId(int ID) {id = ID;}
+
  protected:
   picojson::object details_;
   int id = 0;

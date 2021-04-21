@@ -19,16 +19,13 @@ namespace csci3081
     position = new Vector3D(positionVec);
     direction = new Vector3D(directionVec);
     direction->Normalize();
-    std::cout << "Here's the direction of package:" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << std::endl;
+    // std::cout << "Here's the direction of package:" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << std::endl;
     radius = (float)JsonHelper::GetDouble(obj, "radius");
     weight = 0.0;
 
     details_ = obj;
 
-    isAlreadyAssigned = false;
-    isDelivered = false;
-
-    std::cout << "In the package default constructor" << std::endl;
+    // std::cout << "In the package default constructor" << std::endl;
   }
 
   int Package::GetId() const
@@ -88,8 +85,8 @@ namespace csci3081
     destination = customer->GetPosition();
   }
 
-  const Customer Package::GetCustomer() {
-    return *customer;
+  Customer* Package::GetCustomer() {
+    return customer;
   }
 
   const std::vector<float> Package::GetDestination() const {
@@ -98,21 +95,5 @@ namespace csci3081
 
   float Package::GetWeight() {
     return weight;
-  }
-
-  bool Package::GetIsAlreadyAssigned() {
-    return isAlreadyAssigned;
-  }
-
-  bool Package::GetIsDelivered() {
-    return isDelivered;
-  }
-
-  void Package::SetIsAlreadyAssigned(bool newIsAlreadyAssigned) {
-    isAlreadyAssigned = newIsAlreadyAssigned;
-  }
-
-  void Package::SetIsDelivered(bool newIsDelivered) {
-    isDelivered = newIsDelivered;
   }
 }

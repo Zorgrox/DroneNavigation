@@ -29,6 +29,7 @@ namespace csci3081
   public:
     /**
    * @brief Constructor: set up a Customer according to the details in the JSON object
+   * @param obj picojson object with details for the creation of the entity
    */
     Customer(const picojson::object &obj);
 
@@ -38,7 +39,8 @@ namespace csci3081
     int GetId() const;
 
     /**
-   *  This function should set the id of the package
+   *  This function should set the id of the customer
+   * @param ID new id
    */
     void SetId(int ID);
 

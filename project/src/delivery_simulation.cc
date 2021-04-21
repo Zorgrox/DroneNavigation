@@ -75,14 +75,70 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
   Customer* actual_customer = dynamic_cast<Customer*>(dest);
   actual_package->SetCustomer(*actual_customer);
 
-  if (drones_.size() > 0 && robots_.size() > 0) {
-    if (drones_.at(dronesIndex)->GetNumAssignedPackages() <= robots_.at(robotsIndex)->GetNumAssignedPackages()){
-      assignPackageToDrone = true;}
-    else {assignPackageToDrone = false;}
-  } else if (drones_.size() > 0 && robots_.size() == 0) {
-    assignPackageToDrone = true;
-  } else if (drones_.size() == 0 && robots_.size() > 0) {
+  int droneCounter = 0;
+  bool packageMustNotBeDrones = false;
+  while (std::count(dead_drones_indices.begin(), dead_drones_indices.end(), dronesIndex)) {
+    // while the dronesIndex is in the dead_drones_indices, increment the dronesIndex
+    dronesIndex = dronesIndex + 1;
+    if (dronesIndex == drones_.size()) {
+      dronesIndex = 0;
+    }
+    droneCounter = droneCounter + 1;
+    // we want to avoid an infinite loop, if all of the drones are out of battery
+    if (droneCounter >= drones_.size()) {
+      // we've already looped through them all, so none of the drones have battery, set assignPackageToDrone to false and break
+      packageMustNotBeDrones = true;
+      break;
+    }
+  }
+
+  int robotCounter = 0;
+  bool packageMustNotBeRobots = false;
+  while (std::count(dead_robots_indices.begin(), dead_robots_indices.end(), robotsIndex))
+  {
+    robotsIndex = robotsIndex + 1;
+    if (robotsIndex == robots_.size())
+    {
+      robotsIndex = 0;
+    }
+    robotCounter = robotCounter + 1;
+    // we want to avoid an infinite loop, if all of the robots are out of battery
+    if (robotCounter >= robots_.size())
+    {
+      // we've already looped through them all, so none of the robots have battery
+      packageMustNotBeRobots = true;
+      break;
+    }
+  }
+
+  if (!packageMustNotBeDrones && !packageMustNotBeRobots) {
+    // there is at least one drone and one robot that has battery
+    if (drones_.size() > 0 && robots_.size() > 0)
+    {
+      if (drones_.at(dronesIndex)->GetNumAssignedPackages() <= robots_.at(robotsIndex)->GetNumAssignedPackages())
+      {
+        assignPackageToDrone = true;
+      }
+      else
+      {
+        assignPackageToDrone = false;
+      }
+    } else if (drones_.size() > 0 && robots_.size() == 0) {
+      assignPackageToDrone = true;
+    } else if (drones_.size() == 0 && robots_.size() > 0) {
+      assignPackageToDrone = false;
+    }
+  }
+  else if (packageMustNotBeDrones && !packageMustNotBeRobots) {
+    // the package must be assigned to a robot
     assignPackageToDrone = false;
+  }
+  else if (!packageMustNotBeDrones && packageMustNotBeRobots) {
+    // the package must be assigned to a drone
+    assignPackageToDrone = true;
+  }
+  else {
+    std::cout << "WARNING: none of the drones or robots have battery. The package cannot be scheduled" << std::endl;
   }
 
   if (assignPackageToDrone) {
@@ -90,32 +146,19 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
     Drone* actual_drone = drones_.at(dronesIndex);
     if(actual_drone) {
       actual_drone->AddAssignedPackage(*actual_package);
-
-      if (actual_drone->GetNumAssignedPackages() == 1) {
-        // assign the curPackage if it's the first one assigned to the drone
-        actual_drone->UpdateCurPackage();
-        // get the path and set it to the delivery simulation's curRoute
-        std::vector<float> drones_position = actual_drone->GetPosition();
-        std::vector<float> packages_position = actual_package->GetPosition();
-        std::vector<std::vector<float>> anotherRoute = systemGraph->GetPath(drones_position, packages_position);
-        actual_drone->SetNewCurRoute(anotherRoute);
-        actual_drone->SetOnTheWayToPickUpPackage(true);
-        actual_drone->SetOnTheWayToDropOffPackage(false);
-		///////////////// notify that the drone is moving to the package
-		   /* picojson::object obj9 = JsonHelper::CreateJsonObject();
-		   JsonHelper::AddStringToJsonObject(obj9, "type", "notify");
-		   JsonHelper::AddStringToJsonObject(obj9, "value", "moving");
-		   JsonHelper::AddStdVectorVectorFloatToJsonObject(obj9, "path", anotherRoute);
-		   picojson::value val9 = JsonHelper::ConvertPicojsonObjectToValue(obj9);
-
-		   for (IEntityObserver *obs : observers_)
-		   {
-			 const IEntity *temp_drone = actual_drone;
-			 obs->OnEvent(val9, *temp_drone);
-		   } */
-		
-		/////////////////
-      }
+      do {
+        if (actual_drone->GetNumAssignedPackages() == 1) {
+          // assign the curPackage if it's the first one assigned to the drone
+          actual_drone->UpdateCurPackage();
+          // get the path and set it to the delivery simulation's curRoute
+          std::vector<float> drones_position = actual_drone->GetPosition();
+          std::vector<float> packages_position = actual_package->GetPosition();
+		      actual_drone->SetFlightBehavior(drones_position, packages_position, const_cast<IGraph*>(systemGraph));
+		      //SetFlightBehavior now sets the route for the drone
+          actual_drone->SetOnTheWayToPickUpPackage(true);
+          actual_drone->SetOnTheWayToDropOffPackage(false);
+        }
+      } while (actual_drone->GetNumAssignedPackages() == 0);
     }
     dronesIndex = dronesIndex + 1;
     if (dronesIndex == drones_.size()) {
@@ -173,14 +216,61 @@ void DeliverySimulation::RemoveObserver(IEntityObserver* observer) {
 const std::vector<IEntity*>& DeliverySimulation::GetEntities() const { return entities_; }
 
 void DeliverySimulation::Update(float dt) {
-  // std::cout << "This is dt in DeliverySimulation::Update: " << dt << std::endl;
   if (GetEntities().size() > 0 ) {
+    int drone_idx = 0;
     for (Drone* actual_drone : drones_) {
-      actual_drone->Update(systemGraph, observers_, dt);
+      if (actual_drone->GetBattery()->GetIsEmpty() == false) {
+        actual_drone->Update(systemGraph, observers_, dt);
+        if (actual_drone->GetBattery()->GetIsEmpty() == true) {
+          // add the drone with empty battery to the list of dead drones in the delivery simulation
+          dead_drones_with_remaining_packages_.push_back(actual_drone);
+          dead_drones_indices.push_back(drone_idx);
+        }
+      }
+      drone_idx = drone_idx + 1;
     }
+    int robot_idx = 0;
     for (Robot* actual_robot : robots_) {
-      actual_robot -> Update(systemGraph, observers_, dt);
+      if (actual_robot->GetBattery()->GetIsEmpty() == false) {
+        actual_robot -> Update(systemGraph, observers_, dt);
+        if (actual_robot->GetBattery()->GetIsEmpty() == true) {
+          // add the robot with empty battery to the list of dead robots in the delivery simulation
+          dead_robots_with_remaining_packages_.push_back(actual_robot);
+          dead_robots_indices.push_back(robot_idx);
+        }
+      }
     }
+    // check the two different dead drones/robots are of length > 0
+    if (dead_drones_with_remaining_packages_.size() > 0) {
+      // iterate through the packages carried by this drone in order to schedule it to a different entity
+      // first check which packages are remaining
+      for (Drone* dead_drone : dead_drones_with_remaining_packages_) {
+        std::vector<Package*> drone_packages_to_be_scheduled = dead_drone->GetRemainingAssignedPackages();
+        packages_to_be_scheduled_.insert(packages_to_be_scheduled_.end(), drone_packages_to_be_scheduled.begin(), drone_packages_to_be_scheduled.end());
+      }
+    }
+    if (dead_robots_with_remaining_packages_.size() > 0) {
+      // iterate through the packages carried by this drone in order to schedule it to a different entity
+      for (Robot *dead_robot : dead_robots_with_remaining_packages_)
+      {
+        std::vector<Package *> robot_packages_to_be_scheduled = dead_robot->GetRemainingAssignedPackages();
+        packages_to_be_scheduled_.insert(packages_to_be_scheduled_.end(), robot_packages_to_be_scheduled.begin(), robot_packages_to_be_scheduled.end());
+      }
+    }
+    if (packages_to_be_scheduled_.size() > 0) {
+      // now reschedule these packages
+      for (Package * reschedule_package : packages_to_be_scheduled_) {
+        IEntity* reschedule_customer = dynamic_cast<IEntity*>(reschedule_package->GetCustomer());
+        ScheduleDelivery(reschedule_package, reschedule_customer);
+        std::cout << "I'm rescheduling the dropped package!" << std::endl;
+      }
+      // now clear the packages_to_be_scheduled_ vector
+    }
+    packages_to_be_scheduled_.clear();
+    // clear it since we just check the size of this list when determining whether to add dead_packages
+    // later, if we add in battery checking stations, this logic will have to be changed
+    dead_drones_with_remaining_packages_.clear();
+    dead_robots_with_remaining_packages_.clear();
   }
 }
 
