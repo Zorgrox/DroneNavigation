@@ -10,6 +10,8 @@
 #include "../include/delivery_simulation.h"
 #include <EntityProject/entity.h>
 
+#include <EntityProject/graph.h>
+
 #include <iostream>
 
 namespace csci3081
@@ -102,25 +104,28 @@ namespace csci3081
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
     JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
-    JsonHelper::AddStringToJsonObject(obj, "path", "smart");
+    JsonHelper::AddStringToJsonObject(obj, "path", "beeline");
 
     Drone* drone = new Drone(obj);
     std::vector<IEntityObserver *> observers;
+
+    drone->SetFlightStrategyIndex(1, false); // smart path that does not change
+    drone->ChooseFlightStrategy();
 
     drone->UpdateDronePosition(1.0, observers);
 
     std::vector<float> another_position;
     another_position.push_back(2);
-    another_position.push_back(5);
-    another_position.push_back(30);
+    another_position.push_back(35);
+    another_position.push_back(0);
 
     std::cout << "This is the direction: " << drone->GetDirection().at(0) << ", " << drone->GetDirection().at(1) << ", " << drone->GetDirection().at(2) << std::endl;
     ASSERT_EQ(drone->GetPosition(), another_position);
 
     std::vector<float> new_position_to_add;
     new_position_to_add.push_back(2);
-    new_position_to_add.push_back(5);
-    new_position_to_add.push_back(31);
+    new_position_to_add.push_back(35);
+    new_position_to_add.push_back(30);
 
     std::vector<float> expectedDirection;
     expectedDirection.push_back(0);
