@@ -42,10 +42,11 @@ Claire Yang - Project Manager
 
 Casey Connell Created the Strategy patterns, as well as the routes for Parabolic and Beeline.
 
-David Johnson was assigned to fixing/reimplementing the observer pattern, obtaining and choosing the flight pattern from the JSON. Helped re-implement Flight_path, and help switch between strategies
-I did some debugging so the drone would not fly into buildings, and then moved the routing line up so the drone would match it.
+David Johnson was assigned to fixing/reimplementing the observer pattern, obtaining and choosing the flight pattern from the JSON. He helped re-implement Flight_path, and help switch between strategies.
+David did some debugging so the drone would not fly into buildings, and then moved the routing line up so the drone would match it.
 
-Claire Yang - Robot re-scheduling, Battery, 
+Claire Yang implemented the delivery of multiple packages to multiple customers, the behavior of the robot/drone when it runs out of battery (going idle and notifying observers), and the package rescheduling system when the robot/drone runs out of battery.
+Claire Yang also wrote all of the Doxygen function descriptions in the header files and updated the Robot, Drone, Observer Pattern, and Factory tests with the new functionalities. She also helped with debugging the Robot code, and addressed the comments from previous deliverable submissions in fixing the Google tests. Lastly, she made sure that the code had a consistent style and reformatted a lot of the files for readability.
 
 
 
