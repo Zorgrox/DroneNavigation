@@ -90,6 +90,9 @@ When the package is dropped off it will announce that it has been delivered to i
 The Robot and the Drone will announce that they have stopped moving if the package is delivered and there are no more deliveries left, or if they have run out of battery.
 
 
+In the observer pattern tests, we specifically test the observer's OnEvent notification to see if it prints out the correct type of notification. We do not test the pattern itself because that requires a mock system. If we were to test it however, we would plan on setting up a mock DeliverySystem and hardcoding a scheduled delivery between a drone and a package. This would trigger a notification to the observers about the package being scheduled, which would show that our pattern is working in that case.
+
+
 * Discussion of Implemented Composite Factory
 * ==================
 * For Iteration One, I (Claire Yang) implemented a composite factory pattern for the creation of the three entities (Drone, Customer, and Package).
