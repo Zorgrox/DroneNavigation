@@ -15,7 +15,7 @@ namespace csci3081 {
     std::vector<float> currentPosition = pos;
     std::vector<float> target = flightTarget;
     std::vector<float> newDirection = Tmp.SubtractTwoVectors(target, currentPosition);
-
+    newDirection[1] = 0.0;
     //saves and normalizes direction vector for later
     Vector3D Direction(newDirection);
     Direction.Normalize();
