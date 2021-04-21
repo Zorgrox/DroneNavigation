@@ -18,8 +18,8 @@ namespace csci3081
     std::vector<float> target = {4.0, 5.0, 6.0};
     beeline->SetFlightDetails(pos, target);
     std::vector<float> direction = {7.0, 8.0, 9.0};
-    std::vector<float> expected_direction = {0.57735, 0.57735, 0.57735};
-    std::vector<float> expected_pos = {9.66, 10.6603, 11.6603};
+    std::vector<float> expected_direction = {7.0, 8.0, 9.0};
+    std::vector<float> expected_pos = {1.0, 17.0, 3.0};
     float speedANDdt = 15.0;
     beeline->FlightUpdate(speedANDdt, pos, direction);
     ASSERT_NEAR(expected_pos[0], pos[0],0.1);
