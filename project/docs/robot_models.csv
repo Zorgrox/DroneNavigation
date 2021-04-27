@@ -1,0 +1,6 @@
+Model #,Mass (kg),Max Speed (km/h),Base Acceleration (m/s^2),WeightCapacity (kg),Base Battery Capacity (seconds)
+R-2D-01,50,60,4,10,300
+R-2D-02,100,40,3,40,200
+R-2D-03,5,100,10,10,30
+R-2D-04,120,30,6,20,600
+R-2D-05,150,60,3,15,120

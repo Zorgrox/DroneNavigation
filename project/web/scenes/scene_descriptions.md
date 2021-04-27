@@ -53,3 +53,8 @@ This scene has one customer, six packages, and a robot and drone. The robot and 
 ## all_features.json
 
 This scene has two customers, 4 packages, two drones, two robots, and a recharge station. One of the drones and one of the robots are at medium battery, and might die before the end of the simulation. The simulation doesn't need to implement the recharge station.
+
+## all_features_no_recharge_station.json
+
+This scene is identical to `all_features.json` with the removal of the recharge station since that is not required for iteration 2.
+

@@ -1,5 +1,7 @@
 # Iteration Two: Enhancing and Extending the Package Delivery System
 
+## Iteration 2 - Version 6, April 19th - Due Date Change - Iteration 2 Final Deliverable is due by 11:59 PM April 20th
+
 ## Iteration 2 - Version 5, March 28th - Adding priority 4 to the final deliverable requirements and adding delivery of multiple packages to multiple customers in the first deliverable.
 
 ## Iteration 2 - VERSION 4, March 26th  - Adding clarification regarding path passed to observers and robot entity.
@@ -13,7 +15,7 @@
 | Date | Item | Description of Verification and Validation of Deliverable(s) |
 |:----:|:-----|:------------|
 | FRI, April 2nd, 11:55pm | Robot also delivers packages and implement the Observer Pattern for observing Packages, Drones, and Robots. Fix your GoogleTests | inspection |
-| Mon, April 19 , 11:55pm | Incorporate a strategy for choosing different routes (smart, beeline, parabolic) for the drone and when the battery is depleted the drone or robot will drop the package and become idle. The package must be rescheduled for delivery  | Automated tests and inspection |
+| Mon, April 20 , 11:59pm | Incorporate a strategy for choosing different routes (smart, beeline, parabolic) for the drone and when the battery is depleted the drone or robot will drop the package and become idle. The package must be rescheduled for delivery  | Automated tests and inspection |
 
 In the previous iteration you showed that a drone can deliver a package to a customer either using a predefined route or a beeline route. In this iteration we will be enhancing the functionality of the previous iteration to include a robot that also delivers packages, report when a package is scheduled, in route, and when it has been delivered. Add additional reporting features for the robot and drone to report when they are moving or idle. You will also implement a strategy for routes the drone will take either smart, beeline, or parabolic. (All three routes will be tested). Add the functionality of determining if the battery of either the robot or the drone is depleted the package will be dropped, rescheduled for delivery, and the robot or drone will be idle.
 
