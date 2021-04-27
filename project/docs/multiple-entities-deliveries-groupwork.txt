@@ -1,0 +1,5 @@
+Date: March 30th, 2021
+Issues Addressed: Enhance the Delivery Simulation, Drone, and Robot so that it can handle multiple entities delivering multiple packages
+Priority Person: Claire Yang
+Worked with: David Johnson
+Description: Claire Yang came up with the design, wrote all of the code, and debugged. David helped test the multiple deliveries on different scenes, as well as refactored the ways in which IDs were generated, to make sure that each entity would recieve their own ID.

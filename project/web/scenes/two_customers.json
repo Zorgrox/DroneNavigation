@@ -1,0 +1,136 @@
+[
+  { "command": "reset", "params": {} },
+  {
+    "command": "createEntity",
+    "params": {
+        "type": "drone",
+        "name": "drone 0",
+        "path": "beeline",
+        "mesh": "models/s9drone.glb",
+        "position": [498.292, 253.883, -228.623],
+        "scale": [0.1, 0.1, 0.1],
+        "rotation": [0, 0, 0, 0],
+        "direction": [1,0,0],
+        "speed": 30.0,
+        "radius": 1.0,
+        "start": 2.0,
+        "duration": 2.0,
+        "offset": [0, 0.6, 0]
+    }
+  },
+  {
+    "command": "createEntity",
+    "params": {
+        "type": "drone",
+        "name": "drone 1",
+        "path": "smart",
+        "mesh": "models/s9drone.glb",
+        "position": [500, 254, 230],
+        "scale": [0.1, 0.1, 0.1],
+        "rotation": [0, 0, 0, 0],
+        "direction": [1,0,0],
+        "speed": 40.0,
+        "radius": 1.0,
+        "start": 2.0,
+        "duration": 2.0,
+        "offset": [0, 0.6, 0]
+    }
+  },
+  {
+    "command": "createEntity",
+    "params": {
+        "type": "customer",
+        "name": "customer 0",
+        "mesh": "models/RobotExpressive.glb",
+        "position": [-951.412, 254.665, 298.271],
+        "scale": [0.25, 0.25, 0.25],
+        "direction": [1,0,0],
+        "radius": 1.0,
+        "rotation": [0, 0, 0, 0]
+    }
+  },
+  {
+    "command": "createEntity",
+    "params": {
+        "type": "customer",
+        "name": "customer 1",
+        "mesh": "models/RobotExpressive.glb",
+        "position": [-951.412, 254.665, -298.271],
+        "scale": [0.25, 0.25, 0.25],
+        "direction": [1,0,0],
+        "radius": 1.0,
+        "rotation": [0, 0, 0, 0]
+    }
+  },
+  {
+    "command": "createEntity",
+    "params": {
+        "type": "package",
+        "name": "package 0",
+        "mesh": "models/cardboardBox.glb",
+        "position": [-256, 258, -297],
+        "scale": [0.02, 0.02, 0.01],
+        "direction": [1,0,0],
+        "radius": 1.0,
+        "rotation": [0, 0, 0, 0],
+        "offset": [0, 0.2, 0]
+    }
+  },
+  {
+    "command": "createEntity",
+    "params": {
+        "type": "package",
+        "name": "package 1",
+        "mesh": "models/cardboardBox.glb",
+        "position": [610, 254, 500],
+        "scale": [0.02, 0.02, 0.01],
+        "direction": [1,0,0],
+        "radius": 1.0,
+        "rotation": [0, 0, 0, 0],
+        "offset": [0, 0.2, 0]
+    }
+  },
+  {
+      "command": "setScene",
+      "params": {
+          "type": "scene",
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "mesh": "models/umn.obj",
+          "texture": "textures/umn.png",
+          "position": [-1.5,-13,-1.5],
+          "scale": [0.05,0.05,0.05]
+      }
+  },
+  {
+      "command": "addMesh",
+      "params": {
+          "type": "route",
+          "mesh": "models/routes.obj",
+          "position": [-0.0,-12.5,-0.0],
+          "scale": [0.0705,0.05,0.0705],
+          "color": "0xff00e1"
+      }
+  },
+  { "command": "addEntity", "params": {"index" : 0} },
+  { "command": "addEntity", "params": {"index" : 1} },
+  { "command": "addEntity", "params": {"index" : 2} },
+  { "command": "addEntity", "params": {"index" : 3} },
+  { "command": "addEntity", "params": {"index" : 4} },
+  { "command": "addEntity", "params": {"index" : 5} },
+  {
+    "command": "scheduleDelivery",
+    "params": {
+        "dest_index": 2,
+        "pkg_index": 4
+    }
+},
+{
+  "command": "scheduleDelivery",
+  "params": {
+      "dest_index": 3,
+      "pkg_index": 5
+  }
+}
+]

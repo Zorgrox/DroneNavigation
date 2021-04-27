@@ -1,0 +1,5 @@
+Date: April 18th, 2021
+Issues Addressed: Make sure that the drones/robots drop the package when their battery dies. Also, implement the algorithm for rescheduling the dropped package within delivery simulation to an entity that has battery.
+Priority Person: Claire Yang
+Worked with: David Johnson, Casey Connell
+Description: Claire Yang came up with the design, wrote all of the code, and debugged. David and Casey helped rubber ducky some ideas.

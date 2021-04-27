@@ -1,0 +1,2 @@
+DOCKER_IMAGE_PREFIX=csci3081s21
+DEP_DIR=/project/grades/Spring-2021/csci3081/dependencies
