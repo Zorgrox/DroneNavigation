@@ -128,7 +128,30 @@ void DecoratedDrone::UpdateDroneVelocity(std::vector<float> & newVelocity)
 
 void DecoratedDrone::Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt)
 {
+	picojson::object& drone_obj = const_cast<picojson::object&>(decorated_drone->GetDetails());
 	std::cout << "made to decorated update for drone\n";
+	float temp ;
+	temp = JsonHelper::GetDouble(const_cast<picojson::object&>(drone_obj), "color");
+	std::cout << "madehere 1 \n";
+	
+	//change color based on batt life
+	temp = 0x0000ff;
+	
+	JsonHelper::AddFloatToJsonObject(drone_obj, "color", temp);
+	
+	picojson::object obj7 = JsonHelper::CreateJsonObject();
+	JsonHelper::AddStringToJsonObject(obj7, "value", "updateDetails");
+	
+	JsonHelper::AddObjectToJsonObject(obj7, "details", drone_obj);
+	
+	picojson::value val7 = JsonHelper::ConvertPicojsonObjectToValue(obj7);
+	for (IEntityObserver *obs : observers) 
+	{
+		const IEntity *temp_drone = decorated_drone;
+		obs->OnEvent(val7, *temp_drone);
+	}
+	
+	
 	decorated_drone->Update(graph, observers, dt);
 }
 

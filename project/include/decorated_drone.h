@@ -8,6 +8,8 @@
  * Includes
  ******************************************************************************/
 #include "drone.h"
+#include "entity_base.h"
+#include "json_helper.h"
 
 namespace csci3081 {
 
