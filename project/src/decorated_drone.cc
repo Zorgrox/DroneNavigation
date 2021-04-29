@@ -130,19 +130,123 @@ void DecoratedDrone::Update(const IGraph *graph, std::vector<IEntityObserver *> 
 {
 	picojson::object& drone_obj = const_cast<picojson::object&>(decorated_drone->GetDetails());
 	std::cout << "made to decorated update for drone\n";
-	float temp ;
 	
+	decorated_drone->Update(graph, observers, dt);
 	std::cout << "madehere 1 \n";
-	temp = 0x011401;
-	std::cout << "\n" << temp << "\n";
+	
+	
 	//change color based on batt life
-	int charge = decorated_drone->GetBattery()->GetCurrentCharge();
-	charge = 50 - (charge / 200);
+	float maxcharge = decorated_drone->GetBattery()->GetMaxCharge();
+	float charge = decorated_drone->GetBattery()->GetCurrentCharge();
+	std::cout << maxcharge << " / " << charge << std::endl;
+	float ratio = (charge / maxcharge);
+	std::cout << ratio << std::endl;
+	//std::cout << charge << std::endl;
+	int colorStep = ratio * 15;
+	colorStep = 15 - colorStep;
+	std::cout << colorStep << std::endl;
+	int red, green, blue;
+	switch (colorStep)
+	{
+		case 0:
+			red = 32;
+			green = 255;
+			blue = 4;
+			break;
+		case 1:
+			red = 66;
+			green = 255;
+			blue = 14;
+			break;
+		case 2:
+			red = 97;
+			green = 255;
+			blue = 21;
+			break;
+		case 3:
+			red = 126;
+			green = 255;
+			blue = 25;
+			break;
+		case 4:
+			red = 153;
+			green = 255;
+			blue = 25;
+			break;
+		case 5:
+			red = 179;
+			green = 255;
+			blue = 21;
+			break;
+		case 6:
+			red = 203;
+			green = 255;
+			blue = 14;
+			break;
+		case 7:
+			red = 227;
+			green = 255;
+			blue = 4;
+			break;
+		case 8:
+			red = 243;
+			green = 247;
+			blue = 0;
+			break;
+		case 9:
+			red = 255;
+			green = 235;
+			blue = 6;
+			break;
+		case 10:
+			red = 255;
+			green = 211;
+			blue = 18;
+			break;
+		case 11:
+			red = 255;
+			green = 186;
+			blue = 26;
+			break;
+		case 12:
+			red = 255;
+			green = 160;
+			blue = 31;
+			break;
+		case 13:
+			red = 255;
+			green = 160;
+			blue = 31;
+			break;
+		case 14:
+			red = 255;
+			green = 103;
+			blue = 29;
+			break;
+		case 15:
+			red = 255;
+			green = 71;
+			blue = 22;
+			break;
+		default:
+			red = 255;
+			green = 71;
+			blue = 22;
+	}
+	/*
+	red = 255 - (255 * ratio);
+	green = 255 * ratio;
+	//green = 20;
+	blue = 100;*/
+	std::cout << "\n" << red << ", " << green << ", " << blue << std::endl;
+	int temp = ((red & 0xff) << 16) + ((green & 0xff) << 8) + (blue & 0xff);
+	std::cout << std::hex;
+	std::cout << "\n" << temp << "\n";
+	std::cout << std::dec;
+	//temp = temp + ((charge) * 0x010000) - (charge * 0x000100 );
+	float hexnum = temp;
 	
-	temp = temp + ((charge) * 0x050000);
-	
-	
-	JsonHelper::AddFloatToJsonObject(drone_obj, "color", temp);
+	JsonHelper::AddFloatToJsonObject(drone_obj, "color", hexnum);
 	
 	picojson::object obj7 = JsonHelper::CreateJsonObject();
 	
@@ -158,7 +262,7 @@ void DecoratedDrone::Update(const IGraph *graph, std::vector<IEntityObserver *> 
 		obs->OnEvent(val7, *temp_drone);
 	}
 	
-	decorated_drone->Update(graph, observers, dt);
+	
 }
 
 bool DecoratedDrone::CheckReadyToPickUp()
