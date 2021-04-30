@@ -19,7 +19,7 @@ int DecoratedDrone::GetId() const
 
 void DecoratedDrone::SetId(int ID)
 {
-  id = ID;
+  decorated_drone->SetId(ID);
 }
 
 void DecoratedDrone::AddGraphPath(const IGraph* newgraph)
