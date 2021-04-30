@@ -46,10 +46,10 @@ namespace csci3081 {
     std::cout << "Creating drone in default constructor" << std::endl;
     std::cout << "This is Drone's current position in default constructor: {" << positionVec.at(0) << ", " << positionVec.at(1) << ", " << positionVec.at(2) << "}" << std::endl;
     std::cout << "This is Drone's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
-
-    //flightStrategy = new PathFlight(radius);
-    //flightStrategy = new ParabolicFlight();
-    // flightStrategy = new BeelineFlight(); //Perhaps not needed, comment out?
+    std::string key = "color";
+    float temp = 0x990000;
+    JsonHelper::AddFloatToJsonObject(details_, "color", temp);
+    //const_cast<picojson::object&>(obj)[key] = picojson::value(temp);
   }
 
   void Drone::AddGraphPath(const IGraph* newGraph) {
@@ -59,6 +59,7 @@ namespace csci3081 {
   int Drone::GetId() const {
     return id;
   }
+
   void Drone::SetId(int ID) {
 	  id = ID;
   }

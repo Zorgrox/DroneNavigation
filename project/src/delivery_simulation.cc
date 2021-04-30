@@ -12,6 +12,7 @@
 #include "entity_base.h"
 #include "robot_factory.h"
 #include "robot.h"
+#include "decorated_drone.h"
 
 #include <iostream>
 
@@ -220,7 +221,8 @@ void DeliverySimulation::Update(float dt) {
     int drone_idx = 0;
     for (Drone* actual_drone : drones_) {
       if (actual_drone->GetBattery()->GetIsEmpty() == false) {
-        actual_drone->Update(systemGraph, observers_, dt);
+        DecoratedDrone* decorated_drone = new DecoratedDrone(actual_drone);
+        decorated_drone->Update(systemGraph, observers_, dt);
         if (actual_drone->GetBattery()->GetIsEmpty() == true) {
           // add the drone with empty battery to the list of dead drones in the delivery simulation
           dead_drones_with_remaining_packages_.push_back(actual_drone);
