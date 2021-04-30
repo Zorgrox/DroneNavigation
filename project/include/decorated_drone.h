@@ -31,7 +31,12 @@ namespace csci3081 {
    */
     DecoratedDrone(const picojson::object &obj);
 
-    DecoratedDrone( Drone* origonal);
+    /**
+   * @brief Constructor: set up a decorated Drone by passing in a pointer to a Drone. This follows the decorator pattern.
+   * @param original a pointer to the Drone that we want to decorate
+   */
+    DecoratedDrone( Drone* original);
+
   /**
    *  This function should return the id of the drone
    */
