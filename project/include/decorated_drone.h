@@ -30,12 +30,18 @@ namespace csci3081 {
    * @param obj picojson object with details for the creation of the entity
    */
     DecoratedDrone(const picojson::object &obj);
-    
+
     DecoratedDrone( Drone* origonal);
   /**
    *  This function should return the id of the drone
    */
     int GetId() const;
+
+    /**
+   *  This function should set the id of the drone
+   * @param ID the new id
+   */
+    void SetId(int ID);
 
     /**
    *  This function should update the existing graph path

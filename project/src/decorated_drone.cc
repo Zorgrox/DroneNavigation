@@ -17,6 +17,11 @@ int DecoratedDrone::GetId() const
     return decorated_drone->GetId();
 }
 
+void DecoratedDrone::SetId(int ID)
+{
+  id = ID;
+}
+
 void DecoratedDrone::AddGraphPath(const IGraph* newgraph)
 {
 	decorated_drone->AddGraphPath(newgraph);

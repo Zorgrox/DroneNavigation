@@ -59,6 +59,7 @@ namespace csci3081 {
   int Drone::GetId() const {
     return id;
   }
+
   void Drone::SetId(int ID) {
 	  id = ID;
   }
