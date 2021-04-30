@@ -253,26 +253,32 @@ namespace csci3081
     decorated_drone->Update(systemGraph, observers_, dt);
     picojson::object &drone_obj = const_cast<picojson::object &>(decorated_drone->GetDetails());
     float actual_color = (float) JsonHelper::GetDouble(drone_obj, "color");
-    ASSERT_EQ(actual_color, 872809);
+    ASSERT_EQ(actual_color, 268705);
 
     // Then test the color when the battery is at 14/15
     float subtract_battery_capacity = 1.0;
     decorated_drone->UpdateBatteryCharge(subtract_battery_capacity);
+    std::cout << "This is the current battery charge: " << decorated_drone->GetBattery()->GetCurrentCharge() << std::endl;
     decorated_drone->Update(systemGraph, observers_, dt);
+    drone_obj = const_cast<picojson::object &>(decorated_drone->GetDetails());
     actual_color = (float)JsonHelper::GetDouble(drone_obj, "color");
-    ASSERT_EQ(actual_color, 874011);
+    ASSERT_EQ(actual_color, 268705);
 
     // Then test the color when the battery is at 2/15
     decorated_drone->UpdateBatteryCharge(12.0);
+    std::cout << "This is the current battery charge: " << decorated_drone->GetBattery()->GetCurrentCharge() << std::endl;
     decorated_drone->Update(systemGraph, observers_, dt);
+    drone_obj = const_cast<picojson::object &>(decorated_drone->GetDetails());
     actual_color = (float)JsonHelper::GetDouble(drone_obj, "color");
-    ASSERT_EQ(actual_color, 388708);
+    ASSERT_EQ(actual_color, 995212);
 
     // Then test the color when the battery is at zero
     decorated_drone->UpdateBatteryCharge(2.0);
+    std::cout << "This is the current battery charge: " << decorated_drone->GetBattery()->GetCurrentCharge() << std::endl;
     decorated_drone->Update(systemGraph, observers_, dt);
+    drone_obj = const_cast<picojson::object &>(decorated_drone->GetDetails());
     actual_color = (float)JsonHelper::GetDouble(drone_obj, "color");
-    ASSERT_EQ(actual_color, 268705);
+    ASSERT_EQ(actual_color, 872809);
   }
 
 } // namespace csci3081

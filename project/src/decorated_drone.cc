@@ -19,7 +19,7 @@ int DecoratedDrone::GetId() const
 
 void DecoratedDrone::SetId(int ID)
 {
-  id = ID;
+  decorated_drone->SetId(ID);
 }
 
 void DecoratedDrone::AddGraphPath(const IGraph* newgraph)
@@ -212,7 +212,9 @@ void DecoratedDrone::Update(const IGraph *graph, std::vector<IEntityObserver *> 
 
 	JsonHelper::AddFloatToJsonObject(drone_obj, "color", colornum);
 
-	picojson::object obj7 = JsonHelper::CreateJsonObject();
+  JsonHelper::AddFloatToJsonObject(details_, "color", colornum);
+
+  picojson::object obj7 = JsonHelper::CreateJsonObject();
 
 	JsonHelper::AddStringToJsonObject(obj7, "type", "notify");
 	JsonHelper::AddStringToJsonObject(obj7, "value", "updateDetails");
