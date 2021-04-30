@@ -130,16 +130,86 @@ void DecoratedDrone::Update(const IGraph *graph, std::vector<IEntityObserver *> 
 {
 	picojson::object& drone_obj = const_cast<picojson::object&>(decorated_drone->GetDetails());
 	std::cout << "made to decorated update for drone\n";
-	float temp ;
-	temp = JsonHelper::GetDouble(const_cast<picojson::object&>(drone_obj), "color");
+
+	
 	std::cout << "madehere 1 \n";
 	
 	//change color based on batt life
-	temp = 0x0000ff;
+	float maxCharge = decorated_drone->GetBattery()->GetMaxCharge();
+	float charge = decorated_drone->GetBattery()->GetCurrentCharge();
+	float ratio = charge / maxCharge;
+
+	std::cout << maxCharge << " / " << charge << std::endl;
+        
+	std::cout << ratio << std::endl;
+	//std::cout << charge << std::endl;
+	int colorStep = ratio * 15;
+	colorStep = 15 - colorStep;
+	std::cout << colorStep << std::endl;
+	int temp;
+	switch (colorStep)
+	{
+		case 0:
+		  temp = 268705;
+		  break;
+		case 1:
+		  temp = 268705;
+		  break;
+		case 2:
+		  temp = 388708;
+		  break;
+		case 3:
+		  temp = 498710;
+		  break;
+		case 4:
+		  temp = 599910;
+		  break;
+		case 5:
+		  temp = 709908;
+		  break;
+		case 6:
+		  temp = 799905;
+		  break;
+		case 7:
+		  temp = 889900;
+		  break;
+		case 8:
+		  temp = 949600;
+		  break;
+		case 9:
+		  temp = 879102;
+		  break;
+		case 10:
+		  temp = 878107;
+		  break;
+		case 11:
+		  temp = 877210;
+		  break;
+		case 12:
+		  temp = 996212;
+		  break;
+		case 13:
+		  temp = 995212;
+		  break;
+		case 14:
+		  temp = 874011;
+		  break;
+		case 15:
+		  temp = 872809;
+		  break;
+		default:
+		  temp = 872809;
+	}
 	
-	JsonHelper::AddFloatToJsonObject(drone_obj, "color", temp);
+	std::cout << "\n" << temp << "\n";
+	
+	float colornum = temp;
+	
+	JsonHelper::AddFloatToJsonObject(drone_obj, "color", colornum);
 	
 	picojson::object obj7 = JsonHelper::CreateJsonObject();
+	
+	JsonHelper::AddStringToJsonObject(obj7, "type", "notify");
 	JsonHelper::AddStringToJsonObject(obj7, "value", "updateDetails");
 	
 	JsonHelper::AddObjectToJsonObject(obj7, "details", drone_obj);
@@ -147,10 +217,9 @@ void DecoratedDrone::Update(const IGraph *graph, std::vector<IEntityObserver *> 
 	picojson::value val7 = JsonHelper::ConvertPicojsonObjectToValue(obj7);
 	for (IEntityObserver *obs : observers) 
 	{
-		const IEntity *temp_drone = decorated_drone;
+		const IEntity *temp_drone = dynamic_cast<IEntity*>(decorated_drone);
 		obs->OnEvent(val7, *temp_drone);
 	}
-	
 	
 	decorated_drone->Update(graph, observers, dt);
 }

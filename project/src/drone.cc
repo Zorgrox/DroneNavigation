@@ -47,9 +47,9 @@ namespace csci3081 {
     std::cout << "This is Drone's current position in default constructor: {" << positionVec.at(0) << ", " << positionVec.at(1) << ", " << positionVec.at(2) << "}" << std::endl;
     std::cout << "This is Drone's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
     std::string key = "color";
-    float temp = 0x000001;
+    float temp = 0x990000;
     JsonHelper::AddFloatToJsonObject(details_, "color", temp);
-    const_cast<picojson::object&>(obj)[key] = picojson::value(temp);
+    //const_cast<picojson::object&>(obj)[key] = picojson::value(temp);
   }
 
   void Drone::AddGraphPath(const IGraph* newGraph) {
