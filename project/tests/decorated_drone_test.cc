@@ -4,12 +4,14 @@
 #include <string>
 #include "vector3d.h"
 #include "drone.h"
+#include "decorated_drone.h"
 #include "json_helper.h"
 
 #include <EntityProject/project_settings.h>
 #include "../include/delivery_simulation.h"
 #include <EntityProject/entity.h>
 
+#include <EntityProject/osm_graph_parser.h>
 #include <EntityProject/graph.h>
 
 #include <iostream>
@@ -49,47 +51,47 @@ namespace csci3081
     DecoratedDrone *decorated_drone = new DecoratedDrone(drone);
 
     int newDroneId = 2;
-    actual_drone->SetId(newDroneId);
-    ASSERT_EQ(actual_drone->GetId(), newDroneId);
+    decorated_drone->SetId(newDroneId);
+    ASSERT_EQ(decorated_drone->GetId(), newDroneId);
 
     float battery_capacity = 20.0;
-    const Battery *battery = actual_drone->GetBattery();
+    const Battery *battery = decorated_drone->GetBattery();
     ASSERT_EQ(battery->GetMaxCharge(), battery_capacity);
 
-    actual_drone->UpdateBatteryCharge(10.0);
+    decorated_drone->UpdateBatteryCharge(10.0);
     ASSERT_EQ(battery->GetCurrentCharge(), battery_capacity - 10.0);
 
     std::string expectedDroneName = "drone";
-    ASSERT_EQ(actual_drone->GetName(), expectedDroneName);
+    ASSERT_EQ(decorated_drone->GetName(), expectedDroneName);
 
     std::vector<float> expectedDronePos{2, 4, 5};
-    ASSERT_EQ(actual_drone->GetPosition(), expectedDronePos);
+    ASSERT_EQ(decorated_drone->GetPosition(), expectedDronePos);
     std::vector<float> expectedDroneDirection{0, 0, 1};
-    ASSERT_EQ(actual_drone->GetDirection(), expectedDroneDirection);
+    ASSERT_EQ(decorated_drone->GetDirection(), expectedDroneDirection);
 
-    ASSERT_EQ(actual_drone->GetSpeed(), 30);
+    ASSERT_EQ(decorated_drone->GetSpeed(), 30);
 
     float expectedDroneRadius = 1.0;
-    ASSERT_EQ(actual_drone->GetRadius(), expectedDroneRadius);
+    ASSERT_EQ(decorated_drone->GetRadius(), expectedDroneRadius);
 
     int expectedDroneVersion = 0;
-    ASSERT_EQ(actual_drone->GetVersion(), expectedDroneVersion);
+    ASSERT_EQ(decorated_drone->GetVersion(), expectedDroneVersion);
 
     bool expectedDroneDynamic = true;
-    ASSERT_EQ(actual_drone->IsDynamic(), expectedDroneDynamic);
+    ASSERT_EQ(decorated_drone->IsDynamic(), expectedDroneDynamic);
 
     drone->SetIsCarryingPackage(false);
-    ASSERT_EQ(actual_drone->GetIsCarryingPackage(), false);
+    ASSERT_EQ(decorated_drone->GetIsCarryingPackage(), false);
 
     drone->SetOnTheWayToDropOffPackage(true);
-    ASSERT_EQ(actual_drone->GetOnTheWayToDropOffPackage(), true);
+    ASSERT_EQ(decorated_drone->GetOnTheWayToDropOffPackage(), true);
 
     drone->SetOnTheWayToPickUpPackage(true);
-    ASSERT_EQ(actual_drone->GetOnTheWayToPickUpPackage(), true);
+    ASSERT_EQ(decorated_drone->GetOnTheWayToPickUpPackage(), true);
   }
 
   // Test the drone movement and update functions, according to the smart path strategy
-  TEST_F(DroneTest, DroneMovementTest)
+  TEST_F(DecoratedDroneTest, DecoratedDroneMovementTest)
   {
     picojson::object obj = JsonHelper::CreateJsonObject();
     JsonHelper::AddStringToJsonObject(obj, "type", "drone");
@@ -156,7 +158,7 @@ namespace csci3081
   }
 
   // Test the drone package queue system
-  TEST_F(DroneTest, DronePackageTest)
+  TEST_F(DecoratedDroneTest, DronePackageTest)
   {
     picojson::object obj = JsonHelper::CreateJsonObject();
     JsonHelper::AddStringToJsonObject(obj, "type", "drone");
@@ -191,11 +193,13 @@ namespace csci3081
     direction_to_add1.push_back(1);
     JsonHelper::AddStdFloatVectorToJsonObject(obj1, "direction", direction_to_add1);
     JsonHelper::AddFloatToJsonObject(obj1, "radius", 1.0);
+    std::cout << "Created json helper object" << std::endl;
 
     Package *package = new Package(obj1);
 
     decorated_drone->AddAssignedPackage(*package);
     ASSERT_EQ(decorated_drone->GetNumAssignedPackages(), 1);
+    std::cout << "Added assigned package" << std::endl;
 
     decorated_drone->SetIsCarryingPackage(true);
     ASSERT_EQ(decorated_drone->GetIsCarryingPackage(), true);
@@ -230,37 +234,45 @@ namespace csci3081
     JsonHelper::AddStdFloatVectorToJsonObject(obj, "direction", direction_to_add);
     JsonHelper::AddFloatToJsonObject(obj, "radius", 1.0);
     JsonHelper::AddFloatToJsonObject(obj, "speed", 30);
-    JsonHelper::AddFloatToJsonObject(obj, "battery_capacity", 20.0);
+    JsonHelper::AddFloatToJsonObject(obj, "battery_capacity", 15.0);
 
     Drone *drone = new Drone(obj);
-
     DecoratedDrone *decorated_drone = new DecoratedDrone(drone);
+
+    std::vector<IEntityObserver *> observers_;
+    float dt = 1.0;
 
     decorated_drone->SetOnTheWayToDropOffPackage(false);
     decorated_drone->SetOnTheWayToPickUpPackage(false);
 
-    // TODO: make this test dependent on the battery life, since that's what the color depends on
+    // make this test dependent on the battery life, since that's what the color depends on
 
+    entity_project::OSMGraphParser parser;
+    const IGraph *systemGraph = parser.CreateGraph("data/umn.osm", "data/umn-height.csv");
     // Note: first test the color when the battery is full
     decorated_drone->Update(systemGraph, observers_, dt);
     picojson::object &drone_obj = const_cast<picojson::object &>(decorated_drone->GetDetails());
-    ASSERT_EQ(JsonHelper->GetDouble(drone_obj, "color"), 0x011401);
+    float actual_color = (float) JsonHelper::GetDouble(drone_obj, "color");
+    ASSERT_EQ(actual_color, 872809);
 
-    // TODO: Then test the color when the battery is at half
-    float subtract_battery_capacity = 10.0;
-    // now the battery should be at half
-    decorated_drone->UpdateBatteryCharge(10.0);
-
+    // Then test the color when the battery is at 14/15
+    float subtract_battery_capacity = 1.0;
+    decorated_drone->UpdateBatteryCharge(subtract_battery_capacity);
     decorated_drone->Update(systemGraph, observers_, dt);
-    picojson::object &drone_obj = const_cast<picojson::object &>(decorated_drone->GetDetails());
-    ASSERT_EQ(JsonHelper->GetDouble(drone_obj, "color"), 0x011401);
+    actual_color = (float)JsonHelper::GetDouble(drone_obj, "color");
+    ASSERT_EQ(actual_color, 874011);
 
-    // TODO: Then test the color when the battery is at zero
-    decorated_drone->UpdateBatteryCharge(10.0);
-
+    // Then test the color when the battery is at 2/15
+    decorated_drone->UpdateBatteryCharge(12.0);
     decorated_drone->Update(systemGraph, observers_, dt);
-    picojson::object &drone_obj = const_cast<picojson::object &>(decorated_drone->GetDetails());
-    ASSERT_EQ(JsonHelper->GetDouble(drone_obj, "color"), 0x011401);
+    actual_color = (float)JsonHelper::GetDouble(drone_obj, "color");
+    ASSERT_EQ(actual_color, 388708);
+
+    // Then test the color when the battery is at zero
+    decorated_drone->UpdateBatteryCharge(2.0);
+    decorated_drone->Update(systemGraph, observers_, dt);
+    actual_color = (float)JsonHelper::GetDouble(drone_obj, "color");
+    ASSERT_EQ(actual_color, 268705);
   }
 
 } // namespace csci3081

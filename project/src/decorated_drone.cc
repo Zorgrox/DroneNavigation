@@ -43,7 +43,7 @@ const std::vector<float>& DecoratedDrone::GetDirection() const
 	return decorated_drone->GetDirection();
 }
 
-float DecoratedDrone::GetSpeed() 
+float DecoratedDrone::GetSpeed()
 {
 	return decorated_drone->GetSpeed();
 }
@@ -71,12 +71,12 @@ bool DecoratedDrone::IsDynamic() const
 	return decorated_drone->IsDynamic();
 }
 
-Package* DecoratedDrone::GetCurPackage() 
+Package* DecoratedDrone::GetCurPackage()
 {
 	return decorated_drone->GetCurPackage();
 }
 
-void DecoratedDrone::UpdateCurPackage() 
+void DecoratedDrone::UpdateCurPackage()
 {
 	decorated_drone->UpdateCurPackage();
 }
@@ -89,7 +89,7 @@ const bool DecoratedDrone::GetIsCarryingPackage() const
 void DecoratedDrone::SetIsCarryingPackage(bool newIsCarryingPackage)
 {
 	decorated_drone->SetIsCarryingPackage(newIsCarryingPackage);
-} 
+}
 
 const bool DecoratedDrone::GetOnTheWayToPickUpPackage() const
 {
@@ -131,16 +131,16 @@ void DecoratedDrone::Update(const IGraph *graph, std::vector<IEntityObserver *> 
 	picojson::object& drone_obj = const_cast<picojson::object&>(decorated_drone->GetDetails());
 	std::cout << "made to decorated update for drone\n";
 
-	
+
 	std::cout << "madehere 1 \n";
-	
+
 	//change color based on batt life
 	float maxCharge = decorated_drone->GetBattery()->GetMaxCharge();
 	float charge = decorated_drone->GetBattery()->GetCurrentCharge();
 	float ratio = charge / maxCharge;
 
 	std::cout << maxCharge << " / " << charge << std::endl;
-        
+
 	std::cout << ratio << std::endl;
 	//std::cout << charge << std::endl;
 	int colorStep = ratio * 15;
@@ -200,27 +200,27 @@ void DecoratedDrone::Update(const IGraph *graph, std::vector<IEntityObserver *> 
 		default:
 		  temp = 872809;
 	}
-	
+
 	std::cout << "\n" << temp << "\n";
-	
+
 	float colornum = temp;
-	
+
 	JsonHelper::AddFloatToJsonObject(drone_obj, "color", colornum);
-	
+
 	picojson::object obj7 = JsonHelper::CreateJsonObject();
-	
+
 	JsonHelper::AddStringToJsonObject(obj7, "type", "notify");
 	JsonHelper::AddStringToJsonObject(obj7, "value", "updateDetails");
-	
+
 	JsonHelper::AddObjectToJsonObject(obj7, "details", drone_obj);
-	
+
 	picojson::value val7 = JsonHelper::ConvertPicojsonObjectToValue(obj7);
-	for (IEntityObserver *obs : observers) 
+	for (IEntityObserver *obs : observers)
 	{
 		const IEntity *temp_drone = dynamic_cast<IEntity*>(decorated_drone);
 		obs->OnEvent(val7, *temp_drone);
 	}
-	
+
 	decorated_drone->Update(graph, observers, dt);
 }
 
@@ -251,7 +251,7 @@ void DecoratedDrone::CalculateAndUpdateDroneDirection(std::vector<float>& nextPo
 
 void DecoratedDrone::AddAssignedPackage(Package& newPackage)
 {
-	AddAssignedPackage(newPackage);
+	decorated_drone->AddAssignedPackage(newPackage);
 }
 
 int DecoratedDrone::GetNumAssignedPackages()
@@ -298,4 +298,3 @@ void DecoratedDrone::SetFlightStrategyIndex(int index, bool allowChange)
 	decorated_drone->SetFlightStrategyIndex( index, allowChange);
 }
 }
-
