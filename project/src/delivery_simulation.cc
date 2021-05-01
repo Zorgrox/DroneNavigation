@@ -288,6 +288,7 @@ void DeliverySimulation::Update(float dt) {
       // first check which packages are remaining
       for (Drone* dead_drone : dead_drones_with_remaining_packages_) {
         std::vector<Package*> drone_packages_to_be_scheduled = dead_drone->GetRemainingAssignedPackages();
+        drone_packages_to_be_scheduled.push_back(dead_drone->GetCurPackage());
         packages_to_be_scheduled_.insert(packages_to_be_scheduled_.end(), drone_packages_to_be_scheduled.begin(), drone_packages_to_be_scheduled.end());
       }
     }
