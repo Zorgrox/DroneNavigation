@@ -30,25 +30,22 @@
 
 * Teamwork Documentation
 * ==================
-Iteration 2 Deliverable 2 Meetings:
+Iteration 3 Deliverable Meetings:
 Casey Connell - Development Lead
 David Johnson - Scheduler
 Claire Yang - Project Manager
 
 
-* April 11th, 2021 -- David Johnson, Claire Yang, Casey Connell
-* April 14th, 2021 -- David Johnson, Claire Yang, Casey Connell
-* April 17th, 2021 -- David Johnson, Claire Yang, Casey Connell
+* April 26th, 2021 -- David Johnson, Claire Yang, Casey Connell
+* April 27th, 2021 -- David Johnson, Claire Yang, Casey Connell
+* April 29th, 2021 -- David Johnson, Claire Yang, Casey Connell
+* April 30th, 2021 -- David Johnson, Claire Yang, Casey Connell
 
-Casey Connell Created the Strategy patterns, as well as the routes for Parabolic and Beeline Flight.
-Casey created the strategy methods that compute and return a route for the observers to display. He also helped debug and finish the flight strategy google tests.
+Casey Connell created the decorated_entity.h class, and the logic for the changing colors.
 
-David Johnson was assigned to fixing/reimplementing the observer pattern, obtaining and choosing the flight pattern from the JSON. He helped re-implement Flight_path, and help switch between strategies.
-David did some debugging so the drone would not fly into buildings, and then moved the routing line up so the drone would match it.
+David Johnson helped with the implementation of colors, observer notificaiton, and debugging.
 
-Claire Yang implemented the delivery of multiple packages to multiple customers, the behavior of the robot/drone when it runs out of battery (going idle and notifying observers), and the package rescheduling system when the robot/drone runs out of battery.
-Claire Yang also handled the UML diagram updates, wrote all of the Doxygen function descriptions in the header files and updated the Robot, Drone, Observer Pattern, and Factory tests with the new functionalities. She also helped with debugging the Robot code, and addressed the comments from previous deliverable submissions in fixing the Google tests. Lastly, she made sure that the code had a consistent style and reformatted a lot of the files for readability.
-
+Claire Yang worked on the Google tests, the debugging, UML and the documentation.
 
 * Designing and Implementing the routes
 * ==================
