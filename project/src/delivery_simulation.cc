@@ -22,8 +22,6 @@ namespace csci3081 {
   DeliverySimulation::DeliverySimulation()
   {
     compositeFactory_ = new CompositeFactory();
-    packageScheduler_ = new PackageScheduler();
-    std::cout << "This is packageScheduler: " << packageScheduler_ << std::endl;
 }
 
 DeliverySimulation::~DeliverySimulation() {
@@ -107,7 +105,23 @@ void DeliverySimulation::SetGraph(const IGraph* graph) {
 }
 
 void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
-  // packageScheduler_->ScheduleDelivery(package, dest);
+  packageScheduler_ = new PackageScheduler(observers_,
+                                           robots_,
+                                           drones_,
+                                           dead_drones_indices,
+                                           dead_robots_indices,
+                                           assignPackageToDrone,
+                                           robotsIndex,
+                                           dronesIndex);
+  std:vector<int> scheduler_return = packageScheduler_->ScheduleDelivery(package, dest, graph);
+  robotsIndex = scheduler_return.at(0);
+  dronesIndex = scheduler_return.at(1);
+  if (scheduler_return.at(2) == 0) {
+    assignPackageToDrone = false;
+  } else {
+    assignPackageToDrone = true;
+  }
+  delete packageScheduler_;
 }
 
 void DeliverySimulation::AddObserver(IEntityObserver* observer) {

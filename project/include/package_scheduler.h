@@ -7,8 +7,14 @@
 /*******************************************************************************
  * Includes
  ******************************************************************************/
-#include "delivery_simulation.h"
-
+#include "entity_base.h"
+#include "drone.h"
+#include <EntityProject/entity.h>
+#include "package.h"
+#include "customer.h"
+#include "entity_base.h"
+#include "robot.h"
+#include "decorated_entity.h"
 namespace csci3081
 {
 
@@ -20,18 +26,35 @@ namespace csci3081
  *
  */
 
-  class PackageScheduler : public csci3081::DeliverySimulation
+  class PackageScheduler
   {
   public:
     /**
    * @brief Constructor: set up a Package Scheduler
    */
-    PackageScheduler();
+    PackageScheduler(std::vector<IEntityObserver *> obs,
+                     std::vector<Robot *> rob,
+                     std::vector<Drone *> dron,
+                     std::vector<int> dead_drones_ind,
+                     std::vector<int> dead_robots_ind,
+                     bool assignPackageToDron,
+                     int robotsIdx,
+                     int dronesIdx);
 
     /**
    *  Schedules the delivery of a package
    */
-    void ScheduleDelivery(IEntity *package, IEntity *dest);
+    std::vector<int> ScheduleDelivery(IEntity *package, IEntity *dest, const IGraph* graph);
+
+  private:
+    std::vector<IEntityObserver* > observers_;
+    std::vector<Robot* > robots_;
+    std::vector<Drone* > drones_;
+    std::vector<int> dead_drones_indices;
+    std::vector<int> dead_robots_indices;
+    bool assignPackageToDrone;
+    int robotsIndex;
+    int dronesIndex;
   };
 
 } // namespace csci3081

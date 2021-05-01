@@ -4,10 +4,27 @@
 namespace csci3081
 {
 
-  PackageScheduler::PackageScheduler() {
+  PackageScheduler::PackageScheduler(
+      std::vector<IEntityObserver *> obs,
+      std::vector<Robot *> rob,
+      std::vector<Drone *> dron,
+      std::vector<int> dead_drones_ind,
+      std::vector<int> dead_robots_ind,
+      bool assignPackageToDron,
+      int robotsIdx,
+      int dronesIdx)
+  {
+    observers_ = obs;
+    robots_ = rob;
+    drones_ = dron;
+    dead_drones_indices = dead_drones_ind;
+    dead_robots_indices = dead_robots_ind;
+    assignPackageToDrone = assignPackageToDron;
+    robotsIndex = robotsIdx;
+    dronesIndex = dronesIdx;
   }
 
-  void PackageScheduler::ScheduleDelivery(IEntity* package, IEntity* dest)
+  std::vector<int> PackageScheduler::ScheduleDelivery(IEntity* package, IEntity* dest, const IGraph* systemGraph)
   {
     /**
   This function tells the simulation that the IEntity* package should be delivered
@@ -173,5 +190,14 @@ namespace csci3081
     {
       obs->OnEvent(val, *package);
     }
+
+    std::vector<int> toReturn;
+    toReturn.push_back(robotsIndex);
+    toReturn.push_back(dronesIndex);
+    int temp = 0;
+    if (assignPackageToDrone == true) {
+      temp = 1;
+    }
+    toReturn.push_back(temp);
   }
 }
