@@ -241,9 +241,6 @@ namespace csci3081
 
     // make this test dependent on the battery life, since that's what the color depends on
 
-
-
-    
     entity_project::OSMGraphParser parser;
     const IGraph *systemGraph = parser.CreateGraph("data/umn.osm", "data/umn-height.csv");
     // Note: first test the color when the battery is full
