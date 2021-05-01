@@ -15,6 +15,7 @@
 #include "package.h"
 #include "drone.h"
 #include "robot.h"
+#include "package_scheduler.h"
 
 namespace csci3081 {
 
@@ -147,13 +148,14 @@ class DeliverySimulation : public IDeliverySystem {
    */
   void RunScript(const picojson::array& script, IEntitySystem* system) const;
 
- private:
+ protected:
   std::vector<IEntity*> entities_;
   std::vector<Drone*> drones_;
   std::vector<Robot*> robots_;
   std::vector<Customer*> customers_;
   std::vector<Package*> packages_;
   CompositeFactory* compositeFactory_;
+  PackageScheduler* packageScheduler_;
   const IGraph* systemGraph;
 
   int dronesIndex;
