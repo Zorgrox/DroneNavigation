@@ -50,6 +50,25 @@ Claire Yang implemented the delivery of multiple packages to multiple customers,
 Claire Yang also handled the UML diagram updates, wrote all of the Doxygen function descriptions in the header files and updated the Robot, Drone, Observer Pattern, and Factory tests with the new functionalities. She also helped with debugging the Robot code, and addressed the comments from previous deliverable submissions in fixing the Google tests. Lastly, she made sure that the code had a consistent style and reformatted a lot of the files for readability.
 
 
+* Feature Description: Entity Color Decorator based on Battery Charge
+* ==================
+* For this iteration, our team chose to implement an entity color decorator to change the color of the drone/robot, depending on its battery life. When the battery is full, the entity has a green bubble around it. As the battery drains, it becomes progressively redder, until it is completely red when the battery is empty. We chose to use the decorator pattern because it is flexible and allows us to modify our drones/robots dynamically.
+* If we did not use the decorator pattern, we could have just added the extra lines to modify the details_ picojson object within both the drone and robot constructors, and added the logic for the color that the drone/robot should display within their respective Update functions.
+* However, if we did this, we would violate the DRY principle, since the logic for the color change would be duplicated across the different entities. If we wanted to add another entity to the simulation, we would have to repeat this code yet again, which makes the software hard to extend and maintain.
+
+* By adding a decorated_entity class that contains a pointer to an Entity, we can add some functionality to the entity's Update function without having to repeat it across multiple different classes. Additionally, it would be easy to create another version of the decorated_entity class that updates the colors around the drone to a different gradient than red/green.
+* When the Update function of a decorated entity is called, it first calculates the ratio of the battery's current charge with its maximum charge. A ratio of 1 means that the battery is full, whereas a ratio of 0 means that the battery is empty.
+* We change the color in 15 different increments, as this was enough different colors to create a smooth transition, while allowing for an easy and understandable way to determine what color should be used next.
+* Depending on which condition the battery ratio belongs to, a different color is assigned. Then, that color is added to a picojson object that is sent as a notification to the observers to update them on the updated color of the entity.
+* Lastly, we call the Update function of the entity itself, which then executes the rest of the logic in the original entity's Update function.
+
+* The hardest part about implementing this feature was figuring out how to encode the colors and determine the next color. We initially believed that the colors were being represented by hexadecimals, which we soon found out to not be the case. We also tried to do logical operations on the float color representations in order to get a continuous gradient of red to green colors, so that we wouldn't have 15 discrete increments of colors.
+* However, we were unable to figure out how to create a generalizable logical operation to turn green into red, and so we decided on the switch statement as the best solution.
+* We also had a bit of trouble figuring out how to construct the notification to the observers about the color change.
+
+
+
+
 * Designing and Implementing the routes
 * ==================
 * Using the Strategy Pattern to implement different flight routes gives our program a wider range of functionality, allowing us to apply different flight algorithms to our drones, and to easily swap them out, implement new ones, or extend the existing ones.
@@ -123,19 +142,6 @@ In the observer pattern tests, we specifically test the observer's OnEvent notif
 * \image{inline} html composite-factory.png "Composite Factory Pattern UML Diagram"
 
 * The composite factory pattern removes the necessity for a conditional statement in DeliverySimulation, which makes the code more cohesive. It does this by collecting all of the different factories into a CompositeFactory that manages which factory it should call through a for loop. The delivery simulation just has to call createEntity on the CompositeFactory in order to get back the correctly created entity. A con of this pattern is that it can be overly complicated if there are no hierarchical relationships between the entities that the factory is creating, and is unecessary for simple creation logic of entities.
-
-* Colored Entities Based off of Battery Charge
-* ==================
-* For this iteration, our team chose to use the Decorator Pattern to Color Entities that have Batteries
-* Which in this case would be Drones and Robots. The way this works is there is now a decorated_entity
-* which contains a robot or a drone. When its update function is called, it looks at the battery contents
-* of what it holds, assigns it the appropriate color, and then calls the update function of the Drone or Robot.
-* We opted to use 15 different colors as the batteries decrease, as this allowed an easy way to determine what color should be used next
-* and creates a relatively smooth transition. Some of the issues that occured with implementing this was Determining whether or not
-* to write anything back to the details_, or simply determine it by its charge. Whether to use this switch statement or try to go for more of a gradient.
-* How to determine the next color, the erroneous belief at it being in hex at first, where it is not, and finally
-* on how to construct the notification for the observers. However now that these problems have been dealt with, it would be
-* reasonably simple to create other types of decorated entities.
 
 
 */
