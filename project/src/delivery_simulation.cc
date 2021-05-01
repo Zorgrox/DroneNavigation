@@ -105,7 +105,7 @@ void DeliverySimulation::SetGraph(const IGraph* graph) {
 }
 
 void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
-  packageScheduler_ = new PackageScheduler(observers_,
+  PackageScheduler* packageScheduler_ = new PackageScheduler(observers_,
                                            robots_,
                                            drones_,
                                            dead_drones_indices,
@@ -113,7 +113,7 @@ void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
                                            assignPackageToDrone,
                                            robotsIndex,
                                            dronesIndex);
-  std:vector<int> scheduler_return = packageScheduler_->ScheduleDelivery(package, dest, graph);
+  std:vector<int> scheduler_return = packageScheduler_->ScheduleDelivery(package, dest, systemGraph);
   robotsIndex = scheduler_return.at(0);
   dronesIndex = scheduler_return.at(1);
   if (scheduler_return.at(2) == 0) {
