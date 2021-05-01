@@ -36,6 +36,8 @@ namespace csci3081
 	  id = ID;
   }
 
+  void Package::Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt) {}
+  
   const std::string &Package::GetName()
   {
     return name;
