@@ -28,24 +28,33 @@
 
 
 
-* Teamwork Documentation
+* Iteration 3 Team Documentation
 * ==================
 Iteration 3 Deliverable Meetings:
-Casey Connell - Development Lead
-David Johnson - Scheduler
-Claire Yang - Project Manager
+
+* Casey Connell - Development Lead
+* David Johnson - Scheduler
+* Claire Yang - Project Manager
 
 
-* April 26th, 2021 -- David Johnson, Claire Yang, Casey Connell
-* April 27th, 2021 -- David Johnson, Claire Yang, Casey Connell
-* April 29th, 2021 -- David Johnson, Claire Yang, Casey Connell
-* April 30th, 2021 -- David Johnson, Claire Yang, Casey Connell
+*1) April 26th, 2021 -- David Johnson, Claire Yang, Casey Connell
 
-Casey Connell created the decorated_entity.h class, and the logic for the changing colors.
+*Casey and David were assigned to work together on creating the decorated_entity classes, while Claire was assigned with updating the UML and creating the decorated_entity_test.cc
 
-David Johnson helped with the implementation of colors, observer notificaiton, and debugging.
+*2) April 27th, 2021 -- David Johnson, Claire Yang, Casey Connell
 
-Claire Yang worked on the Google tests, the debugging, UML and the documentation.
+*Casey and David figured out several bugs with the color values that were being passed into the json file, and Claire found several bugs in the implementation of the decorator pattern while writing tests.
+
+*3) April 30th, 2021 -- David Johnson, Claire Yang, Casey Connell
+
+*We all worked together on finishing up the documentation and addressing Iteration 2 feedback.
+
+*Casey Connell created the decorated_entity.h class, and the logic for changing colors based on the battery life of the drone/robot using the decorator pattern.
+
+*David Johnson helped with the implementation of colors, notifying observers, and debugging.
+
+*Claire Yang worked on the Google tests, the debugging, UML and the documentation, and addressing the feedback from Iteration 2.
+
 
 * Designing and Implementing the routes
 * ==================
