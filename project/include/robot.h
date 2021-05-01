@@ -34,6 +34,11 @@ namespace csci3081 {
    */
     Robot(const picojson::object &obj);
 
+    /**
+   *  Destructor: robot
+   */
+    ~Robot();
+
   /**
    *  This function should return the id of the robot
    */

@@ -12,6 +12,7 @@
 #include "entity_base.h"
 #include "robot_factory.h"
 #include "robot.h"
+#include "decorated_entity.h"
 
 #include <iostream>
 
@@ -21,7 +22,46 @@ DeliverySimulation::DeliverySimulation() {
   compositeFactory_ = new CompositeFactory();
 }
 
-DeliverySimulation::~DeliverySimulation() {}
+DeliverySimulation::~DeliverySimulation() {
+  delete compositeFactory_;
+  for (IEntity* e : entities_) {
+    delete e;
+  }
+  entities_.clear();
+  for (Drone* d : drones_) {
+    delete d;
+  }
+  drones_.clear();
+  for (Robot* r : robots_) {
+    delete r;
+  }
+  robots_.clear();
+  for (Customer* c : customers_) {
+    delete c;
+  }
+  customers_.clear();
+  for (Package* p : packages_) {
+    delete p;
+  }
+  packages_.clear();
+  for (IEntityObserver* o : observers_) {
+    delete o;
+  }
+  observers_.clear();
+  for (Drone* d : dead_drones_with_remaining_packages_) {
+    delete d;
+  }
+  dead_drones_with_remaining_packages_.clear();
+  for(Robot* r : dead_robots_with_remaining_packages_) {
+    delete r;
+  }
+  dead_robots_with_remaining_packages_.clear();
+  for (Package* p : packages_to_be_scheduled_) {
+    delete p;
+  }
+  packages_to_be_scheduled_.clear();
+
+}
 
 IEntity* DeliverySimulation::CreateEntity(const picojson::object& val) {
   IEntity* newEntity = compositeFactory_->CreateEntity(val);
@@ -220,7 +260,8 @@ void DeliverySimulation::Update(float dt) {
     int drone_idx = 0;
     for (Drone* actual_drone : drones_) {
       if (actual_drone->GetBattery()->GetIsEmpty() == false) {
-        actual_drone->Update(systemGraph, observers_, dt);
+        DecoratedEntity* decorated_drone = new DecoratedEntity(dynamic_cast<EntityBase*>(actual_drone));
+        decorated_drone->Update(systemGraph, observers_, dt);
         if (actual_drone->GetBattery()->GetIsEmpty() == true) {
           // add the drone with empty battery to the list of dead drones in the delivery simulation
           dead_drones_with_remaining_packages_.push_back(actual_drone);
@@ -232,7 +273,8 @@ void DeliverySimulation::Update(float dt) {
     int robot_idx = 0;
     for (Robot* actual_robot : robots_) {
       if (actual_robot->GetBattery()->GetIsEmpty() == false) {
-        actual_robot -> Update(systemGraph, observers_, dt);
+	DecoratedEntity* decorated_robot = new DecoratedEntity(dynamic_cast<EntityBase*>(actual_robot));
+        decorated_robot->Update(systemGraph, observers_, dt);
         if (actual_robot->GetBattery()->GetIsEmpty() == true) {
           // add the robot with empty battery to the list of dead robots in the delivery simulation
           dead_robots_with_remaining_packages_.push_back(actual_robot);
@@ -246,6 +288,7 @@ void DeliverySimulation::Update(float dt) {
       // first check which packages are remaining
       for (Drone* dead_drone : dead_drones_with_remaining_packages_) {
         std::vector<Package*> drone_packages_to_be_scheduled = dead_drone->GetRemainingAssignedPackages();
+        drone_packages_to_be_scheduled.push_back(dead_drone->GetCurPackage());
         packages_to_be_scheduled_.insert(packages_to_be_scheduled_.end(), drone_packages_to_be_scheduled.begin(), drone_packages_to_be_scheduled.end());
       }
     }

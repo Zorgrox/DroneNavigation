@@ -12,20 +12,22 @@ namespace csci3081
 
   Package::Package(const picojson::object &obj)
   {
-    //std::cout << "This is package ID: " << packageId << std::endl;
     name = JsonHelper::GetString(obj, "name");
     std::vector<float> positionVec = JsonHelper::GetStdFloatVector(obj, "position");
     std::vector<float> directionVec = JsonHelper::GetStdFloatVector(obj, "direction");
     position = new Vector3D(positionVec);
     direction = new Vector3D(directionVec);
     direction->Normalize();
-    // std::cout << "Here's the direction of package:" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << std::endl;
     radius = (float)JsonHelper::GetDouble(obj, "radius");
     weight = 0.0;
 
     details_ = obj;
+  }
 
-    // std::cout << "In the package default constructor" << std::endl;
+  Package::~Package() {
+    delete position;
+    delete direction;
+    delete customer;
   }
 
   int Package::GetId() const
@@ -35,6 +37,8 @@ namespace csci3081
   void Package::SetId(int ID) {
 	  id = ID;
   }
+
+  void Package::Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt) {}
 
   const std::string &Package::GetName()
   {

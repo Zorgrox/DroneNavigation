@@ -35,9 +35,19 @@ namespace csci3081
     Package(const picojson::object &obj);
 
     /**
+   *  Destructor: Package
+   */
+    ~Package();
+
+    /**
    *  This function should return the id of the package
    */
     int GetId() const;
+
+    /**
+   *  This function is unused for a package, but is inherited from EntityBase
+   */
+    void Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt);
 
     /**
    *  This function should set the id of the package

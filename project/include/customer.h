@@ -34,9 +34,19 @@ namespace csci3081
     Customer(const picojson::object &obj);
 
     /**
+   *  Destructor: Customer
+   */
+    ~Customer();
+
+    /**
    *  This function should return the id of the customer
    */
     int GetId() const;
+
+    /**
+   *  This function is unused for a customer, but is inherited from EntityBase
+   */
+    void Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt);
 
     /**
    *  This function should set the id of the customer

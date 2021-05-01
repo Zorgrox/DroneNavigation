@@ -14,17 +14,13 @@ namespace csci3081 {
     std::vector<float> nextPos;
     if (CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex), pos)) {
           // We should only increment the path index when the drone gets close enough to it that we should be going to the next one
-          std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
           curRouteNextIndex = curRouteNextIndex + 1;
           nextPos = curRoute.at(curRouteNextIndex);
-          std::cout << "This is Drone/Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
           //CalculateAndUpdateDroneDirection(nextPos);
-	        //fix
+	       
         } else {
           // We don't need to increment the path index yet
-          std::cout << "Don't need to increment path index yet" << std::endl;
           nextPos = curRoute.at(curRouteNextIndex);
-          std::cout << "This is Drone/Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
 	 }
 
     //increment drone x,y,z position by the stored direction and it's speed and dt seconds
@@ -73,19 +69,15 @@ namespace csci3081 {
 
 
   bool PathFlight::CheckWhenToIncrementPathIndex(std::vector<float> &nextPosition, std::vector<float> position) {
-    std::cout << "I am checking when to increment the path index" << std::endl;
 
     //std::vector<float> currentPosition = GetPosition();
     float distance = CalculateDistance(position, nextPosition);
-    std::cout << "distance: " << distance << std::endl;
     if (distance <= radius * 2.0)
     {
-      std::cout << "It is within radius to increment path index" << std::endl;
       return true;
     }
     else
     {
-      std::cout << "It is NOT within radius to increment path index" << std::endl;
       return false;
     }
   }

@@ -44,6 +44,12 @@ namespace csci3081 {
     std::cout << "This is Robot's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
   }
 
+  Robot::~Robot() {
+    delete position;
+    delete direction;
+    delete battery;
+  }
+
   int Robot::GetId() const {
     return id;
   }
@@ -175,7 +181,7 @@ namespace csci3081 {
       onTheWayToDropOffPackage = false;
       onTheWayToPickUpPackage = false;
     }
-    std::cout << "This is battery charge of ROBOT: " << battery->GetCurrentCharge() << std::endl;
+    
   }
 
   void Robot::UpdateRobotVelocity(std::vector<float> &newVelocity) {
@@ -189,8 +195,7 @@ namespace csci3081 {
 
   void Robot::Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt)
   {
-    std::cout << "These print statements are for Robot name " << name << std::endl;
-    std::cout << "===================================" << std::endl;
+    
     if (battery->GetIsEmpty() == false) {
       if (GetOnTheWayToPickUpPackage() && !GetOnTheWayToDropOffPackage())
       {
@@ -217,11 +222,9 @@ namespace csci3081 {
         }
 
         ////////////////
-        std::cout << "I'm on the way to pick up the package" << std::endl;
         // The drone is on the way to pick up a package.
         if (CheckReadyToPickUp())
         {
-          std::cout << "Ready to pickup\n";
           PickUpPackage();
           // Update the path so that it's now pointed towards the customer's location
 
@@ -229,11 +232,9 @@ namespace csci3081 {
           SetNewCurRoute(anotherRoute);
           std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
           CalculateAndUpdateRobotDirection(nextPos);
-          std::cout << "This is Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
           SetOnTheWayToPickUpPackage(false);
           SetOnTheWayToDropOffPackage(true);
           curRouteNextIndex = 1;
-          std::cout << "Switching over to dropping package off" << std::endl;
 
           // Notify the observers that the package has been picked up
           picojson::object obj = JsonHelper::CreateJsonObject();
@@ -264,7 +265,6 @@ namespace csci3081 {
           if (CheckWhenToIncrementPathIndex(curRoute.at(curRouteNextIndex)))
           {
             // We should only increment the path index when the drone gets close enough to it that we should be going to the next one
-            std::cout << "I'M JUST INCREMENTING THE PATH INDEX ON THE WAY TO PICK UP THE PACKAGE" << std::endl;
             curRouteNextIndex = curRouteNextIndex + 1;
             std::vector<float> nextPos;
             if (curRouteNextIndex >= curRoute.size()){
@@ -272,15 +272,12 @@ namespace csci3081 {
               curRouteNextIndex = curRouteNextIndex - 1;
             } else {
               nextPos = curRoute.at(curRouteNextIndex);}
-              std::cout << "This is Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
               CalculateAndUpdateRobotDirection(nextPos);
           }
           else
           {
             // We don't need to increment the path index yet
-            std::cout << "Don't need to increment path index yet" << std::endl;
             std::vector<float> nextPos = curRoute.at(curRouteNextIndex);
-            std::cout << "This is Robot's position to go to next in the path in DeliverySimulation Update: {" << nextPos.at(0) << ", " << nextPos.at(1) << ", " << nextPos.at(2) << "}" << std::endl;
             CalculateAndUpdateRobotDirection(nextPos);
           }
         }
@@ -289,7 +286,6 @@ namespace csci3081 {
 
       else if (!GetOnTheWayToPickUpPackage() && GetOnTheWayToDropOffPackage())
       {
-        std::cout << "I'm on the way to drop off the package" << std::endl;
         if (CheckReadyToDropOff())
         {
           // Move the package out of the simulation to remove it
@@ -322,7 +318,6 @@ namespace csci3081 {
           // if there's another package it has to go to, then assign this new package to the curPackage
           if (assignedPackageIndex < GetNumAssignedPackages())
           {
-            std::cout << "IMPORTANT: I'm here assigning a new package to the curPackage in ROBOT" << std::endl;
             UpdateCurPackage();
             std::vector<std::vector<float>> anotherRoute = graph->GetPath(GetPosition(), curPackage->GetPosition());
             SetNewCurRoute(anotherRoute);
@@ -342,7 +337,7 @@ namespace csci3081 {
               curRouteNextIndex = curRouteNextIndex - 1;
             } else {
               nextPos = curRoute.at(curRouteNextIndex);}
-	    
+
             CalculateAndUpdateRobotDirection(nextPos);
           }
           else
@@ -361,9 +356,6 @@ namespace csci3081 {
   {
     std::vector<float> currentPosition = GetPosition();
     std::vector<float> packagePosition = curPackage->GetPosition();
-    std::cout << "I am in Robot::CheckReadyToPickUp checking the curPackage's position" << std::endl;
-    std::cout << "This is Robot's current position in CheckReadyToPickUp: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
-    std::cout << "This is Package's current position in CheckReadyToPickUp: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
     if (std::fabs(currentPosition.at(0)-packagePosition.at(0))<=radius && std::fabs(currentPosition.at(2)-packagePosition.at(2)) <= radius)
 	  {
 		  return true;
@@ -378,8 +370,6 @@ namespace csci3081 {
     std::vector<float> packagePosition = curPackage->GetPosition();
     int i = 0;
     int numWithinRadius = 0;
-    std::cout << "This is Robot's current position in CheckReadyToDropOff: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
-    std::cout << "This is Package's current position in CheckReadyToDropOff: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
     if (std::fabs(currentPosition.at(0)-packageDestination.at(0))<=radius&&std::fabs(currentPosition.at(2)-packageDestination.at(2))<=radius)
 	{
 		return true;
@@ -392,7 +382,6 @@ namespace csci3081 {
 
   bool Robot::CheckWhenToIncrementPathIndex(std::vector<float>& nextPosition)
   {
-    std::cout << "I am checking when to increment the path index" << std::endl;
 
     std::vector<float> currentPosition = GetPosition();
     int i = 0;
@@ -401,8 +390,6 @@ namespace csci3081 {
     {
       float nextPos = nextPosition.at(i);
       i = i + 1;
-      // std::cout << "This is pos: " << pos << std::endl;
-      // std::cout << "This is nextPos: " << nextPos << std::endl;
       if (std::fabs(pos - nextPos) <= radius * 2.0)
       {
         numWithinRadius = numWithinRadius + 1;
@@ -410,12 +397,10 @@ namespace csci3081 {
     }
     if (numWithinRadius == 2)
     {
-      std::cout << "It is within radius to increment path index" << std::endl;
       return true;
     }
     else
     {
-      std::cout << "It is NOT within radius to increment path index" << std::endl;
       return false;
     }
   }
@@ -439,7 +424,6 @@ namespace csci3081 {
     UpdateRobotVelocity(stopMoving);
     curPackage->SetVelocity(stopMoving);
     assignedPackageIndex = assignedPackageIndex + 1;
-    std::cout << "I've dropped off the package" << std::endl;
   }
 
   void Robot::CalculateAndUpdateRobotDirection(std::vector<float> &nextPosition) {

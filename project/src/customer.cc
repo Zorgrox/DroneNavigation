@@ -19,10 +19,18 @@ namespace csci3081
     details_ = obj;
   }
 
+  Customer::~Customer() {
+    delete position;
+    delete direction;
+  }
+
   int Customer::GetId() const
   {
     return id;
   }
+
+  void Customer::Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt) {}
+
   void Customer::SetId(int ID) {
 	  id = ID;
   }

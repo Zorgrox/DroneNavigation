@@ -1,4 +1,4 @@
-/*! \mainpage Claire Yang, David Johnson, Casey Connell, Abdirashid Ahmed's Iteration Two Submission
+/*! \mainpage Claire Yang, David Johnson, Casey Connell, Iteration Three Submission
 
 * Getting Started
 * ===================
@@ -28,27 +28,54 @@
 
 
 
-* Teamwork Documentation
+* Iteration 3 Team Documentation
 * ==================
-Iteration 2 Deliverable 2 Meetings:
-Casey Connell - Development Lead
-David Johnson - Scheduler
-Claire Yang - Project Manager
+Iteration 3 Deliverable Meetings:
+
+* Casey Connell - Development Lead
+* David Johnson - Scheduler
+* Claire Yang - Project Manager
 
 
-* April 11th, 2021 -- David Johnson, Claire Yang, Casey Connell
-* April 14th, 2021 -- David Johnson, Claire Yang, Casey Connell
-* April 17th, 2021 -- David Johnson, Claire Yang, Casey Connell
+*1) April 26th, 2021 -- David Johnson, Claire Yang, Casey Connell
 
-Casey Connell Created the Strategy patterns, as well as the routes for Parabolic and Beeline Flight.
-Casey created the strategy methods that compute and return a route for the observers to display. He also helped debug and finish the flight strategy google tests.
+*Casey and David were assigned to work together on creating the decorated_entity classes, while Claire was assigned with updating the UML and creating the decorated_entity_test.cc
 
-David Johnson was assigned to fixing/reimplementing the observer pattern, obtaining and choosing the flight pattern from the JSON. He helped re-implement Flight_path, and help switch between strategies.
-David did some debugging so the drone would not fly into buildings, and then moved the routing line up so the drone would match it.
+*2) April 27th, 2021 -- David Johnson, Claire Yang, Casey Connell
 
-Claire Yang implemented the delivery of multiple packages to multiple customers, the behavior of the robot/drone when it runs out of battery (going idle and notifying observers), and the package rescheduling system when the robot/drone runs out of battery.
-Claire Yang also handled the UML diagram updates, wrote all of the Doxygen function descriptions in the header files and updated the Robot, Drone, Observer Pattern, and Factory tests with the new functionalities. She also helped with debugging the Robot code, and addressed the comments from previous deliverable submissions in fixing the Google tests. Lastly, she made sure that the code had a consistent style and reformatted a lot of the files for readability.
+*Casey and David figured out several bugs with the color values that were being passed into the json file, and Claire found several bugs in the implementation of the decorator pattern while writing tests.
 
+*3) April 30th, 2021 -- David Johnson, Claire Yang, Casey Connell
+
+*We all worked together on finishing up the documentation and addressing Iteration 2 feedback.
+
+*Casey Connell created the decorated_entity.h class, and the logic for changing colors based on the battery life of the drone/robot using the decorator pattern.
+
+*David Johnson helped with the implementation of colors, notifying observers, and debugging.
+
+*Claire Yang worked on the Google tests, the debugging, UML and the documentation, and addressing the feedback from Iteration 2.
+
+
+* Feature Description: Entity Color Decorator based on Battery Charge
+* ==================
+* For this iteration, our team chose to implement an entity color decorator to change the color of the drone/robot, depending on its battery life. When the battery is full, the entity has a green bubble around it. As the battery drains, it becomes progressively redder, until it is completely red when the battery is empty. We chose to use the decorator pattern because it is flexible and allows us to modify our drones/robots dynamically.
+* If we did not use the decorator pattern, we could have just added the extra lines to modify the details_ picojson object within both the drone and robot constructors, and added the logic for the color that the drone/robot should display within their respective Update functions.
+* However, if we did this, we would violate the DRY principle, since the logic for the color change would be duplicated across the different entities. If we wanted to add another entity to the simulation, we would have to repeat this code yet again, which makes the software hard to extend and maintain.
+
+* By adding a decorated_entity class that contains a pointer to an Entity, we can add some functionality to the entity's Update function without having to repeat it across multiple different classes. Additionally, it would be easy to create another version of the decorated_entity class that updates the colors around the drone to a different gradient than red/green.
+* When the Update function of a decorated entity is called, it first calculates the ratio of the battery's current charge with its maximum charge. A ratio of 1 means that the battery is full, whereas a ratio of 0 means that the battery is empty.
+* We change the color in 15 different increments, as this was enough different colors to create a smooth transition, while allowing for an easy and understandable way to determine what color should be used next.
+* Depending on which condition the battery ratio belongs to, a different color is assigned. Then, that color is added to a picojson object that is sent as a notification to the observers to update them on the updated color of the entity.
+* Lastly, we call the Update function of the entity itself, which then executes the rest of the logic in the original entity's Update function.
+
+* The hardest part about implementing this feature was figuring out how to encode the colors and determine the next color. We initially believed that the colors were being represented by hexadecimals, which we soon found out to not be the case. We also tried to do logical operations on the float color representations in order to get a continuous gradient of red to green colors, so that we wouldn't have 15 discrete increments of colors.
+* However, we were unable to figure out how to create a generalizable logical operation to turn green into red, and so we decided on the switch statement as the best solution.
+* We also had a bit of trouble figuring out how to construct the notification to the observers about the color change.
+
+* Because we implemented a feature that decorates all entities, this feature should work in every scene.
+
+
+* \image html color-transition.png "The fifteen different color increments (green to red) for the differing battery charge statuses"
 
 * Designing and Implementing the routes
 * ==================
@@ -75,7 +102,7 @@ Claire Yang also handled the UML diagram updates, wrote all of the Doxygen funct
 * The Parabolic Route implements a single helper function, CalculateDistance, to return the x,z distance between the current position and the target.
 * The UML diagram of our flight route implementation is shown here:
 
-* \image{inline} html strategy-pattern.png "Strategy Pattern Flight Route Implementation UML Diagram"
+* \image html strategy-pattern.png "Strategy Pattern Flight Route Implementation UML Diagram"
 
 * Discussion of Observer Pattern Design
 * ==================
@@ -112,16 +139,17 @@ In the observer pattern tests, we specifically test the observer's OnEvent notif
 * ==================
 * The diagrams of the different factory patterns, along with discussions about their pros and cons are below.
 
-* \image{inline} html concrete-factory.png "Concrete Factory Pattern UML Diagram"
+* \image html concrete-factory.png "Concrete Factory Pattern UML Diagram"
 
 * The concrete factory pattern is the simplest factory pattern, in which there is one factory that handles the creation of the different entities. Its simplicity is its advantage, as it is very easy to understand, and it serves the core purpose of a factory in separating the creation logic from the delivery simulation. However, its disadvantage is that we must use conditional statements (see the pseudocode in the diagram) to figure out which entity object we want to create within the EntityFactory. Thus, in order to extend it with another entity, we would need to modify the EntityFactory class.
 
-* \image{inline} html abstract-factory.png "Abstract Factory Pattern UML Diagram"
+* \image html abstract-factory.png "Abstract Factory Pattern UML Diagram"
 
 * The abstract factory pattern solves the conditional statement problem presented by the concrete factory by pushing the creation logic to subclasses. Thus, in order to extend the code, we would just need to create another type of EntityFactory, and add it to the DeliverySimulation. It does not fully remove the necessity for a conditional statement, however, since the DeliverySimulation still requires logic to choose which factory it wants to call. Thus, the program is tightly coupled with the types of factories, and so we would need to modify the DeliverySimulation methods in order to extend the entity types.
 
-* \image{inline} html composite-factory.png "Composite Factory Pattern UML Diagram"
+* \image html composite-factory.png "Composite Factory Pattern UML Diagram"
 
 * The composite factory pattern removes the necessity for a conditional statement in DeliverySimulation, which makes the code more cohesive. It does this by collecting all of the different factories into a CompositeFactory that manages which factory it should call through a for loop. The delivery simulation just has to call createEntity on the CompositeFactory in order to get back the correctly created entity. A con of this pattern is that it can be overly complicated if there are no hierarchical relationships between the entities that the factory is creating, and is unecessary for simple creation logic of entities.
+
 
 */
