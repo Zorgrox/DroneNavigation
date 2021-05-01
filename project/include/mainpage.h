@@ -69,6 +69,8 @@ Claire Yang also handled the UML diagram updates, wrote all of the Doxygen funct
 * Because we implemented a feature that decorates all entities, this feature should work in every scene.
 
 
+* \image html color-transition.png "The fifteen different color increments (green to red) for the differing battery charge statuses"
+
 * Designing and Implementing the routes
 * ==================
 * Using the Strategy Pattern to implement different flight routes gives our program a wider range of functionality, allowing us to apply different flight algorithms to our drones, and to easily swap them out, implement new ones, or extend the existing ones.
