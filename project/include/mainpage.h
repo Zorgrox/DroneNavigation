@@ -1,4 +1,4 @@
-/*! \mainpage Claire Yang, David Johnson, Casey Connell, Abdirashid Ahmed's Iteration Two Submission
+/*! \mainpage Claire Yang, David Johnson, Casey Connell, Iteration Three Submission
 
 * Getting Started
 * ===================
@@ -123,5 +123,19 @@ In the observer pattern tests, we specifically test the observer's OnEvent notif
 * \image{inline} html composite-factory.png "Composite Factory Pattern UML Diagram"
 
 * The composite factory pattern removes the necessity for a conditional statement in DeliverySimulation, which makes the code more cohesive. It does this by collecting all of the different factories into a CompositeFactory that manages which factory it should call through a for loop. The delivery simulation just has to call createEntity on the CompositeFactory in order to get back the correctly created entity. A con of this pattern is that it can be overly complicated if there are no hierarchical relationships between the entities that the factory is creating, and is unecessary for simple creation logic of entities.
+
+* Colored Entities Based off of Battery Charge
+* ==================
+* For this iteration, our team chose to use the Decorator Pattern to Color Entities that have Batteries
+* Which in this case would be Drones and Robots. The way this works is there is now a decorated_entity
+* which contains a robot or a drone. When its update function is called, it looks at the battery contents
+* of what it holds, assigns it the appropriate color, and then calls the update function of the Drone or Robot.
+* We opted to use 15 different colors as the batteries decrease, as this allowed an easy way to determine what color should be used next
+* and creates a relatively smooth transition. Some of the issues that occured with implementing this was Determining whether or not
+* to write anything back to the details_, or simply determine it by its charge. Whether to use this switch statement or try to go for more of a gradient.
+* How to determine the next color, the erroneous belief at it being in hex at first, where it is not, and finally
+* on how to construct the notification for the observers. However now that these problems have been dealt with, it would be
+* reasonably simple to create other types of decorated entities.
+
 
 */
