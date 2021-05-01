@@ -42,14 +42,10 @@ namespace csci3081 {
     speed = (float) JsonHelper::GetDouble(obj, "speed");
     assignedPackageIndex = 0;
     details_ = obj;
-    // curPackage = new Package();
-    std::cout << "Creating drone in default constructor" << std::endl;
-    std::cout << "This is Drone's current position in default constructor: {" << positionVec.at(0) << ", " << positionVec.at(1) << ", " << positionVec.at(2) << "}" << std::endl;
-    std::cout << "This is Drone's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
+    
     std::string key = "color";
     float temp = 0x990000;
     JsonHelper::AddFloatToJsonObject(details_, "color", temp);
-    //const_cast<picojson::object&>(obj)[key] = picojson::value(temp);
   }
 
   Drone::~Drone() {
@@ -204,8 +200,7 @@ namespace csci3081 {
 
   void Drone::Update(const IGraph *graph, std::vector<IEntityObserver *>& observers, float dt)
   {
-    std::cout << "These print statements are for Drone name " << name << std::endl;
-    std::cout << "===================================" << std::endl;
+   
 
     if (battery->GetIsEmpty() == false) {
       // NOTE: we only execute the code in this Update function if there is >0 battery left. Otherwise, we remain idle.
@@ -229,7 +224,6 @@ namespace csci3081 {
           else
           { waiter++; }
         }
-        std::cout << "I'm on the way to pick up the package" << std::endl;
         // The drone is on the way to pick up a package.
         if (CheckReadyToPickUp())
         {
@@ -243,8 +237,6 @@ namespace csci3081 {
 		      SetNewCurRoute(anotherRoute);
           SetOnTheWayToPickUpPackage(false);
           SetOnTheWayToDropOffPackage(true);
-          curRouteNextIndex = 1;
-          std::cout << "Switching over to dropping package off" << std::endl;
 
           // Notify the observers that the package has been picked up
           picojson::object obj = JsonHelper::CreateJsonObject();
@@ -277,7 +269,6 @@ namespace csci3081 {
 
       else if (!GetOnTheWayToPickUpPackage() && GetOnTheWayToDropOffPackage())
       {
-        std::cout << "I'm on the way to drop off the package" << std::endl;
         if (CheckReadyToDropOff())
         {
           // Move the package out of the simulation to remove it
@@ -338,11 +329,9 @@ namespace csci3081 {
   {
     std::vector<float> currentPosition = GetPosition();
     std::vector<float> packagePosition = curPackage->GetPosition();
-    std::cout << "I am in Drone::CheckReadyToPickUp checking the curPackage's position" << std::endl;
     int i = 0;
     int numWithinRadius = 0;
-    std::cout << "This is Drone's current position in CheckReadyToPickUp: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
-    std::cout << "This is Package's current position in CheckReadyToPickUp: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
+    
     for(float pos : currentPosition) {
       float packagePos = packagePosition.at(i);
       i = i + 1;
@@ -351,7 +340,6 @@ namespace csci3081 {
       }
     }
     if (numWithinRadius == 2) {
-      std::cout << "The package is ready to be picked up!" << std::endl;
       return true;
     } else {
     return false;
@@ -365,9 +353,7 @@ namespace csci3081 {
     std::vector<float> customerPosition = curPackage->GetDestination();
     int i = 0;
     int numWithinRadius = 0;
-    std::cout << "This is Drone's current position in CheckReadyToDropOff: {" << currentPosition.at(0) << ", " << currentPosition.at(1) << ", " << currentPosition.at(2) << "}" << std::endl;
-    std::cout << "This is Package's current position in CheckReadyToDropOff: {" << packagePosition.at(0) << ", " << packagePosition.at(1) << ", " << packagePosition.at(2) << "}" << std::endl;
-    std::cout << "This is Customer's current position in CheckReadyToDropOff: {" << customerPosition.at(0) << ", " << customerPosition.at(1) << ", " << customerPosition.at(2) << "}" << std::endl;
+    
 
     for (float pos : currentPosition)
     {
@@ -380,7 +366,6 @@ namespace csci3081 {
     }
     if (numWithinRadius == 2)
     {
-      std::cout << "The package is ready to be dropped off!" << std::endl;
       return true;
     }
     else
@@ -409,7 +394,6 @@ namespace csci3081 {
     curPackage->SetVelocity(stopMoving);
     // increment the package index to see if there are any other packages that should be picked up
     assignedPackageIndex = assignedPackageIndex + 1;
-    std::cout << "I've dropped off the package" << std::endl;
   }
 
   void Drone::CalculateAndUpdateDroneDirection(std::vector<float> &nextPosition) {
