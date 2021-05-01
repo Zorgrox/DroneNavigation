@@ -13,7 +13,6 @@
 #include "robot_factory.h"
 #include "robot.h"
 #include "decorated_entity.h"
-#include "package_scheduler.h"
 
 #include <iostream>
 
