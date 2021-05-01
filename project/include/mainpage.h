@@ -66,7 +66,7 @@ Claire Yang also handled the UML diagram updates, wrote all of the Doxygen funct
 * However, we were unable to figure out how to create a generalizable logical operation to turn green into red, and so we decided on the switch statement as the best solution.
 * We also had a bit of trouble figuring out how to construct the notification to the observers about the color change.
 
-
+* Because we implemented a feature that decorates all entities, this feature should work in every scene.
 
 
 * Designing and Implementing the routes
@@ -94,7 +94,7 @@ Claire Yang also handled the UML diagram updates, wrote all of the Doxygen funct
 * The Parabolic Route implements a single helper function, CalculateDistance, to return the x,z distance between the current position and the target.
 * The UML diagram of our flight route implementation is shown here:
 
-* \image{inline} html strategy-pattern.png "Strategy Pattern Flight Route Implementation UML Diagram"
+* \image html strategy-pattern.png "Strategy Pattern Flight Route Implementation UML Diagram"
 
 * Discussion of Observer Pattern Design
 * ==================
@@ -131,15 +131,15 @@ In the observer pattern tests, we specifically test the observer's OnEvent notif
 * ==================
 * The diagrams of the different factory patterns, along with discussions about their pros and cons are below.
 
-* \image{inline} html concrete-factory.png "Concrete Factory Pattern UML Diagram"
+* \image html concrete-factory.png "Concrete Factory Pattern UML Diagram"
 
 * The concrete factory pattern is the simplest factory pattern, in which there is one factory that handles the creation of the different entities. Its simplicity is its advantage, as it is very easy to understand, and it serves the core purpose of a factory in separating the creation logic from the delivery simulation. However, its disadvantage is that we must use conditional statements (see the pseudocode in the diagram) to figure out which entity object we want to create within the EntityFactory. Thus, in order to extend it with another entity, we would need to modify the EntityFactory class.
 
-* \image{inline} html abstract-factory.png "Abstract Factory Pattern UML Diagram"
+* \image html abstract-factory.png "Abstract Factory Pattern UML Diagram"
 
 * The abstract factory pattern solves the conditional statement problem presented by the concrete factory by pushing the creation logic to subclasses. Thus, in order to extend the code, we would just need to create another type of EntityFactory, and add it to the DeliverySimulation. It does not fully remove the necessity for a conditional statement, however, since the DeliverySimulation still requires logic to choose which factory it wants to call. Thus, the program is tightly coupled with the types of factories, and so we would need to modify the DeliverySimulation methods in order to extend the entity types.
 
-* \image{inline} html composite-factory.png "Composite Factory Pattern UML Diagram"
+* \image html composite-factory.png "Composite Factory Pattern UML Diagram"
 
 * The composite factory pattern removes the necessity for a conditional statement in DeliverySimulation, which makes the code more cohesive. It does this by collecting all of the different factories into a CompositeFactory that manages which factory it should call through a for loop. The delivery simulation just has to call createEntity on the CompositeFactory in order to get back the correctly created entity. A con of this pattern is that it can be overly complicated if there are no hierarchical relationships between the entities that the factory is creating, and is unecessary for simple creation logic of entities.
 
