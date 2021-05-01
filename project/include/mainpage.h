@@ -1,4 +1,4 @@
-/*! \mainpage Claire Yang, David Johnson, Casey Connell, Abdirashid Ahmed's Iteration Two Submission
+/*! \mainpage Claire Yang, David Johnson, Casey Connell, Iteration Three Submission
 
 * Getting Started
 * ===================
@@ -28,26 +28,32 @@
 
 
 
-* Teamwork Documentation
+* Iteration 3 Team Documentation
 * ==================
-Iteration 2 Deliverable 2 Meetings:
-Casey Connell - Development Lead
-David Johnson - Scheduler
-Claire Yang - Project Manager
+Iteration 3 Deliverable Meetings:
+
+* Casey Connell - Development Lead
+* David Johnson - Scheduler
+* Claire Yang - Project Manager
 
 
-* April 11th, 2021 -- David Johnson, Claire Yang, Casey Connell
-* April 14th, 2021 -- David Johnson, Claire Yang, Casey Connell
-* April 17th, 2021 -- David Johnson, Claire Yang, Casey Connell
+*1) April 26th, 2021 -- David Johnson, Claire Yang, Casey Connell
 
-Casey Connell Created the Strategy patterns, as well as the routes for Parabolic and Beeline Flight.
-Casey created the strategy methods that compute and return a route for the observers to display. He also helped debug and finish the flight strategy google tests.
+*Casey and David were assigned to work together on creating the decorated_entity classes, while Claire was assigned with updating the UML and creating the decorated_entity_test.cc
 
-David Johnson was assigned to fixing/reimplementing the observer pattern, obtaining and choosing the flight pattern from the JSON. He helped re-implement Flight_path, and help switch between strategies.
-David did some debugging so the drone would not fly into buildings, and then moved the routing line up so the drone would match it.
+*2) April 27th, 2021 -- David Johnson, Claire Yang, Casey Connell
 
-Claire Yang implemented the delivery of multiple packages to multiple customers, the behavior of the robot/drone when it runs out of battery (going idle and notifying observers), and the package rescheduling system when the robot/drone runs out of battery.
-Claire Yang also handled the UML diagram updates, wrote all of the Doxygen function descriptions in the header files and updated the Robot, Drone, Observer Pattern, and Factory tests with the new functionalities. She also helped with debugging the Robot code, and addressed the comments from previous deliverable submissions in fixing the Google tests. Lastly, she made sure that the code had a consistent style and reformatted a lot of the files for readability.
+*Casey and David figured out several bugs with the color values that were being passed into the json file, and Claire found several bugs in the implementation of the decorator pattern while writing tests.
+
+*3) April 30th, 2021 -- David Johnson, Claire Yang, Casey Connell
+
+*We all worked together on finishing up the documentation and addressing Iteration 2 feedback.
+
+*Casey Connell created the decorated_entity.h class, and the logic for changing colors based on the battery life of the drone/robot using the decorator pattern.
+
+*David Johnson helped with the implementation of colors, notifying observers, and debugging.
+
+*Claire Yang worked on the Google tests, the debugging, UML and the documentation, and addressing the feedback from Iteration 2.
 
 
 * Designing and Implementing the routes
@@ -123,5 +129,19 @@ In the observer pattern tests, we specifically test the observer's OnEvent notif
 * \image{inline} html composite-factory.png "Composite Factory Pattern UML Diagram"
 
 * The composite factory pattern removes the necessity for a conditional statement in DeliverySimulation, which makes the code more cohesive. It does this by collecting all of the different factories into a CompositeFactory that manages which factory it should call through a for loop. The delivery simulation just has to call createEntity on the CompositeFactory in order to get back the correctly created entity. A con of this pattern is that it can be overly complicated if there are no hierarchical relationships between the entities that the factory is creating, and is unecessary for simple creation logic of entities.
+
+* Colored Entities Based off of Battery Charge
+* ==================
+* For this iteration, our team chose to use the Decorator Pattern to Color Entities that have Batteries
+* Which in this case would be Drones and Robots. The way this works is there is now a decorated_entity
+* which contains a robot or a drone. When its update function is called, it looks at the battery contents
+* of what it holds, assigns it the appropriate color, and then calls the update function of the Drone or Robot.
+* We opted to use 15 different colors as the batteries decrease, as this allowed an easy way to determine what color should be used next
+* and creates a relatively smooth transition. Some of the issues that occured with implementing this was Determining whether or not
+* to write anything back to the details_, or simply determine it by its charge. Whether to use this switch statement or try to go for more of a gradient.
+* How to determine the next color, the erroneous belief at it being in hex at first, where it is not, and finally
+* on how to construct the notification for the observers. However now that these problems have been dealt with, it would be
+* reasonably simple to create other types of decorated entities.
+
 
 */
