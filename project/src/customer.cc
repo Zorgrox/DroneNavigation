@@ -23,6 +23,9 @@ namespace csci3081
   {
     return id;
   }
+
+  void Customer::Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt) {}
+  
   void Customer::SetId(int ID) {
 	  id = ID;
   }

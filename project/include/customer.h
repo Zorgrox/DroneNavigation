@@ -39,6 +39,11 @@ namespace csci3081
     int GetId() const;
 
     /**
+   *  This function is unused for a customer, but is inherited from EntityBase
+   */
+    void Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt);
+
+    /**
    *  This function should set the id of the customer
    * @param ID new id
    */
