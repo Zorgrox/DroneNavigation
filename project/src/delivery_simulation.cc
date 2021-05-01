@@ -22,7 +22,7 @@ namespace csci3081 {
   DeliverySimulation::DeliverySimulation()
   {
     compositeFactory_ = new CompositeFactory();
-    packageScheduler_ = new PackageScheduler();
+    // packageScheduler_ = new PackageScheduler();
     std::cout << "This is packageScheduler: " << packageScheduler_ << std::endl;
 }
 
@@ -107,7 +107,7 @@ void DeliverySimulation::SetGraph(const IGraph* graph) {
 }
 
 void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
-  packageScheduler_->ScheduleDelivery(package, dest);
+  // packageScheduler_->ScheduleDelivery(package, dest);
 }
 
 void DeliverySimulation::AddObserver(IEntityObserver* observer) {
