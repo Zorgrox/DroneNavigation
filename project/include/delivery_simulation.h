@@ -15,7 +15,6 @@
 #include "package.h"
 #include "drone.h"
 #include "robot.h"
-#include "package_scheduler.h"
 
 namespace csci3081 {
 
