@@ -34,6 +34,11 @@ namespace csci3081
     Customer(const picojson::object &obj);
 
     /**
+   *  Destructor: Customer
+   */
+    ~Customer();
+
+    /**
    *  This function should return the id of the customer
    */
     int GetId() const;

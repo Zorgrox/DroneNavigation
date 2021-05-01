@@ -22,7 +22,46 @@ DeliverySimulation::DeliverySimulation() {
   compositeFactory_ = new CompositeFactory();
 }
 
-DeliverySimulation::~DeliverySimulation() {}
+DeliverySimulation::~DeliverySimulation() {
+  delete compositeFactory_;
+  for (IEntity* e : entities_) {
+    delete e;
+  }
+  entities_.clear();
+  for (Drone* d : drones_) {
+    delete d;
+  }
+  drones_.clear();
+  for (Robot* r : robots_) {
+    delete r;
+  }
+  robots_.clear();
+  for (Customer* c : customers_) {
+    delete c;
+  }
+  customers_.clear();
+  for (Package* p : packages_) {
+    delete p;
+  }
+  packages_.clear();
+  for (IEntityObserver* o : observers_) {
+    delete o;
+  }
+  observers_.clear();
+  for (Drone* d : dead_drones_with_remaining_packages_) {
+    delete d;
+  }
+  dead_drones_with_remaining_packages_.clear();
+  for(Robot* r : dead_robots_with_remaining_packages_) {
+    delete r;
+  }
+  dead_robots_with_remaining_packages_.clear();
+  for (Package* p : packages_to_be_scheduled_) {
+    delete p;
+  }
+  packages_to_be_scheduled_.clear();
+
+}
 
 IEntity* DeliverySimulation::CreateEntity(const picojson::object& val) {
   IEntity* newEntity = compositeFactory_->CreateEntity(val);
