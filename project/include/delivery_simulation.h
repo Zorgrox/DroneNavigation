@@ -154,7 +154,6 @@ class DeliverySimulation : public IDeliverySystem {
   std::vector<Customer*> customers_;
   std::vector<Package*> packages_;
   CompositeFactory* compositeFactory_;
-  PackageScheduler* packageScheduler_;
   const IGraph* systemGraph;
 
   int dronesIndex;
