@@ -5,6 +5,7 @@ namespace csci3081 {
 
 DecoratedEntity::DecoratedEntity( EntityBase* original_entity) {
     decorated_entity = original_entity;
+    details_ = original_entity->GetDetails();
 }
 
 int DecoratedEntity::GetId() const {
@@ -39,22 +40,17 @@ void DecoratedEntity::Update(const IGraph *graph, std::vector<IEntityObserver *>
 {
 	picojson::object& entity_obj = const_cast<picojson::object&>(decorated_entity->GetDetails());
 
-
-	std::cout << "madehere 1 \n";
 	
 	//if a drone treat as drone, else if a robot treat as robot
 	//to retrieve battery data
 	float charge, maxCharge;
 	std::string name = decorated_entity->GetName();
-	std::cout << "\n" << name << "\n";
 	if (name[0] == 'd') {
-	std::cout << "\nmadeintoDRONE\n";
 	//casts the entity as drone to get it's battery
 	maxCharge = dynamic_cast<Drone*>(decorated_entity)->GetBattery()->GetMaxCharge();
 	charge = dynamic_cast<Drone*>(decorated_entity)->GetBattery()->GetCurrentCharge();
 	}
 	else if (name[0] == 'r') {
-		std::cout << "\nmadeintoROBOT\n";
 	Robot* decorated_robot = dynamic_cast<Robot*>(decorated_entity);
 
 	maxCharge = decorated_robot->GetBattery()->GetMaxCharge();
@@ -121,6 +117,7 @@ void DecoratedEntity::Update(const IGraph *graph, std::vector<IEntityObserver *>
 		  break;
 		default:
 		  temp = 872809;
+		  
 	}
 	//convert num to indicate color to a float
 	float colornum = temp;
@@ -143,6 +140,7 @@ void DecoratedEntity::Update(const IGraph *graph, std::vector<IEntityObserver *>
 	}
 
 	//finally, call the entity's actual update function
+	details_ = entity_obj;
 	decorated_entity->Update(graph, observers, dt);
 }
 
