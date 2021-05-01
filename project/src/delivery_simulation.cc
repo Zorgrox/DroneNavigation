@@ -27,7 +27,7 @@ namespace csci3081 {
 
 DeliverySimulation::~DeliverySimulation() {
   delete compositeFactory_;
-  delete packageScheduler_;
+  // delete packageScheduler_;
   for (IEntity* e : entities_) {
     delete e;
   }
@@ -106,7 +106,7 @@ void DeliverySimulation::SetGraph(const IGraph* graph) {
 }
 
 void DeliverySimulation::ScheduleDelivery(IEntity* package, IEntity* dest) {
-  packageScheduler_->ScheduleDelivery(package, dest);
+  // packageScheduler_->ScheduleDelivery(package, dest);
 }
 
 void DeliverySimulation::AddObserver(IEntityObserver* observer) {
