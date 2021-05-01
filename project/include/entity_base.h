@@ -31,7 +31,7 @@ class EntityBase : public IEntity {
    *  This function should return the details of the JSON object that specifies the details of the entity
    */
   const picojson::object& GetDetails() { return details_; }
-  
+
   virtual void Update(const IGraph *graph, std::vector<IEntityObserver *> &observers, float dt) = 0;
   /**
    *  This function sets the ID of the entity

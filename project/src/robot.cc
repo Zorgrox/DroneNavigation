@@ -44,6 +44,12 @@ namespace csci3081 {
     std::cout << "This is Robot's current direction in default constructor: {" << directionVec.at(0) << ", " << directionVec.at(1) << ", " << directionVec.at(2) << "}" << std::endl;
   }
 
+  Robot::~Robot() {
+    delete position;
+    delete direction;
+    delete battery;
+  }
+
   int Robot::GetId() const {
     return id;
   }
@@ -342,7 +348,7 @@ namespace csci3081 {
               curRouteNextIndex = curRouteNextIndex - 1;
             } else {
               nextPos = curRoute.at(curRouteNextIndex);}
-	    
+
             CalculateAndUpdateRobotDirection(nextPos);
           }
           else

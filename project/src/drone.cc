@@ -52,6 +52,13 @@ namespace csci3081 {
     //const_cast<picojson::object&>(obj)[key] = picojson::value(temp);
   }
 
+  Drone::~Drone() {
+    delete position;
+    delete direction;
+    delete battery;
+    delete flightStrategy;
+  }
+
   void Drone::AddGraphPath(const IGraph* newGraph) {
     dynamic_cast<PathFlight*>(flightStrategy)->AddGraph(newGraph);
   }

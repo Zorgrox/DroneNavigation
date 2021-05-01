@@ -35,6 +35,12 @@ namespace csci3081 {
    * @param obj picojson object with details for the creation of the entity
    */
     Drone(const picojson::object &obj);
+
+    /**
+   *  Destructor: drone
+   */
+    ~Drone();
+
   /**
    *  This function should return the id of the drone
    */
