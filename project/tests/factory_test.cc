@@ -60,6 +60,7 @@ TEST_F(FactoryTest, DroneCreated) {
 
   // Checks that when GetDetails() is called, the entity returns
   //  the picojson object that was used to initialize it
+  JsonHelper::AddFloatToJsonObject(obj, "color", 0x990000);
   ASSERT_EQ(picojson::value(system->GetEntities()[0]->GetDetails()).serialize(), picojson::value(obj).serialize());
   }
 
