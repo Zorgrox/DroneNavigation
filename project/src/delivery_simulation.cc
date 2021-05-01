@@ -19,9 +19,10 @@
 
 namespace csci3081 {
 
-DeliverySimulation::DeliverySimulation() {
-  compositeFactory_ = new CompositeFactory();
-  PackageScheduler* packageScheduler_ = new PackageScheduler();
+  DeliverySimulation::DeliverySimulation()
+  {
+    compositeFactory_ = new CompositeFactory();
+    packageScheduler_ = new PackageScheduler();
 }
 
 DeliverySimulation::~DeliverySimulation() {

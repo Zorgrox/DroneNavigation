@@ -29,6 +29,8 @@ namespace csci3081 {
  */
 
 // DO NOT MODIFY (unless you really know what you are doing)
+
+class PackageScheduler; // forward declaration for PackageScheduler
 class DeliverySimulation : public IDeliverySystem {
  public:
   /**
@@ -154,6 +156,7 @@ class DeliverySimulation : public IDeliverySystem {
   std::vector<Customer*> customers_;
   std::vector<Package*> packages_;
   CompositeFactory* compositeFactory_;
+  PackageScheduler* packageScheduler_;
   const IGraph* systemGraph;
 
   int dronesIndex;
