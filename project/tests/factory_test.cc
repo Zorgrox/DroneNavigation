@@ -86,7 +86,10 @@ TEST_F(FactoryTest, DroneCreated) {
     CompositeFactory *compositeFactory_ = new CompositeFactory();
     IEntity* drone = compositeFactory_->CreateEntity(obj);
 
-    ASSERT_EQ(drone->GetId(), entity->GetId());
+
+
+    
+    ASSERT_EQ(drone->GetId(),875837494);
   }
 
   // Test the different factories independently of IDeliverySystem and of CompositeFactory

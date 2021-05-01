@@ -117,6 +117,7 @@ void DecoratedEntity::Update(const IGraph *graph, std::vector<IEntityObserver *>
 		  break;
 		default:
 		  temp = 872809;
+		  
 	}
 	//convert num to indicate color to a float
 	float colornum = temp;
