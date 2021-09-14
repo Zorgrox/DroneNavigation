@@ -1,8 +1,8 @@
-## Group members
-* yang5063
-* joh13503
-* conne457
-* Ahmed844 
+## Description
+ Software to dynamically schedule, route, handle exceptions, and deliver packages via multiple robots and drones.  Simulator integration. Written mostly in C++, with Doxygen and GTest.
+ ## Videos
+* Routing, Package scheduling, Delivery: https://youtu.be/sfxzWvkMK38
+* Low battery and Re-routing: https://youtu.be/-3uShRnXPuw
 
 ## Pre-requisites
   * [Git](https://git-scm.com/)
